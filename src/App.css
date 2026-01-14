@@ -1,9 +1,9 @@
-/* --- 1. GLOBAL VARIABLES & RESET --- */
+/* --- 1. GLOBAL VARIABLES (Dark Theme Fix) --- */
 :root {
-  --primary: #2563eb; /* Blue accent */
-  --text: #1f2937;
-  --bg: #ffffff;
-  --card-bg: #f3f4f6;
+  --primary: #3b82f6;    /* Bright Blue */
+  --text: #f8fafc;       /* White/Slate-50 (Visible on dark bg) */
+  --bg: #0f172a;         /* Dark Slate-900 (Matches your design) */
+  --card-bg: #1e293b;    /* Slate-800 for cards */
 }
 
 * {
@@ -15,117 +15,56 @@
 body {
   font-family: system-ui, -apple-system, sans-serif;
   color: var(--text);
-  background: var(--bg);
+  background-color: var(--bg);
   line-height: 1.6;
 }
 
-/* --- 2. THE CONTAINER (Crucial for Layout) --- */
-/* This makes sure your content is centered on PC and distinct on Mobile */
+/* --- 2. LAYOUT UTILITIES --- */
 .container {
-  width: 90%;          /* Mobile: Take up 90% of screen */
-  max-width: 1100px;   /* PC: Stop expanding after 1100px */
-  margin: 0 auto;      /* Center the container */
-  padding: 20px 0;
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
-/* --- 3. HOME PAGE STYLES --- */
-.hero {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 80vh; /* Takes up most of the screen height */
-  gap: 40px;
+.section-padding {
+  padding: 80px 0;
 }
 
-.hero-text h1 {
-  font-size: 3rem;
-  font-weight: 800;
-  line-height: 1.2;
-  margin-bottom: 20px;
-}
-
-.hero-text p {
-  font-size: 1.2rem;
-  color: #555;
-  margin-bottom: 30px;
-}
-
-.hero-img {
-  width: 100%;
-  max-width: 400px;
-  border-radius: 20px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-}
-
-.btn {
-  display: inline-block;
-  padding: 12px 30px;
-  background-color: var(--primary);
-  color: white;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-/* --- 4. PROJECTS PAGE STYLES --- */
-.grid-wrapper {
-  display: grid;
-  /* PC: 3 columns default */
-  grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
-  margin-top: 40px;
-}
-
-.card {
-  background: var(--card-bg);
-  border-radius: 12px;
-  padding: 20px;
-  transition: transform 0.2s;
-}
-
-.card:hover {
-  transform: translateY(-5px);
-}
-
-.card img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-  border-radius: 8px;
-  margin-bottom: 15px;
-}
-
-/* --- 5. MOBILE RESPONSIVENESS (The Fix) --- */
-@media (max-width: 768px) {
-  /* Fix Home Page */
-  .hero {
-    flex-direction: column-reverse; /* Stack image on top, text below */
-    text-align: center;
-    padding-top: 40px;
-  }
-  
-  .hero-text h1 {
-    font-size: 2.2rem; /* Smaller text for phone */
-  }
-
-  /* Fix Projects Page */
-  .grid-wrapper {
-    grid-template-columns: 1fr; /* Force 1 column on phone */
-  }
-}
-/* --- RESPONSIVE GRID (For Projects Page) --- */
+/* --- 3. RESPONSIVE GRID SYSTEM (The Fix) --- */
+/* This handles the side-by-side layout for Home, Projects, and Contact */
 .responsive-grid {
   display: grid;
   grid-template-columns: 1fr 1.5fr; /* Left side smaller, Right side wider */
-  gap: 50px;
-  align-items: start;
+  gap: 60px;
+  align-items: center;
   width: 100%;
 }
 
-/* On Mobile/Tablet (< 768px): Stack them vertically */
+/* --- 4. PROFILE IMAGE HELPERS --- */
+.profile-image-container {
+  position: relative;
+  max-width: 320px;
+  /* Centering logic is handled in media queries below */
+}
+
+/* --- 5. MOBILE RESPONSIVENESS (< 768px) --- */
 @media (max-width: 768px) {
+  
+  /* Stack everything vertically on phones */
   .responsive-grid {
-    grid-template-columns: 1fr; /* Force single column */
-    gap: 30px;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    text-align: center; /* Center text on mobile */
+  }
+
+  /* Center the profile picture on phones */
+  .profile-image-container {
+    margin: 0 auto;
+  }
+  
+  /* Make huge titles smaller on phones */
+  h1 {
+    font-size: 2.5rem !important; 
   }
 }

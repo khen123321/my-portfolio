@@ -1,5 +1,5 @@
 import React from "react";
-import "../App.css";
+import "../App.css"; 
 
 export default function Home() {
   return (
@@ -8,11 +8,11 @@ export default function Home() {
       style={{ 
         borderBottom: "1px solid #1e293b",
         position: "relative",
-        overflow: "hidden" // Keeps the glow effect contained
+        overflow: "hidden" 
       }}
     >
       
-      {/* Background Glow Effect (Subtle Blue Spot) */}
+      {/* Background Glow Effect */}
       <div style={{
         position: "absolute",
         top: "20%",
@@ -25,118 +25,121 @@ export default function Home() {
       }} />
 
       {/* MAIN GRID CONTAINER */}
-      <div className="responsive-grid" style={{ alignItems: "center", position: "relative", zIndex: 1 }}>
-        
-        {/* =======================
-            LEFT: PROFILE IMAGE
-           ======================= */}
-        <div className="profile-image-container" style={{ position: "relative", maxWidth: "320px", margin: "0 auto" }}>
+      <div className="container">
+        <div className="responsive-grid" style={{ position: "relative", zIndex: 1 }}>
           
-          {/* Decorative Offset Border */}
-          <div style={{
-            position: "absolute",
-            top: "20px",
-            left: "-20px",
-            width: "100%",
-            height: "100%",
-            border: "2px solid #1e293b",
-            borderRadius: "24px",
-            zIndex: 0
-          }} />
-          
-          {/* Main Image Wrapper */}
-          <div style={{
-            position: "relative",
-            borderRadius: "24px",
-            overflow: "hidden",
-            boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
-            border: "1px solid #334155"
-          }}>
-             {/* Gradient Overlay */}
+          {/* =======================
+              LEFT: PROFILE IMAGE
+             ======================= */}
+          <div className="profile-image-container" style={{ position: "relative", maxWidth: "320px" }}>
+            
+            {/* Decorative Offset Border */}
             <div style={{
               position: "absolute",
-              inset: 0,
-              background: "linear-gradient(to top, rgba(2, 6, 23, 0.4), transparent)",
-              zIndex: 1
+              top: "20px",
+              left: "-20px",
+              width: "100%",
+              height: "100%",
+              border: "2px solid #1e293b",
+              borderRadius: "24px",
+              zIndex: 0
             }} />
             
-            <img
-              src="/profile.png"
-              alt="Khen Joshua Verson"
-              style={{
-                width: "100%",
-                height: "auto",
-                objectFit: "cover",
-                display: "block",
-                position: "relative",
-                zIndex: 0
-              }}
-            />
-          </div>
-        </div>
-
-        {/* =======================
-            RIGHT: TEXT & ACTIONS
-           ======================= */}
-        <div>
-          {/* Status Badge */}
-          <div style={{ 
-            display: "inline-flex", 
-            alignItems: "center", 
-            gap: "8px", 
-            backgroundColor: "rgba(16, 185, 129, 0.1)", 
-            padding: "8px 16px", 
-            borderRadius: "30px", 
-            marginBottom: "24px",
-            border: "1px solid rgba(16, 185, 129, 0.2)"
-          }}>
-            <span style={{ width: "8px", height: "8px", backgroundColor: "#10b981", borderRadius: "50%" }}></span>
-            <span style={{ color: "#10b981", fontSize: "0.85rem", fontWeight: "600", letterSpacing: "0.05em" }}>
-              AVAILABLE FOR WORK
-            </span>
+            {/* Main Image Wrapper */}
+            <div style={{
+              position: "relative",
+              borderRadius: "24px",
+              overflow: "hidden",
+              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
+              border: "1px solid #334155"
+            }}>
+               {/* Gradient Overlay */}
+              <div style={{
+                position: "absolute",
+                inset: 0,
+                background: "linear-gradient(to top, rgba(2, 6, 23, 0.4), transparent)",
+                zIndex: 1
+              }} />
+              
+              {/* --- FIX IS HERE: Direct link to public folder --- */}
+              <img
+                src="/profile.png"
+                alt="Khen Joshua Verson"
+                style={{
+                  width: "100%",
+                  height: "auto",
+                  objectFit: "cover",
+                  display: "block",
+                  position: "relative",
+                  zIndex: 0
+                }}
+              />
+            </div>
           </div>
 
-          <h1 style={{ 
-            fontSize: "clamp(3rem, 5vw, 5rem)", 
-            fontWeight: "800", 
-            margin: "0 0 15px 0", 
-            letterSpacing: "-0.04em", 
-            lineHeight: "1.1", 
-            color: "#f8fafc" 
-          }}>
-            Khen Joshua Verson
-          </h1>
+          {/* =======================
+              RIGHT: TEXT & ACTIONS
+             ======================= */}
+          <div>
+            {/* Status Badge */}
+            <div style={{ 
+              display: "inline-flex", 
+              alignItems: "center", 
+              gap: "8px", 
+              backgroundColor: "rgba(16, 185, 129, 0.1)", 
+              padding: "8px 16px", 
+              borderRadius: "30px", 
+              marginBottom: "24px",
+              border: "1px solid rgba(16, 185, 129, 0.2)"
+            }}>
+              <span style={{ width: "8px", height: "8px", backgroundColor: "#10b981", borderRadius: "50%" }}></span>
+              <span style={{ color: "#10b981", fontSize: "0.85rem", fontWeight: "600", letterSpacing: "0.05em" }}>
+                AVAILABLE FOR WORK
+              </span>
+            </div>
 
-          <p style={{ 
-            fontSize: "1.2rem", 
-            color: "#60a5fa", 
-            fontWeight: "600", 
-            marginBottom: "30px", 
-            letterSpacing: "0.1em",
-            textTransform: "uppercase"
-          }}>
-            IT Support &bull; UI/UX Design &bull; App Developer
-          </p>
+            <h1 style={{ 
+              fontSize: "clamp(3rem, 5vw, 5rem)", 
+              fontWeight: "800", 
+              margin: "0 0 15px 0", 
+              letterSpacing: "-0.04em", 
+              lineHeight: "1.1", 
+              color: "#f8fafc" 
+            }}>
+              Khen Joshua Verson
+            </h1>
 
-          <p style={{ 
-            fontSize: "1.15rem", 
-            lineHeight: "1.8", 
-            color: "#94a3b8", 
-            maxWidth: "650px", 
-            marginBottom: "40px" 
-          }}>
-            I am a motivated and adaptable <strong style={{ color: "#cbd5e1" }}>BS Information Technology student</strong> at the University of Science and Technology of Southern Philippines. 
-            I possess a solid foundation in <strong style={{ color: "#cbd5e1" }}>IT Troubleshooting</strong> and <strong style={{ color: "#cbd5e1" }}>Application Development</strong>, combining technical skills with a passion for creative design.
-          </p>
+            <p style={{ 
+              fontSize: "1.2rem", 
+              color: "#60a5fa", 
+              fontWeight: "600", 
+              marginBottom: "30px", 
+              letterSpacing: "0.1em",
+              textTransform: "uppercase"
+            }}>
+              IT Support &bull; UI/UX Design &bull; App Developer
+            </p>
 
-          {/* Action Buttons */}
-          <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
-            <a href="#projects" style={primaryButtonStyle}>
-              View My Work
-            </a>
-            <a href="#contact" style={secondaryButtonStyle}>
-              Contact Me
-            </a>
+            <p style={{ 
+              fontSize: "1.15rem", 
+              lineHeight: "1.8", 
+              color: "#94a3b8", 
+              maxWidth: "650px", 
+              marginBottom: "40px" 
+            }}>
+              I am a motivated and adaptable <strong style={{ color: "#cbd5e1" }}>BS Information Technology student</strong> at the University of Science and Technology of Southern Philippines. 
+              I possess a solid foundation in <strong style={{ color: "#cbd5e1" }}>IT Troubleshooting</strong> and <strong style={{ color: "#cbd5e1" }}>Application Development</strong>.
+            </p>
+
+            {/* Action Buttons */}
+            <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
+              <a href="#projects" style={primaryButtonStyle}>
+                View My Work
+              </a>
+              <a href="#contact" style={secondaryButtonStyle}>
+                Contact Me
+              </a>
+            </div>
           </div>
         </div>
       </div>
