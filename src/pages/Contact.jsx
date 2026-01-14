@@ -1,5 +1,5 @@
 import React from "react";
-import "../App.css"; // Go up one folder to find CSS
+import "../App.css"; 
 
 export default function Contact() {
   return (
@@ -46,16 +46,29 @@ export default function Contact() {
 
             <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
               
+              {/* --- ACADEMIC EMAIL (FIXED) --- */}
               <a href="mailto:khenjoshua.verson@1.ustp.edu.ph" style={socialLinkStyle}>
-                <span style={{ fontWeight: "600", color: "#f8fafc" }}>Academic Email</span>
-                <span style={{ color: "#64748b", fontSize: "0.9rem" }}>khenjoshua.verson@1.ustp.edu.ph ↗</span>
+                <span style={{ fontWeight: "600", color: "#f8fafc", whiteSpace: "nowrap" }}>
+                  Academic Email
+                </span>
+                <span style={{ 
+                    color: "#64748b", 
+                    fontSize: "0.9rem", 
+                    // This forces the long email to break to the next line if needed
+                    wordBreak: "break-all", 
+                    textAlign: "right"
+                  }}>
+                  khenjoshua.verson@1.ustp.edu.ph ↗
+                </span>
               </a>
 
+              {/* --- GITHUB --- */}
               <a href="https://github.com/khen123321" target="_blank" rel="noreferrer" style={socialLinkStyle}>
                 <span style={{ fontWeight: "600", color: "#f8fafc" }}>GitHub</span>
                 <span style={{ color: "#64748b" }}>@khen123321 ↗</span>
               </a>
 
+              {/* --- FACEBOOK --- */}
               <a href="https://www.facebook.com/khenjosh740/" target="_blank" rel="noreferrer" style={socialLinkStyle}>
                 <span style={{ fontWeight: "600", color: "#f8fafc" }}>Facebook</span>
                 <span style={{ color: "#64748b" }}>Social Profile ↗</span>
@@ -70,9 +83,10 @@ export default function Contact() {
   );
 }
 
-// STYLES
+// --- UPDATED STYLES ---
+
 const primaryBtnStyle = {
-  display: "inline-block", // Ensures it respects left alignment
+  display: "inline-block", 
   backgroundColor: "#3b82f6",
   color: "white",
   padding: "20px 40px",
@@ -85,6 +99,7 @@ const primaryBtnStyle = {
   border: "1px solid #3b82f6",
 };
 
+// FIXED: Added flexWrap and gap to handle mobile screens
 const socialLinkStyle = {
   display: "flex",
   justifyContent: "space-between",
@@ -94,5 +109,9 @@ const socialLinkStyle = {
   backgroundColor: "rgba(30, 41, 59, 0.3)", 
   border: "1px solid #1e293b",
   borderRadius: "12px",
-  transition: "all 0.2s ease"
+  transition: "all 0.2s ease",
+  
+  // NEW PROPERTIES FOR RESPONSIVENESS
+  flexWrap: "wrap",  // Allows items to stack if space is tight
+  gap: "10px"        // Adds space between items when they stack
 };
