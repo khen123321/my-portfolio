@@ -1,66 +1,131 @@
-/* --- GLOBAL RESET --- */
-html, body {
+/* --- 1. GLOBAL VARIABLES & RESET --- */
+:root {
+  --primary: #2563eb; /* Blue accent */
+  --text: #1f2937;
+  --bg: #ffffff;
+  --card-bg: #f3f4f6;
+}
+
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  width: 100%;
-  min-height: 100vh;
-  background-color: #0f172a !important; /* Dark background everywhere */
-  color: #f8fafc;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  overflow-x: hidden; /* Prevents unwanted side scrolling */
 }
 
-/* --- MAIN CONTAINER (The Fix) --- */
-#root {
-  width: 100%;
-  max-width: 100%; /* UPDATED: Allows the box to spread full width */
-  margin: 0;
-  padding: 0;
-  text-align: left;
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.6;
 }
 
-/* --- UTILITIES --- */
-.section-padding {
-  padding-top: 100px;
-  padding-bottom: 100px;
-  width: 100%;
-  position: relative; /* Ensures backgrounds inside sections span full width */
+/* --- 2. THE CONTAINER (Crucial for Layout) --- */
+/* This makes sure your content is centered on PC and distinct on Mobile */
+.container {
+  width: 90%;          /* Mobile: Take up 90% of screen */
+  max-width: 1100px;   /* PC: Stop expanding after 1100px */
+  margin: 0 auto;      /* Center the container */
+  padding: 20px 0;
 }
 
-/* --- RESPONSIVE GRID (Content Container) --- */
-/* This class now handles keeping the text centered and readable */
+/* --- 3. HOME PAGE STYLES --- */
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 80vh; /* Takes up most of the screen height */
+  gap: 40px;
+}
+
+.hero-text h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 20px;
+}
+
+.hero-text p {
+  font-size: 1.2rem;
+  color: #555;
+  margin-bottom: 30px;
+}
+
+.hero-img {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.btn {
+  display: inline-block;
+  padding: 12px 30px;
+  background-color: var(--primary);
+  color: white;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+/* --- 4. PROJECTS PAGE STYLES --- */
+.grid-wrapper {
+  display: grid;
+  /* PC: 3 columns default */
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 20px;
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+/* --- 5. MOBILE RESPONSIVENESS (The Fix) --- */
+@media (max-width: 768px) {
+  /* Fix Home Page */
+  .hero {
+    flex-direction: column-reverse; /* Stack image on top, text below */
+    text-align: center;
+    padding-top: 40px;
+  }
+  
+  .hero-text h1 {
+    font-size: 2.2rem; /* Smaller text for phone */
+  }
+
+  /* Fix Projects Page */
+  .grid-wrapper {
+    grid-template-columns: 1fr; /* Force 1 column on phone */
+  }
+}
+/* --- RESPONSIVE GRID (For Projects Page) --- */
 .responsive-grid {
   display: grid;
-  grid-template-columns: 1fr 2fr; /* Desktop: Side by Side */
-  gap: 80px;
-  align-items: center;
-  
-  /* NEW: content constraint */
-  max-width: 1280px; 
-  margin: 0 auto; /* Centers the content, not the background */
-  padding-left: 40px;
-  padding-right: 40px;
+  grid-template-columns: 1fr 1.5fr; /* Left side smaller, Right side wider */
+  gap: 50px;
+  align-items: start;
   width: 100%;
-  box-sizing: border-box;
 }
 
-/* --- MOBILE RULES --- */
+/* On Mobile/Tablet (< 768px): Stack them vertically */
 @media (max-width: 768px) {
   .responsive-grid {
-    grid-template-columns: 1fr; /* Mobile: Stack Vertically */
-    gap: 40px;
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-
-  .section-padding {
-    padding-top: 60px !important;
-    padding-bottom: 60px !important;
-  }
-
-  /* Center profile image on mobile */
-  .profile-image-container {
-    margin: 0 auto 40px auto !important;
-    max-width: 280px !important;
+    grid-template-columns: 1fr; /* Force single column */
+    gap: 30px;
   }
 }
