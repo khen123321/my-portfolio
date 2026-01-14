@@ -1,6 +1,7 @@
 import React from 'react';
 import Home from "./pages/Home";
 import Projects from "./pages/Projects";
+import Certifications from "./pages/Certifications"; // 1. IMPORT ADDED
 import Contact from "./pages/Contact";
 
 export default function App() {
@@ -37,6 +38,11 @@ export default function App() {
 
         <div id="projects">
           <Projects />
+        </div>
+
+        {/* 2. CERTIFICATIONS SECTION ADDED HERE */}
+        <div id="certifications">
+          <Certifications />
         </div>
 
         <div id="contact">
