@@ -1,13 +1,16 @@
 import React from "react";
+import "../App.css";
 
 export default function Home() {
   return (
-    <section style={{ 
-      padding: "160px 0 120px 0", 
-      borderBottom: "1px solid #1e293b",
-      position: "relative",
-      overflow: "hidden" // Keeps the glow effect contained
-    }}>
+    <section 
+      className="section-padding" 
+      style={{ 
+        borderBottom: "1px solid #1e293b",
+        position: "relative",
+        overflow: "hidden" // Keeps the glow effect contained
+      }}
+    >
       
       {/* Background Glow Effect (Subtle Blue Spot) */}
       <div style={{
@@ -21,19 +24,14 @@ export default function Home() {
         pointerEvents: "none"
       }} />
 
-      <div style={{ 
-        display: "grid", 
-        gridTemplateColumns: "1fr 2fr", // Left-to-Right Ratio
-        gap: "80px", 
-        alignItems: "center",
-        position: "relative",
-        zIndex: 1
-      }}>
+      {/* MAIN GRID CONTAINER */}
+      <div className="responsive-grid" style={{ alignItems: "center", position: "relative", zIndex: 1 }}>
         
         {/* =======================
             LEFT: PROFILE IMAGE
            ======================= */}
-        <div style={{ position: "relative" }}>
+        <div className="profile-image-container" style={{ position: "relative", maxWidth: "320px", margin: "0 auto" }}>
+          
           {/* Decorative Offset Border */}
           <div style={{
             position: "absolute",
@@ -46,7 +44,7 @@ export default function Home() {
             zIndex: 0
           }} />
           
-          {/* Main Image */}
+          {/* Main Image Wrapper */}
           <div style={{
             position: "relative",
             borderRadius: "24px",
@@ -54,19 +52,19 @@ export default function Home() {
             boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
             border: "1px solid #334155"
           }}>
-             {/* Gradient Overlay for cool effect */}
+             {/* Gradient Overlay */}
             <div style={{
               position: "absolute",
               inset: 0,
               background: "linear-gradient(to top, rgba(2, 6, 23, 0.4), transparent)",
               zIndex: 1
             }} />
+            
             <img
               src="/profile.png"
               alt="Khen Joshua Verson"
               style={{
                 width: "100%",
-                maxWidth: "320px",
                 height: "auto",
                 objectFit: "cover",
                 display: "block",
@@ -120,7 +118,6 @@ export default function Home() {
             IT Support &bull; UI/UX Design &bull; App Developer
           </p>
 
-          {/* ✅ FIXED DESCRIPTION (Citation Removed) */}
           <p style={{ 
             fontSize: "1.15rem", 
             lineHeight: "1.8", 
@@ -133,7 +130,7 @@ export default function Home() {
           </p>
 
           {/* Action Buttons */}
-          <div style={{ display: "flex", gap: "20px" }}>
+          <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
             <a href="#projects" style={primaryButtonStyle}>
               View My Work
             </a>
@@ -160,7 +157,8 @@ const primaryButtonStyle = {
   fontWeight: "600",
   textDecoration: "none",
   transition: "transform 0.2s, background-color 0.2s",
-  border: "1px solid #3b82f6"
+  border: "1px solid #3b82f6",
+  textAlign: "center"
 };
 
 const secondaryButtonStyle = {
@@ -172,5 +170,6 @@ const secondaryButtonStyle = {
   fontWeight: "600",
   textDecoration: "none",
   border: "1px solid #334155",
-  transition: "border-color 0.2s, color 0.2s"
+  transition: "border-color 0.2s, color 0.2s",
+  textAlign: "center"
 };

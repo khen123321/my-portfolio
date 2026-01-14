@@ -1,25 +1,26 @@
 import React from "react";
+import "../App.css";
 
 // 1. DATA: specific project details
 const projects = [
-{
-  title: "Storage Management System",
-  category: "Web Application",
-  description: "A professional inventory tracker using Google Sheets for data management, featuring automated statistics generation and secure user authentication.",
-  // UPDATED TECH LIST:
-  tech: ["React", "Firebase Auth", "Google Sheets", "Chart.js"], 
-  link: "https://storage-management-gilt.vercel.app/", 
-},
+  {
+    title: "Storage Management System",
+    category: "Web Application",
+    description: "A professional inventory tracker using Google Sheets for data management, featuring automated statistics generation and secure user authentication.",
+    // UPDATED TECH LIST:
+    tech: ["React", "Firebase Auth", "Google Sheets", "Chart.js"], 
+    link: "https://storage-management-gilt.vercel.app/", 
+  },
 ];
 
 export default function Projects() {
   return (
-    <div style={{ paddingTop: "100px" }}>
+    <div className="section-padding">
       
       {/* =======================
           PART 1: CODING PROJECTS
          ======================= */}
-      <section style={{ borderBottom: "1px solid #1e293b", paddingBottom: "100px" }}>
+      <section style={{ borderBottom: "1px solid #1e293b", paddingBottom: "60px", marginBottom: "60px" }}>
         <h2 style={headerStyle}>
           <span style={{ color: "#3b82f6", marginRight: "10px" }}>01.</span> 
           Selected Works
@@ -27,7 +28,8 @@ export default function Projects() {
 
         <div style={{ display: "flex", flexDirection: "column", gap: "80px" }}>
           {projects.map((project, index) => (
-            <div key={index} style={gridLayout}>
+            // UPDATED: Used 'responsive-grid' class instead of inline style
+            <div key={index} className="responsive-grid">
               
               {/* LEFT: Identity */}
               <div>
@@ -54,7 +56,7 @@ export default function Projects() {
                   ))}
                 </div>
 
-                {/* ADDED: View Project Button */}
+                {/* View Project Button */}
                 {project.link && (
                   <a 
                     href={project.link} 
@@ -75,14 +77,15 @@ export default function Projects() {
       {/* =======================
           PART 2: INTERACTIVE DEMOS
          ======================= */}
-      <section style={{ paddingTop: "100px", paddingBottom: "100px" }}>
+      <section>
         <h2 style={headerStyle}>
           <span style={{ color: "#3b82f6", marginRight: "10px" }}>02.</span> 
           Technical Demos
         </h2>
 
         {/* DEMO 1: VIDEO WALKTHROUGH */}
-        <div style={{ ...gridLayout, marginBottom: "100px" }}>
+        {/* UPDATED: Added 'responsive-grid' class */}
+        <div className="responsive-grid" style={{ marginBottom: "100px" }}>
           <div>
             <h3 style={demoTitle}>3D Model with Animation</h3>
             <p style={descriptionText}>
@@ -106,7 +109,8 @@ export default function Projects() {
         </div>
 
         {/* DEMO 2: FIGMA PROTOTYPE */}
-        <div style={gridLayout}>
+        {/* UPDATED: Added 'responsive-grid' class */}
+        <div className="responsive-grid">
           <div>
             <h3 style={demoTitle}>Customizable Food App Concept</h3>
             <p style={descriptionText}>
@@ -138,12 +142,7 @@ export default function Projects() {
 // STYLES
 // =======================
 
-const gridLayout = {
-  display: "grid",
-  gridTemplateColumns: "1fr 2fr",
-  gap: "60px",
-  alignItems: "start"
-};
+// Note: 'gridLayout' was removed because we use the CSS class 'responsive-grid' now.
 
 const headerStyle = {
   fontSize: "clamp(2rem, 4vw, 2.5rem)",
@@ -195,12 +194,11 @@ const techPill = {
   border: "1px solid #334155"
 };
 
-// NEW STYLE: Button for the link
 const viewProjectBtn = {
   display: "inline-flex",
   alignItems: "center",
   textDecoration: "none",
-  color: "#60a5fa", // Matches your blue theme
+  color: "#60a5fa", 
   fontWeight: "600",
   fontSize: "1rem",
   borderBottom: "2px solid rgba(96, 165, 250, 0.3)",
