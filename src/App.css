@@ -1,9 +1,9 @@
-/* --- 1. GLOBAL VARIABLES (Dark Theme Fix) --- */
+/* --- 1. GLOBAL VARIABLES --- */
 :root {
   --primary: #3b82f6;    /* Bright Blue */
-  --text: #f8fafc;       /* White/Slate-50 (Visible on dark bg) */
-  --bg: #0f172a;         /* Dark Slate-900 (Matches your design) */
-  --card-bg: #1e293b;    /* Slate-800 for cards */
+  --text: #f8fafc;       /* White/Slate-50 */
+  --bg: #0f172a;         /* Dark Slate-900 */
+  --card-bg: #1e293b;    /* Slate-800 */
 }
 
 * {
@@ -31,39 +31,77 @@ body {
   padding: 80px 0;
 }
 
-/* --- 3. RESPONSIVE GRID SYSTEM (The Fix) --- */
-/* This handles the side-by-side layout for Home, Projects, and Contact */
+/* --- 3. RESPONSIVE GRID SYSTEM --- */
 .responsive-grid {
   display: grid;
-  grid-template-columns: 1fr 1.5fr; /* Left side smaller, Right side wider */
+  /* Desktop: 2 columns (Left smaller, Right wider) */
+  grid-template-columns: 1fr 1.5fr; 
   gap: 60px;
   align-items: center;
   width: 100%;
 }
 
-/* --- 4. PROFILE IMAGE HELPERS --- */
+/* --- 4. COMPONENT STYLES (New additions) --- */
+
+/* Centers the image wrapper on mobile */
+.profile-wrapper {
+  display: flex;
+  justify-content: center; 
+}
+
 .profile-image-container {
   position: relative;
+  width: 100%;
   max-width: 320px;
-  /* Centering logic is handled in media queries below */
+}
+
+/* Status Badge (Available for work) */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: rgba(16, 185, 129, 0.1);
+  padding: 8px 16px;
+  border-radius: 30px;
+  margin-bottom: 24px;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+/* Button Group */
+.button-group {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
 }
 
 /* --- 5. MOBILE RESPONSIVENESS (< 768px) --- */
 @media (max-width: 768px) {
   
-  /* Stack everything vertically on phones */
+  /* Stack grid items vertically */
   .responsive-grid {
     grid-template-columns: 1fr;
     gap: 40px;
-    text-align: center; /* Center text on mobile */
+    text-align: center;
   }
 
-  /* Center the profile picture on phones */
-  .profile-image-container {
-    margin: 0 auto;
+  /* Center the Text Content Flexbox */
+  .home-text-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Center the Buttons */
+  .button-group {
+    justify-content: center;
+  }
+
+  /* Adjust spacing for badge */
+  .status-badge {
+    margin-bottom: 20px;
   }
   
-  /* Make huge titles smaller on phones */
+  /* Prevent huge titles from breaking layout */
   h1 {
     font-size: 2.5rem !important; 
   }
