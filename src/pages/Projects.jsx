@@ -8,7 +8,6 @@ const MediaGallery = ({ mediaItems }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Helper: Checks if the URL is video or interactive embed
   const isVideo = (url) => {
     return (
       url.includes("drive.google.com") || 
@@ -45,7 +44,6 @@ const MediaGallery = ({ mediaItems }) => {
   const currentItem = mediaItems[currentIndex];
   const itemIsVideo = isVideo(currentItem);
 
-  // Render content
   const renderContent = (url, isFullSize = false) => {
     if (isVideo(url)) {
       return (
@@ -69,16 +67,10 @@ const MediaGallery = ({ mediaItems }) => {
 
   return (
     <>
-      {/* --- CAROUSEL --- */}
       <div style={carouselContainer}>
         <div style={imageWrapper} onClick={!itemIsVideo ? openModal : undefined}>
-          
           {renderContent(currentItem)}
-
-          {/* Hints */}
           {!itemIsVideo && <div style={overlayHint}>Click to expand ↗</div>}
-          
-          {/* Dynamic Label */}
           {itemIsVideo && (
             <div style={currentItem.includes("figma") ? figmaLabel : videoLabel}>
                {currentItem.includes("figma") ? "Interactive Prototype" : "Video Preview"}
@@ -86,7 +78,6 @@ const MediaGallery = ({ mediaItems }) => {
           )}
         </div>
 
-        {/* Navigation Arrows */}
         {mediaItems.length > 1 && (
           <>
             <button onClick={prevSlide} style={{ ...navButton, left: "10px" }}>&#10094;</button>
@@ -96,20 +87,16 @@ const MediaGallery = ({ mediaItems }) => {
          <div style={counterIndicator}>{currentIndex + 1} / {mediaItems.length}</div>
       </div>
 
-      {/* --- MODAL --- */}
       {isModalOpen && !itemIsVideo && (
         <div style={modalOverlay} onClick={closeModal}>
           <button style={modalCloseBtn} onClick={closeModal}>&times;</button>
-           
            {mediaItems.length > 1 && (
              <>
                <button onClick={prevSlide} style={{ ...modalNavBtn, left: "20px" }}>&#10094;</button>
                <button onClick={nextSlide} style={{ ...modalNavBtn, right: "20px" }}>&#10095;</button>
              </>
            )}
-
           {renderContent(currentItem, true)}
-
           <div style={modalCounter}>{currentIndex + 1} / {mediaItems.length}</div>
         </div>
       )}
@@ -119,7 +106,7 @@ const MediaGallery = ({ mediaItems }) => {
 
 
 // ==========================================
-// 1. DATA: SELECTED WORKS
+// DATA SECTIONS
 // ==========================================
 const projects = [
   {
@@ -137,9 +124,6 @@ const projects = [
   },
 ];
 
-// ==========================================
-// 2. DATA: TECHNICAL DEMOS
-// ==========================================
 const demos = [
   {
     title: "3D Model with Animation",
@@ -175,9 +159,7 @@ export default function Projects() {
   return (
     <div className="section-padding" style={{ maxWidth: "1200px", margin: "0 auto" }}>
       
-      {/* ---------------------------
-          PART 1: SELECTED WORKS
-         --------------------------- */}
+      {/* PART 1: SELECTED WORKS */}
        <section style={{ borderBottom: "1px solid #1e293b", paddingBottom: "60px", marginBottom: "60px", marginTop: "60px" }}>
         <h2 style={headerStyle}>
           <span style={{ color: "#3b82f6", marginRight: "10px" }}>01.</span> 
@@ -186,11 +168,10 @@ export default function Projects() {
 
         <div style={{ display: "flex", flexDirection: "column", gap: "80px" }}>
           {projects.map((project, index) => (
-            /* --- UPDATED: Uses 'responsive-grid' class instead of inline grid style --- */
             <div key={index} className="responsive-grid" style={{ alignItems: "start" }}>
               
-              {/* LEFT: Info */}
-              <div style={{position: 'sticky', top: '20px'}}>
+              {/* --- FIX IS HERE: Removed "position: sticky" --- */}
+              <div> 
                 <span style={categoryBadge}>{project.category}</span>
                 <h3 style={projectTitle}>{project.title}</h3>
                 <p style={descriptionText}>{project.description}</p>
@@ -221,9 +202,7 @@ export default function Projects() {
         </div>
       </section>
 
-      {/* ---------------------------
-          PART 2: TECHNICAL DEMOS
-         --------------------------- */}
+      {/* PART 2: TECHNICAL DEMOS */}
       <section>
         <h2 style={headerStyle}>
           <span style={{ color: "#3b82f6", marginRight: "10px" }}>02.</span> 
@@ -232,10 +211,9 @@ export default function Projects() {
 
         <div style={{ display: "flex", flexDirection: "column", gap: "100px" }}>
           {demos.map((demo, index) => (
-             /* --- UPDATED: Uses 'responsive-grid' class --- */
             <div key={index} className="responsive-grid" style={{ alignItems: "start" }}>
               
-              {/* LEFT: Text Info */}
+              {/* LEFT: Text Info - Removed Sticky Here too */}
               <div>
                 <h3 style={demoTitle}>{demo.title}</h3>
                 <p style={descriptionText}>{demo.description}</p>
