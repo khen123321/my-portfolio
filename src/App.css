@@ -71,3 +71,7 @@ body {
   .status-badge { margin-bottom: 20px; }
   h1 { font-size: 2.5rem !important; }
 }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateX(-5px); }
+  to { opacity: 1; transform: translateX(0); }
+}
