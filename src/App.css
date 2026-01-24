@@ -2,8 +2,12 @@
 :root {
   --primary: #3b82f6;    /* Bright Blue */
   --text: #f8fafc;       /* White/Slate-50 */
-  --bg: #0f172a;         /* Dark Slate-900 */
-  --card-bg: #1e293b;    /* Slate-800 */
+  
+  /* UPDATED: Background is handled in App.js for the light effect */
+  --bg: #020617;         /* Very Dark Blue (Base) */
+  
+  /* UPDATED: Semi-transparent Card BG for the light to shine through */
+  --card-bg: rgba(30, 41, 59, 0.5); 
 }
 
 * {
@@ -13,10 +17,12 @@
 }
 
 body {
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   color: var(--text);
-  background-color: var(--bg);
+  /* Remove solid background here so App.js gradient shows */
+  background-color: var(--bg); 
   line-height: 1.6;
+  overflow-x: hidden; 
 }
 
 /* --- 2. LAYOUT UTILITIES --- */
@@ -34,75 +40,34 @@ body {
 /* --- 3. RESPONSIVE GRID SYSTEM --- */
 .responsive-grid {
   display: grid;
-  /* Desktop: 2 columns (Left smaller, Right wider) */
   grid-template-columns: 1fr 1.5fr; 
   gap: 60px;
   align-items: center;
   width: 100%;
 }
 
-/* --- 4. COMPONENT STYLES (New additions) --- */
+/* --- 4. COMPONENT STYLES --- */
 
-/* Centers the image wrapper on mobile */
-.profile-wrapper {
-  display: flex;
-  justify-content: center; 
+/* GLOBAL CARD STYLE (Applies to Certs, Projects, etc.) */
+/* This makes cards look "glassy" */
+.glass-card, .cert-card, .project-card {
+  background-color: var(--card-bg) !important;
+  backdrop-filter: blur(10px); 
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
 }
 
-.profile-image-container {
-  position: relative;
-  width: 100%;
-  max-width: 320px;
-}
+/* Helper classes from your previous files */
+.profile-wrapper { display: flex; justify-content: center; }
+.profile-image-container { position: relative; width: 100%; max-width: 320px; }
+.status-badge { display: inline-flex; align-items: center; gap: 8px; background-color: rgba(16, 185, 129, 0.1); padding: 8px 16px; border-radius: 30px; margin-bottom: 24px; border: 1px solid rgba(16, 185, 129, 0.2); }
+.button-group { display: flex; gap: 20px; flex-wrap: wrap; }
 
-/* Status Badge (Available for work) */
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background-color: rgba(16, 185, 129, 0.1);
-  padding: 8px 16px;
-  border-radius: 30px;
-  margin-bottom: 24px;
-  border: 1px solid rgba(16, 185, 129, 0.2);
-}
-
-/* Button Group */
-.button-group {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
-/* --- 5. MOBILE RESPONSIVENESS (< 768px) --- */
+/* --- 5. MOBILE RESPONSIVENESS --- */
 @media (max-width: 768px) {
-  
-  /* Stack grid items vertically */
-  .responsive-grid {
-    grid-template-columns: 1fr;
-    gap: 40px;
-    text-align: center;
-  }
-
-  /* Center the Text Content Flexbox */
-  .home-text-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  /* Center the Buttons */
-  .button-group {
-    justify-content: center;
-  }
-
-  /* Adjust spacing for badge */
-  .status-badge {
-    margin-bottom: 20px;
-  }
-  
-  /* Prevent huge titles from breaking layout */
-  h1 {
-    font-size: 2.5rem !important; 
-  }
+  .responsive-grid { grid-template-columns: 1fr; gap: 40px; text-align: center; }
+  .home-text-content { display: flex; flex-direction: column; align-items: center; }
+  .button-group { justify-content: center; }
+  .status-badge { margin-bottom: 20px; }
+  h1 { font-size: 2.5rem !important; }
 }
