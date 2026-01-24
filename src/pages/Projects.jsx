@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-// import "../App.css"; 
+import ReactDOM from "react-dom"; // Required for the Modal Fix
 
 // ==========================================
 //  COMPONENT: MediaGallery
@@ -29,13 +29,14 @@ const MediaGallery = ({ mediaItems }) => {
 
   const openModal = () => {
     setIsModalOpen(true);
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden'; // Stop background scrolling
   };
 
   const closeModal = (e) => {
+    // Close if clicking overlay or close button
     if (e.target === e.currentTarget || e.target.tagName === 'BUTTON') {
       setIsModalOpen(false);
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = 'unset'; // Restore scrolling
     }
   };
 
@@ -65,12 +66,33 @@ const MediaGallery = ({ mediaItems }) => {
     );
   };
 
+  // --- MODAL CONTENT (To be Portaled) ---
+  const modalContent = (
+    <div style={modalOverlay} onClick={closeModal}>
+      <button style={modalCloseBtn} onClick={closeModal}>&times;</button>
+       
+       {mediaItems.length > 1 && (
+         <>
+           <button onClick={prevSlide} style={{ ...modalNavBtn, left: "20px" }}>&#10094;</button>
+           <button onClick={nextSlide} style={{ ...modalNavBtn, right: "20px" }}>&#10095;</button>
+         </>
+       )}
+       
+      {renderContent(currentItem, true)}
+      
+      <div style={modalCounter}>
+        {currentIndex + 1} / {mediaItems.length}
+      </div>
+    </div>
+  );
+
   return (
     <>
+      {/* THUMBNAIL/CAROUSEL */}
       <div style={carouselContainer}>
         <div style={imageWrapper} onClick={!itemIsVideo ? openModal : undefined}>
           {renderContent(currentItem)}
-          {!itemIsVideo && <div style={overlayHint}>Click to expand ↗</div>}
+          {!itemIsVideo && <div className="overlay-hint" style={overlayHint}>Click to expand ↗</div>}
           {itemIsVideo && (
             <div style={currentItem.includes("figma") ? figmaLabel : videoLabel}>
                {currentItem.includes("figma") ? "Interactive Prototype" : "Video Preview"}
@@ -87,18 +109,10 @@ const MediaGallery = ({ mediaItems }) => {
          <div style={counterIndicator}>{currentIndex + 1} / {mediaItems.length}</div>
       </div>
 
-      {isModalOpen && !itemIsVideo && (
-        <div style={modalOverlay} onClick={closeModal}>
-          <button style={modalCloseBtn} onClick={closeModal}>&times;</button>
-           {mediaItems.length > 1 && (
-             <>
-               <button onClick={prevSlide} style={{ ...modalNavBtn, left: "20px" }}>&#10094;</button>
-               <button onClick={nextSlide} style={{ ...modalNavBtn, right: "20px" }}>&#10095;</button>
-             </>
-           )}
-          {renderContent(currentItem, true)}
-          <div style={modalCounter}>{currentIndex + 1} / {mediaItems.length}</div>
-        </div>
+      {/* PORTAL: Renders modal outside the parent div to fix z-index/stacking issues */}
+      {isModalOpen && !itemIsVideo && ReactDOM.createPortal(
+        modalContent,
+        document.body
       )}
     </>
   );
@@ -157,20 +171,55 @@ const demos = [
 // ==========================================
 export default function Projects() {
   return (
-    <div className="section-padding" style={{ maxWidth: "1200px", margin: "0 auto" }}>
+    <>
+    <style>{`
+      /* PROJECT GRID LAYOUT */
+      .project-grid {
+        display: grid;
+        grid-template-columns: 1fr; /* Default mobile: 1 column */
+        gap: 2.5rem;
+        align-items: start;
+        margin-bottom: 5rem;
+      }
+
+      @media (min-width: 900px) {
+        .project-grid {
+          grid-template-columns: 1fr 1.2fr; /* Desktop: Text left, Media right */
+          gap: 4rem;
+        }
+      }
+
+      /* ANIMATIONS */
+      @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      .animate-up {
+        opacity: 0;
+        animation: fadeUp 0.8s ease-out forwards;
+      }
+
+      /* Hover effect for media wrapper */
+      .media-hover-trigger:hover .overlay-hint {
+        opacity: 1 !important;
+      }
+    `}</style>
+
+    <div className="section-padding" style={{ maxWidth: "1200px", margin: "0 auto", paddingBottom: "100px" }}>
       
       {/* PART 1: SELECTED WORKS */}
-       <section style={{ borderBottom: "1px solid #1e293b", paddingBottom: "60px", marginBottom: "60px", marginTop: "60px" }}>
-        <h2 style={headerStyle}>
+       <section style={{ borderBottom: "1px solid #1e293b", paddingBottom: "20px", marginBottom: "60px", marginTop: "60px" }}>
+        <h2 className="animate-up" style={{ ...headerStyle, animationDelay: "0ms" }}>
           <span style={{ color: "#3b82f6", marginRight: "10px" }}>01.</span> 
           Selected Works
         </h2>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "80px" }}>
+        <div style={{ display: "flex", flexDirection: "column" }}>
           {projects.map((project, index) => (
-            <div key={index} className="responsive-grid" style={{ alignItems: "start" }}>
+            <div key={index} className="project-grid animate-up" style={{ animationDelay: "150ms" }}>
               
-              {/* --- FIX IS HERE: Removed "position: sticky" --- */}
+              {/* LEFT: Text Info */}
               <div> 
                 <span style={categoryBadge}>{project.category}</span>
                 <h3 style={projectTitle}>{project.title}</h3>
@@ -185,7 +234,9 @@ export default function Projects() {
 
               {/* RIGHT: Media & Tech */}
               <div>
-                 <MediaGallery mediaItems={project.media} />
+                 <div className="media-hover-trigger">
+                    <MediaGallery mediaItems={project.media} />
+                 </div>
 
                  <div style={{ marginTop: "25px" }}>
                     <p style={techLabel}>Technologies Used:</p>
@@ -204,16 +255,16 @@ export default function Projects() {
 
       {/* PART 2: TECHNICAL DEMOS */}
       <section>
-        <h2 style={headerStyle}>
+        <h2 className="animate-up" style={{ ...headerStyle, animationDelay: "300ms" }}>
           <span style={{ color: "#3b82f6", marginRight: "10px" }}>02.</span> 
           Technical Demos
         </h2>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "100px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "80px" }}>
           {demos.map((demo, index) => (
-            <div key={index} className="responsive-grid" style={{ alignItems: "start" }}>
+            <div key={index} className="project-grid animate-up" style={{ animationDelay: `${450 + (index * 150)}ms` }}>
               
-              {/* LEFT: Text Info - Removed Sticky Here too */}
+              {/* LEFT: Text Info */}
               <div>
                 <h3 style={demoTitle}>{demo.title}</h3>
                 <p style={descriptionText}>{demo.description}</p>
@@ -226,7 +277,7 @@ export default function Projects() {
               </div>
 
               {/* RIGHT: Media Gallery */}
-              <div>
+              <div className="media-hover-trigger">
                 <MediaGallery mediaItems={demo.media} />
               </div>
 
@@ -235,6 +286,7 @@ export default function Projects() {
         </div>
       </section>
     </div>
+    </>
   );
 }
 
@@ -242,9 +294,9 @@ export default function Projects() {
 // STYLES
 // =======================
 
-const headerStyle = { fontSize: "clamp(2rem, 4vw, 2.5rem)", fontWeight: "800", marginBottom: "80px", color: "#f8fafc", letterSpacing: "-0.03em" };
+const headerStyle = { fontSize: "clamp(2rem, 4vw, 2.5rem)", fontWeight: "800", marginBottom: "60px", color: "#f8fafc", letterSpacing: "-0.03em" };
 const categoryBadge = { color: "#60a5fa", fontSize: "0.75rem", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: "10px", display: "inline-block" };
-const projectTitle = { fontSize: "2rem", fontWeight: "700", color: "#f8fafc", margin: "10px 0 20px 0", lineHeight: "1.2" };
+const projectTitle = { fontSize: "clamp(1.8rem, 3vw, 2rem)", fontWeight: "700", color: "#f8fafc", margin: "10px 0 20px 0", lineHeight: "1.2" };
 const demoTitle = { fontSize: "1.5rem", fontWeight: "700", color: "#f8fafc", marginBottom: "15px" };
 const descriptionText = { fontSize: "1rem", lineHeight: "1.7", color: "#94a3b8", margin: 0, maxWidth: '600px' };
 
@@ -254,35 +306,50 @@ const viewProjectBtn = {
   textDecoration: "none", 
   color: "#60a5fa", 
   fontWeight: "700", 
-  fontSize: "1.25rem", 
-  marginTop: "40px",    
+  fontSize: "1.1rem", 
+  marginTop: "30px",    
   borderBottom: "2px solid rgba(96, 165, 250, 0.3)", 
   paddingBottom: "4px", 
-  transition: "all 0.2s ease" 
+  transition: "all 0.2s ease",
+  cursor: "pointer"
 };
 
 // Tech & Labels
 const techLabel = { fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "#64748b", fontWeight: "700", marginBottom: "5px" };
-const techPill = { fontSize: "0.8rem", fontWeight: "600", padding: "8px 16px", borderRadius: "8px", backgroundColor: "rgba(30, 41, 59, 0.5)", color: "#cbd5e1", border: "1px solid #334155" };
+const techPill = { fontSize: "0.8rem", fontWeight: "600", padding: "6px 12px", borderRadius: "8px", backgroundColor: "rgba(30, 41, 59, 0.5)", color: "#cbd5e1", border: "1px solid #334155" };
 
 // Gallery
 const carouselContainer = { position: "relative", width: "100%", maxWidth: "800px", margin: "0 auto" };
 const imageWrapper = { width: "100%", aspectRatio: "16/9", borderRadius: "12px", overflow: "hidden", border: "1px solid #334155", backgroundColor: "#0f172a", position: "relative", cursor: "pointer", boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.1)" };
 const galleryImage = { width: "100%", height: "100%", objectFit: "cover", display: "block", transition: "transform 0.3s ease" };
 const galleryVideoStyle = { width: "100%", height: "100%", border: "none", display: "block" };
-const modalVideoStyle = { width: "80vw", height: "80vh", border: "none" };
+const modalVideoStyle = { width: "100%", height: "100%", aspectRatio: "16/9", border: "none", maxWidth: "1200px" };
 
 // Badges
-const videoLabel = { position: 'absolute', top: '10px', right: '10px', background: '#ef4444', color: '#fff', padding: '4px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold', pointerEvents: 'none' };
-const figmaLabel = { position: 'absolute', top: '10px', right: '10px', background: '#a855f7', color: '#fff', padding: '4px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold', pointerEvents: 'none' };
+const videoLabel = { position: 'absolute', top: '10px', right: '10px', background: '#ef4444', color: '#fff', padding: '4px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold', pointerEvents: 'none', zIndex: 10 };
+const figmaLabel = { position: 'absolute', top: '10px', right: '10px', background: '#a855f7', color: '#fff', padding: '4px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold', pointerEvents: 'none', zIndex: 10 };
 
-const overlayHint = { position: 'absolute', bottom: '10px', right: '10px', background: 'rgba(0,0,0,0.7)', color: '#fff', padding: '4px 8px', borderRadius: '4px', fontSize: '0.75rem', pointerEvents: 'none' };
+const overlayHint = { position: 'absolute', bottom: '10px', right: '10px', background: 'rgba(0,0,0,0.7)', color: '#fff', padding: '4px 8px', borderRadius: '4px', fontSize: '0.75rem', pointerEvents: 'none', opacity: 0, transition: "opacity 0.2s ease" };
 const navButton = { position: "absolute", top: "50%", transform: "translateY(-50%)", background: "rgba(15, 23, 42, 0.8)", color: "#f8fafc", border: "1px solid #334155", borderRadius: "50%", width: "40px", height: "40px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", zIndex: 2, fontSize: "1.2rem", transition: "all 0.2s ease" };
 const counterIndicator = { position: "absolute", bottom: "-25px", right: "0", color: "#94a3b8", fontSize: "0.85rem", fontWeight: "600" };
 
-// Modal
-const modalOverlay = { position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0, 0, 0, 0.9)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999, padding: "20px", backdropFilter: "blur(5px)" };
-const modalImage = { maxWidth: "95%", maxHeight: "95vh", objectFit: "contain", borderRadius: "4px", boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)" };
-const modalCloseBtn = { position: "absolute", top: "20px", right: "20px", background: "rgba(255, 255, 255, 0.1)", color: "#fff", border: "none", borderRadius: "50%", width: "40px", height: "40px", fontSize: "2rem", lineHeight: "1", cursor: "pointer", zIndex: 10000, display: 'flex', alignItems: 'center', justifyContent: 'center' };
-const modalNavBtn = { ...navButton, background: "rgba(255, 255, 255, 0.1)", border: "none", width: "50px", height: "50px", fontSize: "1.5rem" };
-const modalCounter = { position: "absolute", bottom: "20px", left: "50%", transform: "translateX(-50%)", color: "#f8fafc", background: "rgba(0,0,0,0.5)", padding: "4px 12px", borderRadius: "20px", fontWeight: "600" };
+// Modal - HIGH Z-INDEX + DARKER BG
+const modalOverlay = { 
+  position: "fixed", 
+  top: 0, 
+  left: 0, 
+  right: 0, 
+  bottom: 0, 
+  backgroundColor: "rgba(0, 0, 0, 0.95)", 
+  display: "flex", 
+  alignItems: "center", 
+  justifyContent: "center", 
+  zIndex: 100000, 
+  padding: "20px", 
+  backdropFilter: "blur(5px)" 
+};
+
+const modalImage = { maxWidth: "100%", maxHeight: "90vh", objectFit: "contain", borderRadius: "4px", boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)", zIndex: 100001 };
+const modalCloseBtn = { position: "absolute", top: "20px", right: "20px", background: "rgba(255, 255, 255, 0.1)", color: "#fff", border: "none", borderRadius: "50%", width: "40px", height: "40px", fontSize: "2rem", lineHeight: "1", cursor: "pointer", zIndex: 100002, display: 'flex', alignItems: 'center', justifyContent: 'center' };
+const modalNavBtn = { ...navButton, background: "rgba(255, 255, 255, 0.1)", border: "none", width: "50px", height: "50px", fontSize: "1.5rem", zIndex: 100002 };
+const modalCounter = { position: "absolute", bottom: "20px", left: "50%", transform: "translateX(-50%)", color: "#f8fafc", background: "rgba(0,0,0,0.5)", padding: "4px 12px", borderRadius: "20px", fontWeight: "600", zIndex: 100002 };
