@@ -7,9 +7,15 @@ import ReactDOM from "react-dom";
 const MediaGallery = ({ mediaItems }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [direction, setDirection] = useState('next'); // 'next' (slide up) or 'prev' (slide down)
+  const [direction, setDirection] = useState('next'); 
+  const [isFirstOpen, setIsFirstOpen] = useState(true);
+
+  // --- HELPER: Handle both String URLs and Object items ---
+  const getUrl = (item) => typeof item === 'object' ? item.url : item;
+  const getCaption = (item) => typeof item === 'object' ? item.caption : null;
 
   const isVideo = (url) => {
+    if (!url) return false;
     return (
       url.includes("drive.google.com") || 
       url.includes("youtube") || 
@@ -18,27 +24,30 @@ const MediaGallery = ({ mediaItems }) => {
     );
   };
 
-  // Navigating "Next" means moving down the list (Image slides UP from bottom)
+  // Navigating "Next" (Right Button) -> Slide in from Right
   const nextSlide = (e) => {
     e.stopPropagation();
     setDirection('next'); 
+    setIsFirstOpen(false); 
     setCurrentIndex((prev) => (prev + 1) % mediaItems.length);
   };
 
-  // Navigating "Prev" means moving up the list (Image slides DOWN from top)
+  // Navigating "Prev" (Left Button) -> Slide in from Left
   const prevSlide = (e) => {
     e.stopPropagation();
     setDirection('prev');
+    setIsFirstOpen(false); 
     setCurrentIndex((prev) => (prev - 1 + mediaItems.length) % mediaItems.length);
   };
 
   const openModal = () => {
+    setIsFirstOpen(true); 
     setIsModalOpen(true);
     document.body.style.overflow = 'hidden'; 
   };
 
   const closeModal = (e) => {
-    if (e.target === e.currentTarget || e.target.tagName === 'BUTTON') {
+    if (e.target === e.currentTarget || e.target.getAttribute('aria-label') === 'close') {
       setIsModalOpen(false);
       document.body.style.overflow = 'unset'; 
     }
@@ -47,64 +56,92 @@ const MediaGallery = ({ mediaItems }) => {
   if (!mediaItems || mediaItems.length === 0) return null;
 
   const currentItem = mediaItems[currentIndex];
-  const itemIsVideo = isVideo(currentItem);
+  const currentUrl = getUrl(currentItem);
+  const currentCaption = getCaption(currentItem);
+  const itemIsVideo = isVideo(currentUrl);
 
-  // Helper to render image/video content
-  const renderContent = (url, isFullSize = false) => {
-    // Determine animation class based on direction
-    const animationClass = direction === 'next' ? 'dramatic-slide-up' : 'dramatic-slide-down';
+  const renderContent = (url, isModal = false) => {
+    let animationClass = '';
     
-    const content = isVideo(url) ? (
-      <iframe 
-        src={url} 
-        title="Interactive Preview" 
-        // Apply animation class directly to iframe or img styles won't catch it right
-        className={!isFullSize ? animationClass : ''}
-        style={isFullSize ? modalVideoStyle : galleryVideoStyle} 
-        allow="autoplay; encrypted-media" 
-        allowFullScreen
-      ></iframe>
-    ) : (
+    if (isModal) {
+        // 1. First Open = Slow Zoom
+        // 2. Next Button = Slide Left
+        // 3. Prev Button = Slide Right
+        animationClass = isFirstOpen 
+            ? 'slow-zoom-anim' 
+            : (direction === 'next' ? 'slide-in-right' : 'slide-in-left');
+    } else {
+        animationClass = ''; // No animation for thumbnails to keep it clean
+    }
+    
+    const imgClass = animationClass;
+
+    if (isVideo(url)) {
+      return (
+        <iframe 
+          src={url} 
+          title="Interactive Preview" 
+          className={imgClass}
+          style={isModal ? modalVideoStyle : galleryVideoStyle} 
+          allow="autoplay; encrypted-media" 
+          allowFullScreen
+        ></iframe>
+      );
+    }
+    return (
       <img 
         src={url} 
         alt="Project Preview" 
-        className={!isFullSize ? animationClass : ''}
-        style={isFullSize ? modalImage : galleryImage} 
+        className={imgClass}
+        style={isModal ? modalImage : galleryImage} 
       />
-    );
-
-    // We wrap it in a perspective container and use the key to force re-render on change
-    return (
-        <div key={currentIndex} className="perspective-wrapper" style={{ width: '100%', height: '100%' }}>
-            {content}
-        </div>
     );
   };
 
   // --- MODAL CONTENT ---
   const modalContent = (
     <div style={modalOverlay} onClick={closeModal}>
-      <button style={modalCloseBtn} onClick={closeModal}>&times;</button>
-        
-       {mediaItems.length > 1 && (
-         <>
-           {/* Vertical Buttons for Modal */}
-           <button onClick={prevSlide} style={{ ...navButton, ...navButtonUp, left: "50%", transform: "translateX(-50%)", top: "20px" }}>&#9650;</button>
-           <button onClick={nextSlide} style={{ ...navButton, ...navButtonDown, left: "50%", transform: "translateX(-50%)", bottom: "20px", top: "auto" }}>&#9660;</button>
-         </>
-       )}
-       
-      {/* For the modal, we also need the perspective wrapper and animation classes.
-          We reuse the logic but apply styles manually since we aren't using className props for modal items in the original CSS.
-      */}
-       <div key={currentIndex + "_modal"} className="perspective-wrapper" style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-         <div className={direction === 'next' ? 'dramatic-slide-up' : 'dramatic-slide-down'} style={{width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-            {renderContent(currentItem, true)}
-         </div>
-       </div>
       
-      <div style={modalCounter}>
-        {currentIndex + 1} / {mediaItems.length}
+      {/* Main Content Container */}
+      <div className="modal-content-wrapper" onClick={(e) => e.stopPropagation()}>
+        
+        {/* CLOSE BUTTON */}
+        <button style={modalCloseBtn} onClick={closeModal} aria-label="close">&times;</button>
+
+        {/* LEFT SIDE: IMAGE/VIDEO AREA */}
+        <div className="modal-media-area">
+            
+            {/* Wrapper for overflow handling */}
+            <div key={currentIndex} style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                 {renderContent(currentUrl, true)}
+            </div>
+
+            {/* HORIZONTAL NAV BUTTONS */}
+            {mediaItems.length > 1 && (
+              <>
+                <button onClick={prevSlide} style={{ ...navButton, left: "20px" }}>&#10094;</button>
+                <button onClick={nextSlide} style={{ ...navButton, right: "20px" }}>&#10095;</button>
+              </>
+            )}
+
+            <div style={modalCounter}>
+              {currentIndex + 1} / {mediaItems.length}
+            </div>
+        </div>
+
+        {/* RIGHT SIDE: DESCRIPTION PANEL */}
+        {!itemIsVideo && (
+        <div className="modal-info-panel">
+            <div key={currentIndex} className="info-content-animate">
+                <h4 style={infoTitle}>Image Details</h4>
+                <div style={infoDivider}></div>
+                <p style={infoText}>
+                  {currentCaption || "No description available for this image."}
+                </p>
+            </div>
+        </div>
+        )}
+
       </div>
     </div>
   );
@@ -115,21 +152,21 @@ const MediaGallery = ({ mediaItems }) => {
       <div style={carouselContainer}>
         <div style={imageWrapper} onClick={!itemIsVideo ? openModal : undefined}>
           
-          {renderContent(currentItem)}
+          {renderContent(currentUrl)}
 
           {!itemIsVideo && <div className="overlay-hint" style={overlayHint}>Click to expand ↗</div>}
           
           {itemIsVideo && (
-            <div style={currentItem.includes("figma") ? figmaLabel : videoLabel}>
-               {currentItem.includes("figma") ? "Interactive Prototype" : "Video Preview"}
+            <div style={currentUrl.includes("figma") ? figmaLabel : videoLabel}>
+               {currentUrl.includes("figma") ? "Interactive Prototype" : "Video Preview"}
             </div>
           )}
 
-          {/* VERTICAL BUTTONS */}
+          {/* Buttons on Thumbnail (Optional, can remove if you only want modal nav) */}
           {mediaItems.length > 1 && (
           <>
-            <button onClick={prevSlide} style={{ ...navButton, ...navButtonUp }}>&#9650;</button>
-            <button onClick={nextSlide} style={{ ...navButton, ...navButtonDown }}>&#9660;</button>
+            <button onClick={prevSlide} style={{ ...navButton, left: "10px" }}>&#10094;</button>
+            <button onClick={nextSlide} style={{ ...navButton, right: "10px" }}>&#10095;</button>
           </>
         )}
         </div>
@@ -147,7 +184,7 @@ const MediaGallery = ({ mediaItems }) => {
 
 
 // ==========================================
-// DATA SECTIONS (Unchanged)
+// DATA SECTIONS
 // ==========================================
 const projects = [
   {
@@ -157,11 +194,11 @@ const projects = [
     tech: ["React", "Firebase Auth", "Google Sheets", "Chart.js"],
     link: "https://storage-management-gilt.vercel.app/",
     media: [
-        "/management sample/1.png",
-        "/management sample/2.png",
-        "/management sample/3.png",
-        "/management sample/4.png",
-        "/management sample/5.png"
+        { url: "/management sample/1.png", caption: "Login Dashboard: Secure user authentication with Firebase." },
+        { url: "/management sample/2.png", caption: "Inventory List: Real-time tracking of stock levels with color-coded alerts." },
+        { url: "/management sample/3.png", caption: "Analytics: Visual breakdown of monthly consumption and costs." },
+        { url: "/management sample/4.png", caption: "Add Item Interface: Streamlined form for entering new stock data." },
+        { url: "/management sample/5.png", caption: "Settings Panel: User profile management and system configurations." }
     ]
   },
 ];
@@ -173,7 +210,7 @@ const demos = [
     link: "https://embed.figma.com/design/f6x3IY0cz0sv6Tu6RruQt3/Untitled?embed-host=share",
     linkText: "Interact with Prototype",
     media: [
-      "https://embed.figma.com/design/f6x3IY0cz0sv6Tu6RruQt3/Untitled?embed-host=share"
+      { url: "https://embed.figma.com/design/f6x3IY0cz0sv6Tu6RruQt3/Untitled?embed-host=share", caption: "Figma Prototype" }
     ]
   },
   {
@@ -182,13 +219,13 @@ const demos = [
     link: "https://drive.google.com/file/d/1CC-P6WGFh7mcy01TVxTH8pHDzwgS2sn_/preview",
     linkText: "Watch Full Video",
     media: [
-      "https://drive.google.com/file/d/1CC-P6WGFh7mcy01TVxTH8pHDzwgS2sn_/preview", 
-      "/3d model/s2.jpg",
-      "/3d model/s3.jpg",
-      "/3d model/s5.jpg", 
-      "/3d model/s6.jpg",
-      "/3d model/s7.png", 
-      "/3d model/s8.png"  
+      { url: "https://drive.google.com/file/d/1CC-P6WGFh7mcy01TVxTH8pHDzwgS2sn_/preview", caption: "Full Video Walkthrough" }, 
+      { url: "/3d model/s2.jpg", caption: "Side View of the mechanical arm." },
+      { url: "/3d model/s3.jpg", caption: "Top-down view of the sorting mechanism." },
+      { url: "/3d model/s5.jpg", caption: "Internal gears and motor placement." }, 
+      { url: "/3d model/s6.jpg", caption: "Structural frame analysis." },
+      { url: "/3d model/s7.png", caption: "Rendered lighting test." }, 
+      { url: "/3d model/s8.png", caption: "Final assembly render." }  
     ]
   },
   {
@@ -197,10 +234,10 @@ const demos = [
     link: "https://embed.figma.com/design/Mh8QHB04L0qPeM2Ti6Ajwq/Untitled?node-id=0-1&embed-host=share",
     linkText: "View Prototype",
     media: [
-        "https://embed.figma.com/design/Mh8QHB04L0qPeM2Ti6Ajwq/Untitled?node-id=0-1&embed-host=share"
+        { url: "https://embed.figma.com/design/Mh8QHB04L0qPeM2Ti6Ajwq/Untitled?node-id=0-1&embed-host=share", caption: "Prototype Interface" }
     ] 
   }
-];
+]; 
 
 
 // ==========================================
@@ -238,57 +275,108 @@ export default function Projects() {
       }
 
       /* =========================================
-         ENHANCED VERTICAL TRANSITIONS
+         GALLERY ANIMATIONS
       ========================================= */
       
-      /* Essential for 3D tilt effect */
-      .perspective-wrapper {
-        perspective: 1200px;
-        overflow: hidden;
+      /* 1. Slow Motion Zoom (Entrance) */
+      @keyframes slowZoomKeyframe {
+        0% { opacity: 0; transform: scale(0.6); filter: blur(4px); }
+        100% { opacity: 1; transform: scale(1); filter: blur(0px); }
+      }
+      .slow-zoom-anim {
+        animation: slowZoomKeyframe 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; 
+        transform-origin: center center;
       }
 
-      /* Slide UP (Clicking Down Arrow) */
-      @keyframes dramaticSlideUpKeyframe {
-        0% {
-          opacity: 0;
-          /* Start below, scaled down, tilted back */
-          transform: translateY(100%) scale(0.85) rotateX(-20deg);
-        }
-        100% {
-           opacity: 1;
-           /* End flat and full size */
-           transform: translateY(0) scale(1) rotateX(0deg);
-        }
+      /* 2. Slide Left (Next Image) */
+      @keyframes slideInRightKeyframe {
+        0% { opacity: 0; transform: translateX(50px); }
+        100% { opacity: 1; transform: translateX(0); }
+      }
+      .slide-in-right {
+        animation: slideInRightKeyframe 0.5s ease-out forwards;
       }
 
-      /* Slide DOWN (Clicking Up Arrow) */
-      @keyframes dramaticSlideDownKeyframe {
-        0% {
-          opacity: 0;
-          /* Start above, scaled down, tilted forward */
-          transform: translateY(-100%) scale(0.85) rotateX(20deg);
-        }
-        100% {
-           opacity: 1;
-           transform: translateY(0) scale(1) rotateX(0deg);
-        }
+      /* 3. Slide Right (Prev Image) */
+      @keyframes slideInLeftKeyframe {
+        0% { opacity: 0; transform: translateX(-50px); }
+        100% { opacity: 1; transform: translateX(0); }
       }
-
-      .dramatic-slide-up {
-        /* Using a spring-like bezier curve for snappy movement */
-        animation: dramaticSlideUpKeyframe 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-        transform-origin: center bottom; /* Pivot from bottom */
+      .slide-in-left {
+        animation: slideInLeftKeyframe 0.5s ease-out forwards;
       }
-
-      .dramatic-slide-down {
-        animation: dramaticSlideDownKeyframe 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-        transform-origin: center top; /* Pivot from top */
+      
+      /* 4. Text Fade In */
+      @keyframes textSlide {
+        0% { opacity: 0; transform: translateX(20px); }
+        100% { opacity: 1; transform: translateX(0); }
       }
-
+      .info-content-animate {
+        animation: textSlide 0.6s ease-out forwards;
+        animation-delay: 0.2s; /* Wait for image */
+        opacity: 0; 
+      }
 
       .media-hover-trigger:hover .overlay-hint {
         opacity: 1 !important;
       }
+
+      /* =========================================
+         MODAL LAYOUT STYLES
+      ========================================= */
+      .modal-content-wrapper {
+         display: flex;
+         width: 90vw;
+         height: 85vh;
+         background: #0f172a;
+         border: 1px solid #334155;
+         border-radius: 12px;
+         overflow: hidden;
+         box-shadow: 0 50px 100px -20px rgba(0,0,0,0.8);
+         position: relative;
+      }
+
+      .modal-media-area {
+        flex: 1;
+        background: #000;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+
+      .modal-info-panel {
+        width: 320px;
+        background: #1e293b;
+        padding: 40px 30px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        border-left: 1px solid #334155;
+        z-index: 10;
+      }
+
+      /* Mobile Responsive Modal */
+      @media (max-width: 900px) {
+        .modal-content-wrapper {
+          flex-direction: column;
+          height: 90vh;
+        }
+        .modal-info-panel {
+          width: 100%;
+          height: 150px;
+          padding: 20px;
+          justify-content: flex-start;
+          border-left: none;
+          border-top: 1px solid #334155;
+          overflow-y: auto;
+        }
+        .modal-media-area {
+            height: calc(100% - 150px);
+        }
+      }
+
     `}</style>
 
     <div className="section-padding" style={{ maxWidth: "1200px", margin: "0 auto", paddingBottom: "100px" }}>
@@ -408,7 +496,7 @@ const carouselContainer = { position: "relative", width: "100%", maxWidth: "800p
 const imageWrapper = { width: "100%", aspectRatio: "16/9", borderRadius: "12px", overflow: "hidden", border: "1px solid #334155", backgroundColor: "#0f172a", position: "relative", cursor: "pointer", boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.1)" };
 const galleryImage = { width: "100%", height: "100%", objectFit: "cover", display: "block" };
 const galleryVideoStyle = { width: "100%", height: "100%", border: "none", display: "block" };
-const modalVideoStyle = { width: "100%", height: "100%", aspectRatio: "16/9", border: "none", maxWidth: "1200px" };
+const modalVideoStyle = { width: "100%", height: "100%", border: "none" };
 
 // Badges
 const videoLabel = { position: 'absolute', top: '10px', right: '10px', background: '#ef4444', color: '#fff', padding: '4px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold', pointerEvents: 'none', zIndex: 10 };
@@ -416,11 +504,11 @@ const figmaLabel = { position: 'absolute', top: '10px', right: '10px', backgroun
 
 const overlayHint = { position: 'absolute', bottom: '10px', right: '10px', background: 'rgba(0,0,0,0.7)', color: '#fff', padding: '4px 8px', borderRadius: '4px', fontSize: '0.75rem', pointerEvents: 'none', opacity: 0, transition: "opacity 0.2s ease" };
 
-// Buttons for Vertical Navigation
+// Buttons for Horizontal Navigation
 const navButton = { 
     position: "absolute", 
-    left: "50%",
-    transform: "translateX(-50%)", 
+    top: "50%",
+    transform: "translateY(-50%)", 
     background: "rgba(15, 23, 42, 0.8)", 
     color: "#f8fafc", 
     border: "1px solid #334155", 
@@ -437,13 +525,9 @@ const navButton = {
     backdropFilter: "blur(4px)"
 };
 
-// Specific Positioning
-const navButtonUp = { top: "15px" };
-const navButtonDown = { bottom: "15px" };
-
 const counterIndicator = { position: "absolute", bottom: "-25px", right: "0", color: "#94a3b8", fontSize: "0.85rem", fontWeight: "600" };
 
-// Modal - HIGH Z-INDEX + DARKER BG
+// Modal
 const modalOverlay = { 
   position: "fixed", 
   top: 0, 
@@ -456,9 +540,17 @@ const modalOverlay = {
   justifyContent: "center", 
   zIndex: 100000, 
   padding: "20px", 
-  backdropFilter: "blur(5px)" 
+  backdropFilter: "blur(10px)" 
 };
 
-const modalImage = { maxWidth: "100%", maxHeight: "90vh", objectFit: "contain", borderRadius: "4px", boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)", zIndex: 100001 };
-const modalCloseBtn = { position: "absolute", top: "20px", right: "20px", background: "rgba(255, 255, 255, 0.1)", color: "#fff", border: "none", borderRadius: "50%", width: "40px", height: "40px", fontSize: "2rem", lineHeight: "1", cursor: "pointer", zIndex: 100002, display: 'flex', alignItems: 'center', justifyContent: 'center' };
-const modalCounter = { position: "absolute", bottom: "20px", left: "50%", transform: "translateX(-50%)", color: "#f8fafc", background: "rgba(0,0,0,0.5)", padding: "4px 12px", borderRadius: "20px", fontWeight: "600", zIndex: 100002 };
+const modalImage = { maxWidth: "100%", maxHeight: "100%", objectFit: "contain", boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)" };
+
+// Close button
+const modalCloseBtn = { position: "absolute", top: "15px", right: "15px", background: "rgba(255, 255, 255, 0.1)", color: "#fff", border: "none", borderRadius: "50%", width: "35px", height: "35px", fontSize: "1.5rem", lineHeight: "1", cursor: "pointer", zIndex: 20, display: 'flex', alignItems: 'center', justifyContent: 'center' };
+
+const modalCounter = { position: "absolute", bottom: "20px", left: "20px", color: "#94a3b8", background: "rgba(0,0,0,0.6)", padding: "4px 12px", borderRadius: "20px", fontWeight: "600", fontSize: "0.85rem" };
+
+// Info Panel text styles
+const infoTitle = { margin: "0 0 15px 0", color: "#f8fafc", fontSize: "1.1rem", fontWeight: "700" };
+const infoDivider = { width: "40px", height: "3px", backgroundColor: "#3b82f6", marginBottom: "20px", borderRadius: "2px" };
+const infoText = { margin: 0, color: "#cbd5e1", lineHeight: "1.7", fontSize: "0.95rem" };
