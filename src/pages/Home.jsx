@@ -232,7 +232,7 @@ export default function Home() {
                   animationDelay: "300ms"
                 }}
               >
-                IT Support &bull; UI/UX Design &bull; App Developer
+                Web Developer &bull; UI/UX Design &bull; App Developer
               </p>
 
               <p
@@ -252,8 +252,8 @@ export default function Home() {
                 </strong>{" "}
                 at the University of Science and Technology of Southern Philippines. I
                 possess a solid foundation in{" "}
-                <strong style={{ color: "#cbd5e1" }}>IT Troubleshooting</strong> and{" "}
-                <strong style={{ color: "#cbd5e1" }}>Application Development</strong>.
+                <strong style={{ color: "#cbd5e1" }}>building responsive web applications</strong> and{" "}
+                <strong style={{ color: "#cbd5e1" }}>designing interactive mobile interfaces</strong>.
               </p>
 
               <div className="button-group animate-up" style={{ gap: "1rem", display: "flex", flexWrap: "wrap", animationDelay: "500ms" }}>
