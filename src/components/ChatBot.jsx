@@ -82,7 +82,7 @@ export default function ChatBot() {
         .filter((_, i) => i > 0) // Skip initial greeting
         .map((m) => ({ role: m.role, content: m.content }));
 
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
+      const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
