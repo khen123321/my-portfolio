@@ -31,8 +31,13 @@ export default async function handler(req, res) {
       response.on("end", () => {
         try {
           const parsed = JSON.parse(data);
-          const message = parsed.choices?.[0]?.message?.content || "Sorry, I couldn't respond.";
-          res.status(200).json({ content: [{ text: message }] });
+          // Return raw for debugging if choices missing
+          if (!parsed.choices?.[0]?.message?.content) {
+            res.status(200).json({ content: [{ text: "Debug: " + JSON.stringify(parsed) }] });
+          } else {
+            const message = parsed.choices[0].message.content;
+            res.status(200).json({ content: [{ text: message }] });
+          }
         } catch {
           res.status(500).json({ error: "Failed to parse response" });
         }
