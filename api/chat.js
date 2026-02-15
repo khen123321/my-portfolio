@@ -5,7 +5,7 @@ export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).end();
 
   const body = JSON.stringify({
-    model: "llama3-8b-8192",
+    model: "llama-3.1-8b-instant",
     max_tokens: 1000,
     messages: [
       { role: "system", content: req.body.system },
