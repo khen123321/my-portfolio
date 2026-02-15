@@ -1,13 +1,28 @@
-/* --- 1. GLOBAL VARIABLES --- */
+/* ===========================
+   PORTFOLIO — LIGHT THEME
+   Font: Sora (headings) + DM Sans (body)
+   =========================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap');
+
+/* --- 1. RESET & VARIABLES --- */
 :root {
-  --primary: #3b82f6;    /* Bright Blue */
-  --text: #f8fafc;       /* White/Slate-50 */
-  
-  /* UPDATED: Background is handled in App.js for the light effect */
-  --bg: #020617;         /* Very Dark Blue (Base) */
-  
-  /* UPDATED: Semi-transparent Card BG for the light to shine through */
-  --card-bg: rgba(30, 41, 59, 0.5); 
+  --primary: #2563eb;
+  --primary-light: #eff6ff;
+  --primary-dark: #1d4ed8;
+  --text: #111827;
+  --text-muted: #6b7280;
+  --text-subtle: #9ca3af;
+  --bg: #ffffff;
+  --bg-soft: #f9fafb;
+  --bg-card: #ffffff;
+  --border: #e5e7eb;
+  --border-strong: #d1d5db;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.10);
+  --radius: 12px;
+  --radius-lg: 20px;
 }
 
 * {
@@ -16,62 +31,154 @@
   padding: 0;
 }
 
-body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  color: var(--text);
-  /* Remove solid background here so App.js gradient shows */
-  background-color: var(--bg); 
-  line-height: 1.6;
-  overflow-x: hidden; 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
 }
 
-/* --- 2. LAYOUT UTILITIES --- */
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  color: var(--text);
+  background-color: var(--bg);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Sora', sans-serif;
+}
+
+/* --- 2. LAYOUT --- */
 .container {
   width: 90%;
-  max-width: 1200px;
+  max-width: 1160px;
   margin: 0 auto;
   padding: 0 20px;
 }
 
 .section-padding {
-  padding: 80px 0;
+  padding: 100px 0;
 }
 
-/* --- 3. RESPONSIVE GRID SYSTEM --- */
-.responsive-grid {
-  display: grid;
-  grid-template-columns: 1fr 1.5fr; 
-  gap: 60px;
-  align-items: center;
-  width: 100%;
-}
+/* --- 3. UTILITIES --- */
+.text-muted { color: var(--text-muted); }
 
-/* --- 4. COMPONENT STYLES --- */
-
-/* GLOBAL CARD STYLE (Applies to Certs, Projects, etc.) */
-/* This makes cards look "glassy" */
-.glass-card, .cert-card, .project-card {
-  background-color: var(--card-bg) !important;
-  backdrop-filter: blur(10px); 
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 16px;
-}
-
-/* Helper classes from your previous files */
-.profile-wrapper { display: flex; justify-content: center; }
-.profile-image-container { position: relative; width: 100%; max-width: 320px; }
-.status-badge { display: inline-flex; align-items: center; gap: 8px; background-color: rgba(16, 185, 129, 0.1); padding: 8px 16px; border-radius: 30px; margin-bottom: 24px; border: 1px solid rgba(16, 185, 129, 0.2); }
-.button-group { display: flex; gap: 20px; flex-wrap: wrap; }
-
-/* --- 5. MOBILE RESPONSIVENESS --- */
-@media (max-width: 768px) {
-  .responsive-grid { grid-template-columns: 1fr; gap: 40px; text-align: center; }
-  .home-text-content { display: flex; flex-direction: column; align-items: center; }
-  .button-group { justify-content: center; }
-  .status-badge { margin-bottom: 20px; }
-  h1 { font-size: 2.5rem !important; }
+/* --- 4. ANIMATIONS --- */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateX(-5px); }
-  to { opacity: 1; transform: translateX(0); }
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes pulse-dot {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.4); }
+  50%       { box-shadow: 0 0 0 6px rgba(34,197,94,0); }
+}
+
+.animate-up {
+  opacity: 0;
+  animation: fadeUp 0.7s ease-out forwards;
+}
+
+/* --- 5. NAV --- */
+.nav-link {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: color 0.2s, background 0.2s;
+}
+.nav-link:hover {
+  color: var(--primary);
+  background: var(--primary-light);
+}
+
+/* --- 6. BUTTONS --- */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--primary);
+  color: #fff;
+  padding: 14px 28px;
+  border-radius: var(--radius);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(37,99,235,0.25);
+}
+.btn-primary:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--text);
+  padding: 14px 28px;
+  border-radius: var(--radius);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  border: 1.5px solid var(--border-strong);
+  transition: border-color 0.2s, color 0.2s, transform 0.15s;
+  cursor: pointer;
+}
+.btn-secondary:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: translateY(-1px);
+}
+
+/* --- 7. CARDS --- */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.25s, transform 0.25s;
+}
+.card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/* --- 8. TAGS / PILLS --- */
+.pill {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 99px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  background: var(--primary-light);
+  color: var(--primary);
+  border: 1px solid #bfdbfe;
+}
+
+/* --- 9. SECTION DIVIDER --- */
+.section-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 0;
+}
+
+/* --- 10. RESPONSIVE --- */
+@media (max-width: 768px) {
+  .section-padding { padding: 70px 0; }
+  h1 { font-size: 2.4rem !important; }
+  h2 { font-size: 1.8rem !important; }
 }

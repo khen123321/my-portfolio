@@ -1,12 +1,11 @@
 import React from "react";
-import "../App.css";
 
 const certs = [
   {
     title: "IT Support Specialist",
     issuer: "Cisco",
-    date: "2025", 
-    image: "/cisco-badge.png", 
+    date: "2025",
+    image: "/cisco-badge.png",
     link: "https://www.credly.com/badges/d3f73794-d8db-4548-ab4f-cf0e58a31e67",
   },
 ];
@@ -15,119 +14,84 @@ export default function Certifications() {
   return (
     <>
       <style>{`
-        /* RESPONSIVE GRID */
         .cert-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-          gap: 40px;
-          position: relative;
-          z-index: 2;
+          grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+          gap: 24px;
         }
-
-        /* CARD STYLING */
         .cert-card {
           text-decoration: none;
           display: flex;
           flex-direction: column;
           align-items: center;
           text-align: center;
-          padding: 40px;
-          
-          /* Keep the glass look so the GLOBAL light shines through */
-          background-color: rgba(30, 41, 59, 0.4); 
-          backdrop-filter: blur(5px);
-          
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          padding: 36px 28px;
+          background: #fff;
+          border: 1px solid #e5e7eb;
           border-radius: 16px;
-          transition: transform 0.3s ease, border-color 0.3s ease;
+          transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
         }
-
         .cert-card:hover {
-          transform: translateY(-5px);
-          border-color: rgba(96, 165, 250, 0.8); /* Brighter border on hover */
-          background-color: rgba(30, 41, 59, 0.6);
+          border-color: #2563eb;
+          box-shadow: 0 8px 30px rgba(37,99,235,0.1);
+          transform: translateY(-4px);
         }
-
-        /* ANIMATIONS */
         @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(30px); }
+          from { opacity: 0; transform: translateY(20px); }
           to { opacity: 1; transform: translateY(0); }
         }
-
-        .animate-up {
-          opacity: 0;
-          animation: fadeUp 0.8s ease-out forwards;
-        }
+        .animate-up { opacity: 0; animation: fadeUp 0.7s ease-out forwards; }
       `}</style>
 
-      {/* REMOVED: onMouseMove and background gradient */}
-      <section 
-        className="section-padding" 
-        style={{ 
-          maxWidth: "1200px", 
-          margin: "0 auto", 
-          paddingBottom: "80px",
-          position: "relative",
-        }}
-      >
-        
-        {/* SECTION TITLE */}
-        <h2 
-          className="animate-up"
-          style={{ 
-            fontSize: "clamp(2rem, 4vw, 2.5rem)", 
-            fontWeight: "800", 
-            marginBottom: "60px", 
-            color: "#f8fafc", 
-            letterSpacing: "-0.03em",
-            animationDelay: "0ms",
-            position: "relative",
-            zIndex: 2
-          }}
-        >
-          <span style={{ color: "#3b82f6", marginRight: "10px" }}>03.</span> 
-          Certifications
-        </h2>
+      <section className="section-padding">
+        <div style={{ maxWidth: "1160px", margin: "0 auto", padding: "0 40px" }}>
 
-        {/* GRID LAYOUT */}
-        <div className="cert-grid">
-          
-          {certs.map((cert, index) => (
-            <a 
-              key={index}
-              href={cert.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="cert-card animate-up"
-              style={{ animationDelay: `${index * 150 + 150}ms` }}
-            >
-              <div style={{ 
-                width: "120px", 
-                height: "120px", 
-                marginBottom: "20px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center" 
-              }}>
-                <img 
-                  src={cert.image} 
-                  alt={cert.title} 
-                  style={{ width: "100%", height: "auto", objectFit: "contain" }} 
-                />
-              </div>
+          <div className="animate-up" style={{ marginBottom: "16px", animationDelay: "0ms" }}>
+            <span style={{ color: "#2563eb", fontWeight: "700", fontSize: "0.8rem", letterSpacing: "0.12em", textTransform: "uppercase" }}>
+              03. Certifications
+            </span>
+          </div>
 
-              <h3 style={{ fontSize: "1.2rem", color: "#f8fafc", margin: "0 0 5px 0" }}>
-                {cert.title}
-              </h3>
-              <span style={{ color: "#94a3b8", fontSize: "0.9rem", fontWeight: "600" }}>
-                {cert.issuer}
-              </span>
-              <span style={{ color: "#64748b", fontSize: "0.85rem", marginTop: "10px" }}>
-                Issued {cert.date}
-              </span>
-            </a>
-          ))}
-          
+          <h2
+            className="animate-up"
+            style={{
+              fontFamily: "'Sora', sans-serif",
+              fontSize: "clamp(1.8rem, 3.5vw, 2.4rem)",
+              fontWeight: "800",
+              letterSpacing: "-0.03em",
+              color: "#111827",
+              marginBottom: "48px",
+              animationDelay: "100ms",
+            }}
+          >
+            Credentials & Awards
+          </h2>
+
+          <div className="cert-grid">
+            {certs.map((cert, i) => (
+              <a
+                key={i}
+                href={cert.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="cert-card animate-up"
+                style={{ animationDelay: `${i * 120 + 200}ms` }}
+              >
+                <div style={{ width: "100px", height: "100px", marginBottom: "20px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <img src={cert.image} alt={cert.title} style={{ width: "100%", height: "auto", objectFit: "contain" }} />
+                </div>
+                <h3 style={{ fontFamily: "'Sora', sans-serif", fontSize: "1rem", fontWeight: "700", color: "#111827", margin: "0 0 6px 0" }}>
+                  {cert.title}
+                </h3>
+                <span style={{ color: "#2563eb", fontSize: "0.875rem", fontWeight: "600" }}>{cert.issuer}</span>
+                <span style={{ color: "#9ca3af", fontSize: "0.8rem", marginTop: "8px" }}>Issued {cert.date}</span>
+
+                <div style={{ marginTop: "16px", padding: "6px 14px", background: "#eff6ff", borderRadius: "99px", display: "inline-flex", alignItems: "center", gap: "5px" }}>
+                  <span style={{ fontSize: "0.75rem", color: "#2563eb", fontWeight: "600" }}>View Credential ↗</span>
+                </div>
+              </a>
+            ))}
+          </div>
         </div>
       </section>
     </>
