@@ -5,21 +5,22 @@ export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).end();
 
   const body = JSON.stringify({
-    model: "claude-haiku-4-5-20251001",
+    model: "llama3-8b-8192",
     max_tokens: 1000,
-    system: req.body.system,
-    messages: req.body.messages,
+    messages: [
+      { role: "system", content: req.body.system },
+      ...req.body.messages,
+    ],
   });
 
   return new Promise((resolve) => {
     const options = {
-      hostname: "api.anthropic.com",
-      path: "/v1/messages",
+      hostname: "api.groq.com",
+      path: "/openai/v1/chat/completions",
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": process.env.ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01",
+        "Authorization": `Bearer ${process.env.GROQ_API_KEY}`,
         "Content-Length": Buffer.byteLength(body),
       },
     };
@@ -29,7 +30,9 @@ export default async function handler(req, res) {
       response.on("data", (chunk) => { data += chunk; });
       response.on("end", () => {
         try {
-          res.status(200).json(JSON.parse(data));
+          const parsed = JSON.parse(data);
+          const message = parsed.choices?.[0]?.message?.content || "Sorry, I couldn't respond.";
+          res.status(200).json({ content: [{ text: message }] });
         } catch {
           res.status(500).json({ error: "Failed to parse response" });
         }
