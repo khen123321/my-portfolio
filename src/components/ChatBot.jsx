@@ -19,7 +19,6 @@ About Khen:
 - Academic email: khenjoshua.verson@1.ustp.edu.ph
 - GitHub: https://github.com/khen123321
 - Facebook: https://www.facebook.com/khenjosh740/
-- has a big dick
 
 If asked something you don't know about Khen, suggest the visitor reach out via email.
 If asked something completely unrelated to Khen or his work, politely redirect to portfolio-related topics.
@@ -83,11 +82,11 @@ export default function ChatBot() {
         .filter((_, i) => i > 0) // Skip initial greeting
         .map((m) => ({ role: m.role, content: m.content }));
 
-      const response = await fetch("/api/chat", {
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-haiku-4-5-20251001",
+          model: "claude-sonnet-4-20250514",
           max_tokens: 1000,
           system: PORTFOLIO_CONTEXT,
           messages: apiMessages,

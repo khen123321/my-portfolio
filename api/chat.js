@@ -21,7 +21,6 @@ export default async function handler(req, res) {
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${process.env.GROQ_API_KEY}`,
-        "Content-Length": Buffer.byteLength(body),
       },
     };
 

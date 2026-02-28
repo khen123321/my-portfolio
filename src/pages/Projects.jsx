@@ -18,6 +18,8 @@ const MediaGallery = ({ mediaItems }) => {
     return url.includes("drive.google.com") || url.includes("youtube") || url.includes("vimeo") || url.includes("figma");
   };
 
+  const isFigma = (url) => url && url.includes("figma");
+
   const nextSlide = (e) => { e.stopPropagation(); setDirection("next"); setIsFirstOpen(false); setCurrentIndex((p) => (p + 1) % mediaItems.length); };
   const prevSlide = (e) => { e.stopPropagation(); setDirection("prev"); setIsFirstOpen(false); setCurrentIndex((p) => (p - 1 + mediaItems.length) % mediaItems.length); };
 
@@ -35,6 +37,12 @@ const MediaGallery = ({ mediaItems }) => {
   const currentUrl = getUrl(currentItem);
   const currentCaption = getCaption(currentItem);
   const itemIsVideo = isVideo(currentUrl);
+  const itemIsFigma = isFigma(currentUrl);
+
+  // Use portrait aspect ratio for Figma prototypes, landscape for everything else
+  const wrapperStyle = itemIsFigma
+    ? { ...imageWrapper, aspectRatio: "9/16", maxWidth: "320px", margin: "0 auto" }
+    : imageWrapper;
 
   const renderContent = (url, isModal = false) => {
     let animationClass = "";
@@ -75,12 +83,12 @@ const MediaGallery = ({ mediaItems }) => {
   return (
     <>
       <div style={carouselContainer}>
-        <div style={imageWrapper} onClick={!itemIsVideo ? openModal : undefined}>
+        <div style={wrapperStyle} onClick={!itemIsVideo ? openModal : undefined}>
           {renderContent(currentUrl)}
           {!itemIsVideo && <div className="overlay-hint" style={overlayHint}>Click to expand ↗</div>}
           {itemIsVideo && (
-            <div style={currentUrl.includes("figma") ? figmaLabel : videoLabel}>
-              {currentUrl.includes("figma") ? "Interactive Prototype" : "Video Preview"}
+            <div style={itemIsFigma ? figmaLabel : videoLabel}>
+              {itemIsFigma ? "Interactive Prototype" : "Video Preview"}
             </div>
           )}
           {mediaItems.length > 1 && (
@@ -121,9 +129,14 @@ const demos = [
   {
     title: "P-Lament Mobile App (Thesis)",
     description: "The dedicated mobile interface for the P-Lament IoT recycling system. Demonstrates the user journey for tracking recycling statistics, managing reward points, and locating smart bins.",
-    link: "https://embed.figma.com/design/f6x3IY0cz0sv6Tu6RruQt3/Untitled?embed-host=share",
+    // ✅ FIXED: points to the prototype, not the design file
+    link: "https://www.figma.com/proto/f6x3IY0cz0sv6Tu6RruQt3/P-Lament-High-Fidelity?node-id=0-1&t=lfWxSDRuQ8h8zxWt-1",
     linkText: "Interact with Prototype",
-    media: [{ url: "https://embed.figma.com/design/f6x3IY0cz0sv6Tu6RruQt3/Untitled?embed-host=share", caption: "Figma Prototype" }],
+    media: [{
+      // ✅ FIXED: embed URL uses the prototype URL, not the design URL
+      url: "https://www.figma.com/embed?embed_host=share&hide-ui=1&url=https://www.figma.com/proto/f6x3IY0cz0sv6Tu6RruQt3/P-Lament-High-Fidelity?node-id=0-1%26scaling=scale-down%26t=lfWxSDRuQ8h8zxWt-1",
+      caption: "Figma Prototype"
+    }],
   },
   {
     title: "3D Model with Animation",
@@ -332,6 +345,7 @@ const viewProjectBtn = { display: "inline-flex", alignItems: "center", gap: "6px
 const techLabel = { fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "#9ca3af", fontWeight: "700", marginBottom: "4px" };
 
 const carouselContainer = { position: "relative", width: "100%", maxWidth: "800px", margin: "0 auto" };
+// Base imageWrapper — Figma items override aspectRatio and maxWidth dynamically in the component
 const imageWrapper = { width: "100%", aspectRatio: "16/9", borderRadius: "12px", overflow: "hidden", border: "1px solid #e5e7eb", backgroundColor: "#f3f4f6", position: "relative", cursor: "pointer", boxShadow: "0 4px 20px rgba(0,0,0,0.06)" };
 const galleryImage = { width: "100%", height: "100%", objectFit: "cover", display: "block" };
 const galleryVideoStyle = { width: "100%", height: "100%", border: "none", display: "block" };
