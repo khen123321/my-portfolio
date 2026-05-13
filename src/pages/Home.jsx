@@ -142,7 +142,7 @@ export default function Home() {
                 animationDelay: "300ms",
               }}
             >
-              Web Developer &bull; UI/UX &bull; App Developer
+              Front-end Developer &bull; UI/UX &bull;
             </p>
 
             <p
@@ -156,10 +156,9 @@ export default function Home() {
                 animationDelay: "400ms",
               }}
             >
-              BS Information Technology student at{" "}
+              BS Information Technology graduate from{" "}
               <strong style={{ color: "#374151", fontWeight: "600" }}>USTP</strong>.
-              Building responsive web apps and mobile interfaces with a focus on
-              clean code and great user experiences.
+              University of Science and Technology of Southern Philippines focused on front-end development and UI/UX design, building responsive web applications with clean code and user-friendly experiences.
             </p>
 
             {/* SKILL TAGS */}
@@ -167,7 +166,7 @@ export default function Home() {
               className="animate-up"
               style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "36px", animationDelay: "450ms" }}
             >
-              {["React", "React Native", "Firebase", "UI/UX Design", "IT Support"].map((s) => (
+              {["UI/UX Design", "Wordpress", "JavaScript", "TypeScript", "Redux","Laravel PHP", "MySQL" ].map((s) => (
                 <span key={s} className="skill-tag">{s}</span>
               ))}
             </div>

@@ -1,6 +1,8 @@
 import React from "react";
 import Home from "./pages/Home";
-import Projects from "./pages/Projects";
+// 1. Remove the old Projects import and add your two new ones!
+import CodedProjects from "./pages/CodedProjects"; 
+import FigmaDesigns from "./pages/FigmaDesigns";
 import Certifications from "./pages/Certifications";
 import Contact from "./pages/Contact";
 import ChatBot from "./components/ChatBot";
@@ -59,7 +61,13 @@ export default function App() {
       <div style={{ maxWidth: "1160px", margin: "0 auto", padding: "0 40px" }}>
         <div id="home"><Home /></div>
         <hr className="section-divider" />
-        <div id="projects"><Projects /></div>
+        
+        {/* 2. Stack your new components inside the projects wrapper */}
+        <div id="projects">
+          <CodedProjects />
+          <FigmaDesigns />
+        </div>
+        
         <hr className="section-divider" />
         <div id="certifications"><Certifications /></div>
         <hr className="section-divider" />
