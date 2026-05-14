@@ -97,10 +97,10 @@ export default function Contact() {
                 </p>
 
                 <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                  <a href="mailto:khenjoshua.verson@1.ustp.edu.ph" className="social-link">
-                    <span style={{ fontWeight: "600", color: "#111827" }}>Academic Email</span>
+                  <a href="mailto:versonkhenjoshua@gmail.com" className="social-link">
+                    <span style={{ fontWeight: "600", color: "#111827" }}> Email</span>
                     <span style={{ color: "#6b7280", fontSize: "0.85rem", wordBreak: "break-all" }}>
-                      khenjoshua.verson@1.ustp.edu.ph ↗
+                      versonkhenjoshua@gmail.com ↗
                     </span>
                   </a>
                   <a href="https://github.com/khen123321" target="_blank" rel="noreferrer" className="social-link">

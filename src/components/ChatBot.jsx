@@ -16,7 +16,7 @@ About Khen:
 - Notable project: Storage Management System (React + Firebase + Google Sheets)
 - Thesis: P-Lament IoT recycling system with mobile app and 3D model
 - Certification: IT Support Specialist from Cisco
-- Academic email: khenjoshua.verson@1.ustp.edu.ph
+- Email: versonkhenjoshua@gmail.com
 - GitHub: https://github.com/khen123321
 - Facebook: https://www.facebook.com/khenjosh740/
 
@@ -106,7 +106,7 @@ export default function ChatBot() {
         {
           role: "assistant",
           content:
-            "Oops! Something went wrong. Please email Khen directly at khenjoshua.verson@1.ustp.edu.ph",
+            "Oops! Something went wrong. Please email Khen directly at versonkhenjoshua@gmail.com",
         },
       ]);
     } finally {

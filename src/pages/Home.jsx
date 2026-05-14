@@ -142,7 +142,7 @@ export default function Home() {
                 animationDelay: "300ms",
               }}
             >
-              Front-end Developer &bull; UI/UX &bull;
+              Web Developer &bull; UI/UX &bull;
             </p>
 
             <p
