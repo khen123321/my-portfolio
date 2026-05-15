@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"; 
 
+// Import your local videos
 import v1 from "../assets/v1.mp4";
 import v2 from "../assets/v2.mp4";
 import v3 from "../assets/v3.mp4";
@@ -22,9 +23,9 @@ const projects = [
       },
       { 
         url: v2, 
-        role: "Pending Video Update",
-        title: "Feature Placeholder",
-        details: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. This is a placeholder text block that will be updated with detailed information once the final video for this specific feature is finished editing."
+        role: "HR Panel",
+        title: "Role Management & Permissions",
+        details: "Shows the role management interface where the super admin can seamlessly add new HR personnel, assign specific system permissions, and manage access controls across the platform."
       },
       { 
         url: v3, 
@@ -34,24 +35,78 @@ const projects = [
       },
       { 
         url: v4, 
-        role: "HR Panel",
-        title: "HR Management Dashboard",
-        details: "Shows the central HR dashboard, providing supervisors and human resources with a high-level overview of system metrics, active interns, and overall department analytics."
+        role: "Intern Panel",
+        title: "DTR Logs & Progress Profile",
+        details: "Displays the intern logs page for generating official Daily Time Records (DTR). It also features the intern profile page, highlighting overall hours progress and allowing secure uploads of required documents."
+      },
+    ],
+  },
+  {
+    title: "Wedding RSVP & Access Control",
+    category: "Freelance Project",
+    description: "A custom event management platform featuring a digital RSVP flow, secure guest list management, and a dynamic QR code check-in system built for seamless venue entry.",
+    tech: ["Next.js", "React", "MongoDB", "Vercel", "Tailwind CSS"],
+    link: "", 
+    linkText: "View Source Code",
+    media: [
+      { 
+        url: "/rsvp-sample/1.png", 
+        role: "Guest Portal",
+        title: "Digital RSVP Flow",
+        details: "Allows guests to easily search their name, confirm attendance, select meal preferences, and instantly receive a personalized QR code for venue entry."
+      },
+      { 
+        url: "/rsvp-sample/2.png", 
+        role: "Staff Portal",
+        title: "QR Code Scanner",
+        details: "A dedicated, mobile-friendly interface for event staff to quickly scan guest QR codes at the door, ensuring secure and seamless access control."
+      },
+      { 
+        url: "/rsvp-sample/3.png", 
+        role: "Admin Dashboard",
+        title: "Real-time Attendance",
+        details: "Provides the event organizers with a live dashboard to monitor total headcount, track pending invitations, and manage the master guest list."
+      },
+      { 
+        url: "/rsvp-sample/4.png", 
+        role: "Database",
+        title: "Data Architecture",
+        details: "Built on MongoDB to handle complex relational data between families, plus-ones, and table assignments with high reliability and fast query speeds."
       },
     ],
   },
   {
     title: "Storage Management System",
-    category: "Web Application",
+    category: "Freelance Project",
     description: "A professional inventory tracker using Google Sheets for data management, featuring automated statistics generation and secure user authentication.",
     tech: ["React", "Firebase Auth", "Google Sheets", "Chart.js"],
     link: "https://storage-management-gilt.vercel.app/",
     linkText: "View Live Project",
     media: [
-      { url: "/management sample/1.png" },
-      { url: "/management sample/2.png" },
-      { url: "/management sample/3.png" },
-      { url: "/management sample/4.png" },
+      { 
+        url: "/management sample/1.png",
+        role: "Authentication",
+        title: "Secure Login Gateway",
+        details: "Provides a secure authentication gateway using Firebase Auth, ensuring that only authorized staff members can access sensitive inventory data."
+      },
+      { 
+        url: "/management sample/2.png",
+        role: "Dashboard",
+        title: "Real-Time Tracking",
+        details: "Displays live stock levels with color-coded alerts for low inventory, directly synced with Google Sheets acting as a lightweight, accessible database."
+      },
+      { 
+        url: "/management sample/3.png",
+        role: "Analytics",
+        title: "Data Visualization",
+        details: "Automatically generates visual statistics and charts using Chart.js to help management quickly track monthly consumption and supply costs."
+      },
+      { 
+        url: "/management sample/4.png",
+        role: "Data Entry",
+        title: "Streamlined Forms",
+        details: "A clean, intuitive interface for adding new items or updating existing stock without forcing users to interact directly with the raw database."
+      },
     ],
   },
 ];
