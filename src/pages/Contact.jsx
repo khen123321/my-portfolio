@@ -82,7 +82,7 @@ export default function Contact() {
 
               {/* CTA */}
               <div className="animate-up" style={{ marginBottom: "40px", animationDelay: "350ms" }}>
-                <a href="mailto:khenjoshua.verson@1.ustp.edu.ph" className="btn-primary">
+                <a href="mailto:versonkhenjoshua@gmail.com" className="btn-primary">
                   Say Hello via Email ✉️
                 </a>
               </div>
