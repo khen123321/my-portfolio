@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useEffect } from "react"; 
 
 // Import your local videos
@@ -8,9 +9,9 @@ import v4 from "../assets/v4.mp4";
 
 const projects = [
   {
-    title: "Intern Tracker System",
+    title: "CLIMBS Internship Monitoring System",
     category: "Full-Stack Application",
-    description: "A comprehensive management dashboard designed for tracking OJT hours, managing daily tasks, and evaluating intern performance metrics.",
+    description: "An end-to-end digitalization project that automates the OJT attendance and reporting workflow. This system replaces physical logs and guardhouse check-ins with a synchronized web platform, significantly reducing human error and administrative overhead for the HR department. Feature-wise, it balances a cross-platform architecture featuring a responsive Intern mobile client and a robust Admin management suite.",
     tech: ["TypeScript", "Redux", "PHP", "Laravel", "MySQL"],
     link: "", 
     linkText: "View Source Code",
@@ -263,6 +264,7 @@ const globalStyles = `
   .modal-close-btn { position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; border-radius: 50%; border: none; background: #f3f4f6; color: #374151; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; }
   .media-close-btn { top: -40px; right: 0; background: rgba(255,255,255,0.2); color: white; }
 `;
+
 const sectionLabel = { color: "#2563eb", fontWeight: "700", fontSize: "0.8rem", letterSpacing: "0.12em", textTransform: "uppercase", display: "block" };
 const sectionTitle = { fontFamily: "'Sora', sans-serif", fontSize: "clamp(1.8rem, 3.5vw, 2.4rem)", fontWeight: "800", color: "#111827" };
 const categoryBadge = { color: "#2563eb", fontSize: "0.75rem", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: "10px", display: "inline-block" };
