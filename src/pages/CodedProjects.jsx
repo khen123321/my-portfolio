@@ -7,6 +7,12 @@ import v2 from "../assets/v2.mp4";
 import v3 from "../assets/v3.mp4";
 import v4 from "../assets/v4.mp4";
 
+// RSVP project videos
+import envelopeVideo from "../assets/envelope.mp4";
+import mainVideo from "../assets/main.mp4";
+import rsvpVideo from "../assets/rsvp.mp4";
+import adminVideo from "../assets/admin.mp4";
+
 const projects = [
   {
     title: "CLIMBS Internship Monitoring System",
@@ -45,34 +51,34 @@ const projects = [
   {
     title: "Wedding RSVP & Access Control",
     category: "Freelance Project",
-    description: "A custom event management platform featuring a digital RSVP flow, secure guest list management, and a dynamic QR code check-in system built for seamless venue entry.",
-    tech: ["Next.js", "React", "MongoDB", "Vercel", "Tailwind CSS"],
+    description: "A custom event management platform featuring a digital RSVP flow, secure guest list management, and a dynamic check-in system built for seamless venue entry. Note: The pictures and names shown in the media are placeholders and not actual data for privacy purposes.",
+    tech: ["JSX", "Tailwind CSS", "Google Sheets"],
     link: "", 
     linkText: "View Source Code",
     media: [
       { 
-        url: "/rsvp-sample/1.png", 
+        url: envelopeVideo, 
         role: "Guest Portal",
-        title: "Digital RSVP Flow",
-        details: "Allows guests to easily search their name, confirm attendance, select meal preferences, and instantly receive a personalized QR code for venue entry."
+        title: "Envelope Transition",
+        details: "Features a clean and elegant animation of a digital envelope opening, seamlessly transitioning the user directly into the main event page."
       },
       { 
-        url: "/rsvp-sample/2.png", 
-        role: "Staff Portal",
-        title: "QR Code Scanner",
-        details: "A dedicated, mobile-friendly interface for event staff to quickly scan guest QR codes at the door, ensuring secure and seamless access control."
+        url: mainVideo, 
+        role: "Guest Portal",
+        title: "Main Experience",
+        details: "Showcases the comprehensive main page experience where everything is beautifully laid out, presenting essential event details, schedules, and venue information."
       },
       { 
-        url: "/rsvp-sample/3.png", 
+        url: rsvpVideo, 
+        role: "Guest Portal",
+        title: "RSVP Submission",
+        details: "Demonstrates the smooth digital RSVP flow, allowing guests to effortlessly fill out their details and confirm if they will be attending the event."
+      },
+      { 
+        url: adminVideo, 
         role: "Admin Dashboard",
-        title: "Real-time Attendance",
-        details: "Provides the event organizers with a live dashboard to monitor total headcount, track pending invitations, and manage the master guest list."
-      },
-      { 
-        url: "/rsvp-sample/4.png", 
-        role: "Database",
-        title: "Data Architecture",
-        details: "Built on MongoDB to handle complex relational data between families, plus-ones, and table assignments with high reliability and fast query speeds."
+        title: "Respondent Management",
+        details: "The centralized administrative interface where the client can monitor the master guest list and see all the respondents in real-time."
       },
     ],
   },
@@ -123,7 +129,7 @@ export default function CodedProjects() {
     }
     return () => {
       document.body.style.overflow = "unset";
-    };
+    }
   }, [modalState.isOpen]);
 
   const isVideo = (url) => url && url.endsWith(".mp4");
