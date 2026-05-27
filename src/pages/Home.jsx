@@ -57,14 +57,57 @@ export default function Home() {
           padding: 5px 12px;
           font-size: 0.8rem;
           font-weight: 600;
+          white-space: nowrap; /* Prevents text from wrapping inside the tag */
         }
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(20px); }
           to { opacity: 1; transform: translateY(0); }
         }
         .animate-up { opacity: 0; animation: fadeUp 0.7s ease-out forwards; }
-        @keyframes dash {
-          to { stroke-dashoffset: -100; }
+        
+        /* CSS for the Marquee/Carousel effect */
+        .marquee-container {
+          overflow: hidden;
+          white-space: nowrap;
+          width: 100%;
+          max-width: 540px; /* Aligns with your paragraph max-width */
+          position: relative;
+          margin-bottom: 36px;
+        }
+        
+        /* Optional: Add gradient fades to the edges for a smoother look */
+        .marquee-container::before,
+        .marquee-container::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          width: 40px;
+          height: 100%;
+          z-index: 2;
+        }
+        .marquee-container::before {
+          left: 0;
+          background: linear-gradient(to right, white, transparent);
+        }
+        .marquee-container::after {
+          right: 0;
+          background: linear-gradient(to left, white, transparent);
+        }
+
+        .marquee-content {
+          display: inline-flex;
+          gap: 12px;
+          animation: marquee 15s linear infinite;
+        }
+        
+        /* Pause the animation when the user hovers over the tags */
+        .marquee-container:hover .marquee-content {
+          animation-play-state: paused;
+        }
+
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); } 
         }
       `}</style>
 
@@ -161,14 +204,21 @@ export default function Home() {
               University of Science and Technology of Southern Philippines focused on front-end development and UI/UX design, building responsive web applications with clean code and user-friendly experiences.
             </p>
 
-            {/* SKILL TAGS */}
-            <div
-              className="animate-up"
-              style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "36px", animationDelay: "450ms" }}
-            >
-              {["UI/UX Design", "Wordpress", "JavaScript", "TypeScript", "Redux","Laravel PHP", "MySQL" ].map((s) => (
-                <span key={s} className="skill-tag">{s}</span>
-              ))}
+            {/* SKILL TAGS (Now a Marquee Carousel) */}
+            <div className="animate-up marquee-container" style={{ animationDelay: "450ms" }}>
+              {/* We render the list twice inside the scrolling container. 
+                  This creates a seamless loop! When the first set finishes, 
+                  the second set is already following right behind it. 
+              */}
+              <div className="marquee-content">
+                {["UI/UX Design", "Wordpress", "JavaScript", "TypeScript", "Redux", "Laravel PHP", "MySQL"].map((s, idx) => (
+                  <span key={`set1-${idx}`} className="skill-tag">{s}</span>
+                ))}
+                {/* Duplicate set for infinite loop illusion */}
+                {["UI/UX Design", "Wordpress", "JavaScript", "TypeScript", "Redux", "Laravel PHP", "MySQL"].map((s, idx) => (
+                  <span key={`set2-${idx}`} className="skill-tag">{s}</span>
+                ))}
+              </div>
             </div>
 
             {/* BUTTONS */}
