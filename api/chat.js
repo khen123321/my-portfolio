@@ -20,6 +20,7 @@ export default async function handler(req, res) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        // eslint-disable-next-line no-undef
         "Authorization": `Bearer ${process.env.GROQ_API_KEY}`,
       },
     };
