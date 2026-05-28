@@ -23,7 +23,14 @@ export default function Home() {
           .button-row { justify-content: flex-start; }
         }
         @media (max-width: 899px) {
-          .home-text { text-align: center; display: flex; flex-direction: column; align-items: center; }
+          .home-text { 
+            text-align: center; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            width: 100%; /* Ensures the container doesn't overflow */
+            overflow: hidden; /* Prevents horizontal scroll */
+          }
           .button-row { justify-content: center; flex-wrap: wrap; }
         }
         .profile-img-ring {
@@ -57,7 +64,7 @@ export default function Home() {
           padding: 5px 12px;
           font-size: 0.8rem;
           font-weight: 600;
-          white-space: nowrap; /* Prevents text from wrapping inside the tag */
+          white-space: nowrap; 
         }
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(20px); }
@@ -65,17 +72,14 @@ export default function Home() {
         }
         .animate-up { opacity: 0; animation: fadeUp 0.7s ease-out forwards; }
         
-        /* CSS for the Marquee/Carousel effect */
         .marquee-container {
           overflow: hidden;
           white-space: nowrap;
           width: 100%;
-          max-width: 540px; /* Aligns with your paragraph max-width */
+          max-width: 540px; 
           position: relative;
           margin-bottom: 36px;
         }
-        
-        /* Optional: Add gradient fades to the edges for a smoother look */
         .marquee-container::before,
         .marquee-container::after {
           content: '';
@@ -93,21 +97,58 @@ export default function Home() {
           right: 0;
           background: linear-gradient(to left, white, transparent);
         }
-
         .marquee-content {
           display: inline-flex;
           gap: 12px;
           animation: marquee 15s linear infinite;
         }
-        
-        /* Pause the animation when the user hovers over the tags */
         .marquee-container:hover .marquee-content {
           animation-play-state: paused;
         }
-
         @keyframes marquee {
           0% { transform: translateX(0); }
           100% { transform: translateX(-50%); } 
+        }
+
+        .btn-primary {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          background-color: #2563eb;
+          color: #ffffff;
+          font-weight: 700;
+          font-size: 0.95rem;
+          padding: 0.75rem 1.5rem;
+          border-radius: 12px;
+          text-decoration: none;
+          transition: all 0.2s ease;
+          box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+        }
+        .btn-primary:hover {
+          background-color: #1d4ed8;
+          transform: translateY(-2px);
+          box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-secondary {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          background-color: #ffffff;
+          color: #374151;
+          font-weight: 700;
+          font-size: 0.95rem;
+          padding: 0.75rem 1.5rem;
+          border-radius: 12px;
+          text-decoration: none;
+          border: 1px solid #d1d5db;
+          transition: all 0.2s ease;
+        }
+        .btn-secondary:hover {
+          background-color: #f9fafb;
+          color: #111827;
+          border-color: #9ca3af;
+          transform: translateY(-2px);
         }
       `}</style>
 
@@ -167,6 +208,7 @@ export default function Home() {
                 color: "#111827",
                 marginBottom: "16px",
                 animationDelay: "200ms",
+                width: "100%", /* FIX: Forces it to stay inside the screen */
               }}
             >
               Khen Joshua<br />
@@ -183,6 +225,7 @@ export default function Home() {
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
                 animationDelay: "300ms",
+                width: "100%", /* FIX: Forces it to stay inside the screen */
               }}
             >
               Web Developer &bull; UI/UX &bull;
@@ -195,7 +238,8 @@ export default function Home() {
                 lineHeight: "1.8",
                 color: "#6b7280",
                 maxWidth: "540px",
-                marginBottom: "36px",
+                width: "100%", /* FIX: Shrinks to fit mobile screen */
+                margin: "0 auto 36px auto", /* FIX: Centers the paragraph box itself */
                 animationDelay: "400ms",
               }}
             >
@@ -204,17 +248,12 @@ export default function Home() {
               University of Science and Technology of Southern Philippines focused on front-end development and UI/UX design, building responsive web applications with clean code and user-friendly experiences.
             </p>
 
-            {/* SKILL TAGS (Now a Marquee Carousel) */}
+            {/* SKILL TAGS (Marquee) */}
             <div className="animate-up marquee-container" style={{ animationDelay: "450ms" }}>
-              {/* We render the list twice inside the scrolling container. 
-                  This creates a seamless loop! When the first set finishes, 
-                  the second set is already following right behind it. 
-              */}
               <div className="marquee-content">
                 {["UI/UX Design", "Wordpress", "JavaScript", "TypeScript", "Redux", "Laravel PHP", "MySQL"].map((s, idx) => (
                   <span key={`set1-${idx}`} className="skill-tag">{s}</span>
                 ))}
-                {/* Duplicate set for infinite loop illusion */}
                 {["UI/UX Design", "Wordpress", "JavaScript", "TypeScript", "Redux", "Laravel PHP", "MySQL"].map((s, idx) => (
                   <span key={`set2-${idx}`} className="skill-tag">{s}</span>
                 ))}
