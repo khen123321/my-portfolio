@@ -43,29 +43,55 @@ export default function Certifications() {
         .animate-up { opacity: 0; animation: fadeUp 0.7s ease-out forwards; }
       `}</style>
 
-      <section className="section-padding">
+      <section className="section-padding" style={{ position: "relative" }}>
         <div style={{ maxWidth: "1160px", margin: "0 auto", padding: "0 40px" }}>
 
-          <div className="animate-up" style={{ marginBottom: "16px", animationDelay: "0ms" }}>
-            <span style={{ color: "#2563eb", fontWeight: "700", fontSize: "0.8rem", letterSpacing: "0.12em", textTransform: "uppercase" }}>
-              03. Certifications
-            </span>
-          </div>
-
-          <h2
-            className="animate-up"
-            style={{
-              fontFamily: "'Sora', sans-serif",
-              fontSize: "clamp(1.8rem, 3.5vw, 2.4rem)",
-              fontWeight: "800",
-              letterSpacing: "-0.03em",
+          {/* =========================================
+              UPDATED STICKY HEADER (03)
+              ========================================= */}
+          <div style={{
+            position: "sticky",
+            top: "64px", // Matches Header 01 and 02 exactly
+            zIndex: 38,  // Lower z-index so it slides under previous ones if scrolling back up
+            backgroundColor: "rgba(255, 255, 255, 0.9)", 
+            backdropFilter: "blur(12px)",
+            padding: "20px 0",
+            borderBottom: "1px solid #e5e7eb",
+            marginBottom: "60px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between"
+          }}>
+            {/* Number block (Left) */}
+            <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
+              <span style={{ 
+                fontFamily: "'DM Sans', monospace", 
+                fontSize: "1.2rem", 
+                fontWeight: "700", 
+                color: "#6b7280" 
+              }}>
+                ( 03 )
+              </span>
+            </div>
+            
+            {/* Title block (Center) */}
+            <h2 style={{ 
+              margin: 0, 
+              fontFamily: "'Sora', sans-serif", 
+              fontSize: "1.5rem", 
+              fontWeight: "700", 
               color: "#111827",
-              marginBottom: "48px",
-              animationDelay: "100ms",
-            }}
-          >
-            Credentials & Awards
-          </h2>
+              position: "absolute",
+              left: "50%",
+              transform: "translateX(-50%)"
+            }}>
+              Credentials & Awards
+            </h2>
+
+            {/* Empty block (Right) to maintain centering balance */}
+            <div style={{ width: "40px" }}></div>
+          </div>
+          {/* ========================================= */}
 
           <div className="cert-grid">
             {certs.map((cert, i) => (

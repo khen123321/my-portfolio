@@ -139,13 +139,56 @@ export default function CodedProjects() {
   const closeModal = () => setModalState({ isOpen: false, type: null, data: null });
 
   return (
-    <div style={{ marginBottom: "80px" }}>
+    <div style={{ marginBottom: "80px", position: "relative" }}>
       <style>{globalStyles}</style>
       
-      <div style={{ textAlign: "center", marginBottom: "10px" }}>
-        <span style={sectionLabel}>01. Full-Stack Development</span>
+      {/* =========================================
+          MOBILE-RESPONSIVE STICKY HEADER (01)
+          ========================================= */}
+      <div style={{
+        position: "sticky",
+        top: "64px", 
+        zIndex: 40,
+        backgroundColor: "rgba(255, 255, 255, 0.9)", 
+        backdropFilter: "blur(12px)",
+        padding: "20px 0",
+        borderBottom: "1px solid #e5e7eb",
+        marginBottom: "60px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: "10px" 
+      }}>
+        {/* Number block (Left) */}
+        <div style={{ minWidth: "60px" }}> 
+          <span style={{ 
+            fontFamily: "'DM Sans', monospace", 
+            fontSize: "1.2rem", 
+            fontWeight: "700", 
+            color: "#6b7280",
+            whiteSpace: "nowrap" 
+          }}>
+            ( 01 )
+          </span>
+        </div>
+        
+        {/* Title block (Center) */}
+        <h2 style={{ 
+          margin: 0, 
+          fontFamily: "'Sora', sans-serif", 
+          fontSize: "clamp(1.2rem, 4vw, 1.5rem)", 
+          fontWeight: "700", 
+          color: "#111827",
+          flex: 1, 
+          textAlign: "center" 
+        }}>
+          Full-Stack Development
+        </h2>
+
+        {/* Empty block (Right) to maintain centering balance */}
+        <div style={{ minWidth: "60px" }}></div>
       </div>
-      <h2 style={{ ...sectionTitle, textAlign: "center", marginBottom: "60px" }}>Things I've Built</h2>
+      {/* ========================================= */}
 
       {projects.map((project, index) => (
         <div key={index} style={{ marginBottom: "90px" }}>
@@ -271,8 +314,6 @@ const globalStyles = `
   .media-close-btn { top: -40px; right: 0; background: rgba(255,255,255,0.2); color: white; }
 `;
 
-const sectionLabel = { color: "#2563eb", fontWeight: "700", fontSize: "0.8rem", letterSpacing: "0.12em", textTransform: "uppercase", display: "block" };
-const sectionTitle = { fontFamily: "'Sora', sans-serif", fontSize: "clamp(1.8rem, 3.5vw, 2.4rem)", fontWeight: "800", color: "#111827" };
 const categoryBadge = { color: "#2563eb", fontSize: "0.75rem", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: "10px", display: "inline-block" };
 const projectTitle = { fontFamily: "'Sora', sans-serif", fontSize: "clamp(1.6rem, 2.5vw, 2rem)", fontWeight: "700", color: "#111827", margin: "10px 0 16px 0", lineHeight: "1.2" };
 const descriptionText = { fontSize: "1rem", lineHeight: "1.75", color: "#6b7280", margin: 0, maxWidth: "100%" };

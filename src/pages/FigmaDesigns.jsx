@@ -16,7 +16,6 @@ const designs = [
     category: "Dashboard UI",
     description: "The initial wireframes and high-fidelity mockups for the Intern Tracker dashboard, focusing on data visualization and an intuitive user flow for both students and supervisors.",
     tech: ["Figma", "Wireframing", "Dashboard Design"],
-    // --- UPDATED INTERN TRACKER LINKS ---
     link: "https://embed.figma.com/design/oCEs4vr6eAyLEnjUIdJRUs/Intern-Tracker?node-id=0-1&embed-host=share", 
     linkText: "View Design File",
     media: [{ url: "https://embed.figma.com/design/oCEs4vr6eAyLEnjUIdJRUs/Intern-Tracker?node-id=0-1&embed-host=share", caption: "Dashboard Wireframes" }],
@@ -34,10 +33,56 @@ const designs = [
 
 export default function FigmaDesigns() {
   return (
-    <div className="section-padding" style={{ maxWidth: "1160px", margin: "0 auto", marginBottom: "80px" }}>
+    <div className="section-padding" style={{ maxWidth: "1160px", margin: "0 auto", marginBottom: "80px", position: "relative" }}>
       <style>{globalStyles}</style>
-      <span style={sectionLabel}>02. UI/UX Design</span>
-      <h2 style={sectionTitle}>Prototypes & Interfaces</h2>
+      
+      {/* =========================================
+          UPDATED STICKY HEADER (02)
+          Matches the 01 header to create a smooth "push" transition
+          ========================================= */}
+      <div style={{
+        position: "sticky",
+        top: "64px", // Matches Header 01 exactly
+        zIndex: 40,  // Matches Header 01 exactly
+        backgroundColor: "rgba(255, 255, 255, 0.9)", 
+        backdropFilter: "blur(12px)",
+        padding: "20px 0",
+        borderBottom: "1px solid #e5e7eb",
+        marginBottom: "60px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between"
+      }}>
+        {/* Number block (Left) */}
+        <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
+          <span style={{ 
+            fontFamily: "'DM Sans', monospace", 
+            fontSize: "1.2rem", 
+            fontWeight: "700", 
+            color: "#6b7280" 
+          }}>
+            ( 02 )
+          </span>
+        </div>
+        
+        {/* Title block (Center) */}
+        <h2 style={{ 
+          margin: 0, 
+          fontFamily: "'Sora', sans-serif", 
+          fontSize: "1.5rem", 
+          fontWeight: "700", 
+          color: "#111827",
+          position: "absolute",
+          left: "50%",
+          transform: "translateX(-50%)"
+        }}>
+          UI/UX Design
+        </h2>
+
+        {/* Empty block (Right) to maintain centering balance */}
+        <div style={{ width: "40px" }}></div>
+      </div>
+      {/* ========================================= */}
 
       <div style={{ display: "flex", flexDirection: "column", gap: "60px" }}>
         {designs.map((design, index) => (
@@ -73,8 +118,7 @@ const globalStyles = `
   .project-grid { display: grid; grid-template-columns: 1fr; gap: 2.5rem; align-items: start; margin-bottom: 4rem; }
   @media (min-width: 900px) { .project-grid { grid-template-columns: 1fr 1.2fr; gap: 4rem; } }
 `;
-const sectionLabel = { color: "#2563eb", fontWeight: "700", fontSize: "0.8rem", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "12px", display: "block" };
-const sectionTitle = { fontFamily: "'Sora', sans-serif", fontSize: "clamp(1.8rem, 3.5vw, 2.4rem)", fontWeight: "800", color: "#111827", marginBottom: "48px" };
+
 const categoryBadge = { color: "#2563eb", fontSize: "0.75rem", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: "10px", display: "inline-block" };
 const projectTitle = { fontFamily: "'Sora', sans-serif", fontSize: "clamp(1.6rem, 2.5vw, 2rem)", fontWeight: "700", color: "#111827", margin: "10px 0 16px 0", lineHeight: "1.2" };
 const descriptionText = { fontSize: "1rem", lineHeight: "1.75", color: "#6b7280", margin: 0, maxWidth: "540px" };
