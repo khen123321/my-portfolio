@@ -8,6 +8,7 @@ import FigmaDesigns from "./pages/FigmaDesigns";
 import Certifications from "./pages/Certifications";
 import Contact from "./pages/Contact";
 import ChatBot from "./components/ChatBot";
+import { NeuralNoise } from "./components/NeuralNoise"; 
 import "./App.css";
 
 export default function App() {
@@ -87,28 +88,34 @@ export default function App() {
           width: "100%",
           height: "100vh",
           zIndex: 10, 
-          backgroundColor: "#030712",
+          backgroundColor: "#030712", 
           color: "#ffffff",
           overflow: "hidden",
           transform: `translateY(-${scrollY}px)` 
         }}>
           
+          {/* NEURAL NOISE BACKGROUND */}
+          <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", zIndex: 0 }}>
+            <NeuralNoise color={[0.14, 0.39, 0.92]} opacity={0.6} speed={0.0015} />
+          </div>
+
           <div style={{ 
             height: "100%", 
             display: "flex", 
             flexDirection: "column", 
             justifyContent: "center",
             alignItems: "center",
-            padding: "0 24px", // ADDED: Safe padding for mobile screens
+            padding: "0 24px", 
             transform: `translateY(${textTranslateY}px) scale(${textScale})`,
             opacity: textOpacity, 
-            transformOrigin: "center center"
+            transformOrigin: "center center",
+            position: "relative", 
+            zIndex: 1 
           }}>
             <div style={{ textAlign: "center", width: "100%", maxWidth: "800px", animation: "coverFadeIn 1.5s ease-out" }}>
               
-              {/* RESPONSIVE H1 */}
               <h1 style={{ 
-                fontSize: "clamp(2.5rem, 8vw, 4.5rem)", // TWEAKED: Scales better on narrow phones
+                fontSize: "clamp(2.5rem, 8vw, 4.5rem)", 
                 fontWeight: "800", 
                 margin: "0 0 10px 0", 
                 fontFamily: "'Sora', sans-serif", 
@@ -119,16 +126,16 @@ export default function App() {
                 Khen Joshua Verson
               </h1>
               
-              {/* --- PERFECTLY CENTERED, MOBILE-SAFE FLIPPING TEXT --- */}
+              {/* --- THE FLIPPING TEXT --- */}
               <h2 style={{ 
-                fontSize: "clamp(1.2rem, 5vw, 2rem)", // TWEAKED: Slightly larger base for mobile readability
+                fontSize: "clamp(1.2rem, 5vw, 2rem)", 
                 fontWeight: "600", 
                 margin: "0 auto 20px auto", 
                 color: "#3b82f6",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                minHeight: "3rem", // ADDED: Locked height ensures the paragraph below doesn't bounce on mobile
+                minHeight: "3rem", 
               }}>
                 <AnimatePresence mode="wait">
                   <motion.span
@@ -145,7 +152,7 @@ export default function App() {
               </h2>
               {/* ------------------------------------------ */}
 
-              <p style={{ fontSize: "clamp(1rem, 4vw, 1.1rem)", color: "#6b7280" }}>
+              <p style={{ fontSize: "clamp(1rem, 4vw, 1.1rem)", color: "#9ca3af" }}>
                 Building digital experiences that matter.
               </p>
             </div>
@@ -154,7 +161,8 @@ export default function App() {
           <div style={{
             position: "absolute", bottom: "40px", left: 0, width: "100%", display: "flex",
             flexDirection: "column", alignItems: "center", gap: "10px", color: "#6b7280",
-            animation: "coverFadeIn 2s ease-out 1s both", opacity: arrowOpacity
+            animation: "coverFadeIn 2s ease-out 1s both", opacity: arrowOpacity,
+            zIndex: 1 
           }}>
             <span style={{ fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.25em", fontWeight: "700" }}>Scroll to uncover</span>
             <svg className="bounce-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -214,6 +222,7 @@ export default function App() {
       </main>
 
       <ChatBot />
+
     </div>
   );
 }
