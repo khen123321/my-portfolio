@@ -68,15 +68,17 @@ export default function App() {
   const textOpacity = Math.max(0, 1 - scrollProgress * 1.2);
   const arrowOpacity = Math.max(0, 1 - scrollProgress * 4);
 
+  // =========================================
+  // MAIN CONTENT BLUR & FADE MATH
+  // =========================================
+  // Blur starts heavy (20px) and smoothly hits 0px when fully scrolled up
+  const mainBlur = Math.max(0, 20 - scrollProgress * 20);
+  // Opacity starts low (15%) and smoothly hits 100% when fully scrolled up
+  const mainOpacity = Math.min(1, 0.15 + scrollProgress * 0.85);
+
   return (
     <div style={{ position: "relative", width: "100%", height: `calc(100vh + ${mainHeight}px)`, fontFamily: "'DM Sans', sans-serif" }}>
       
-      <style>{`
-        @keyframes coverFadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes bounceArrow { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-10px); } 60% { transform: translateY(-5px); } }
-        .bounce-arrow { animation: bounceArrow 2s infinite; }
-      `}</style>
-
       {/* =========================================
           PART 1: THE COVER PAGE
           ========================================= */}
@@ -112,7 +114,7 @@ export default function App() {
             position: "relative", 
             zIndex: 1 
           }}>
-            <div style={{ textAlign: "center", width: "100%", maxWidth: "800px", animation: "coverFadeIn 1.5s ease-out" }}>
+            <div className="cover-fade" style={{ textAlign: "center", width: "100%", maxWidth: "800px" }}>
               
               <h1 style={{ 
                 fontSize: "clamp(2.5rem, 8vw, 4.5rem)", 
@@ -143,7 +145,7 @@ export default function App() {
                     initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -15 }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: 0.45 }}
                     style={{ textAlign: "center" }}
                   >
                     {titles[titleNumber]}
@@ -158,10 +160,10 @@ export default function App() {
             </div>
           </div>
 
-          <div style={{
+          <div className="cover-fade-delay" style={{
             position: "absolute", bottom: "40px", left: 0, width: "100%", display: "flex",
             flexDirection: "column", alignItems: "center", gap: "10px", color: "#6b7280",
-            animation: "coverFadeIn 2s ease-out 1s both", opacity: arrowOpacity,
+            opacity: arrowOpacity,
             zIndex: 1 
           }}>
             <span style={{ fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.25em", fontWeight: "700" }}>Scroll to uncover</span>
@@ -177,9 +179,17 @@ export default function App() {
           PART 2: THE MAIN CONTENT
           ========================================= */}
       <main ref={mainRef} style={{
-        position: isCoverVisible ? "fixed" : "absolute",
-        top: isCoverVisible ? 0 : "100vh",
-        left: 0, width: "100%", zIndex: 1, backgroundColor: "#ffffff", minHeight: "100vh",
+        position: "absolute",
+        top: "100vh", // Changed from conditionally fixed so it naturally slides up!
+        left: 0, 
+        width: "100%", 
+        zIndex: 1, 
+        backgroundColor: "#ffffff", 
+        minHeight: "100vh",
+        /* Apply the dynamic Blur & Opacity transition */
+        filter: scrollProgress < 1 ? `blur(${mainBlur}px)` : "none",
+        opacity: scrollProgress < 1 ? mainOpacity : 1,
+        willChange: scrollProgress < 1 ? "filter, opacity" : "auto"
       }}>
 
         <nav style={{

@@ -33,11 +33,7 @@ export default function Contact() {
           box-shadow: 0 4px 16px rgba(37,99,235,0.1);
           transform: translateY(-1px);
         }
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-up { opacity: 0; animation: fadeUp 0.7s ease-out forwards; }
+        /* Using shared .animate-up and keyframes from App.css */
       `}</style>
 
       <section className="section-padding">

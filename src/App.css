@@ -18,11 +18,18 @@
   --bg-card: #ffffff;
   --border: #e5e7eb;
   --border-strong: #d1d5db;
+  --success: #16a34a;       /* Vibrant green text and dot */
+  --success-bg: #f0fdf4;    /* Soft pale green background */
+  --success-ring: #bbf7d0;  /* Crisp green border */
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
   --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
   --shadow-lg: 0 12px 40px rgba(0,0,0,0.10);
   --radius: 12px;
   --radius-lg: 20px;
+  --ani-fast: 0.18s;
+  --ani-medium: 0.45s;
+  --ani-long: 0.9s;
+  --ani-ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 * {
@@ -80,8 +87,35 @@ h1, h2, h3, h4, h5, h6 {
 
 .animate-up {
   opacity: 0;
-  animation: fadeUp 0.7s ease-out forwards;
+  animation: fadeUp var(--ani-medium) var(--ani-ease) forwards;
 }
+
+/* Shared / component animations */
+@keyframes coverFadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes bounceArrow {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-10px); }
+  60% { transform: translateY(-5px); }
+}
+@keyframes chat-slide-up { from { opacity: 0; transform: translateY(20px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes bounce-in { 0% { transform: scale(0); } 60% { transform: scale(1.15); } 100% { transform: scale(1); } }
+@keyframes typing-dot { 0%, 80%, 100% { transform: scale(0.7); opacity: 0.4; } 40% { transform: scale(1); opacity: 1; } }
+
+.cover-fade { animation: coverFadeIn var(--ani-long) var(--ani-ease) both; }
+.cover-fade-delay { animation: coverFadeIn calc(var(--ani-long) * 1.05) var(--ani-ease) both; animation-delay: 0.9s; }
+.bounce-arrow { animation: bounceArrow 2s infinite; }
+.chat-slide-up { animation: chat-slide-up 0.25s var(--ani-ease) both; }
+.bounce-in { animation: bounce-in 0.4s var(--ani-ease) both; }
+.typing-dot { animation: typing-dot 1.2s var(--ani-ease) infinite; animation-fill-mode: both; }
+
+.modal-fade { animation: fadeIn var(--ani-medium) var(--ani-ease) both; }
+.modal-content { animation: fadeUp var(--ani-medium) var(--ani-ease) both; transform-origin: center; }
+
+.hover-lift { transition: transform var(--ani-medium) var(--ani-ease), box-shadow var(--ani-medium) var(--ani-ease); }
+.hover-lift:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
 
 /* --- 5. NAV --- */
 .nav-link {

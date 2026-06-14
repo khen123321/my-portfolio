@@ -12,8 +12,33 @@ const certs = [
 
 export default function Certifications() {
   return (
-    <>
+    <div style={{ marginBottom: "80px", position: "relative" }}>
       <style>{`
+        /* Mobile Fluid Constraints for Sticky Header */
+        @media (max-width: 480px) {
+          .sticky-spacer {
+            min-width: 40px !important;
+          }
+          .sticky-number {
+            font-size: 0.95rem !important;
+          }
+          .sticky-header-title {
+            font-size: clamp(0.85rem, 4.2vw, 1.1rem) !important;
+          }
+        }
+
+        @media (max-width: 360px) {
+          .sticky-spacer {
+            min-width: 30px !important;
+          }
+          .sticky-number {
+            font-size: 0.85rem !important;
+          }
+          .sticky-header-title {
+            font-size: clamp(0.72rem, 4.5vw, 0.95rem) !important;
+          }
+        }
+
         .cert-grid {
           display: grid;
           grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -36,90 +61,84 @@ export default function Certifications() {
           box-shadow: 0 8px 30px rgba(37,99,235,0.1);
           transform: translateY(-4px);
         }
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-up { opacity: 0; animation: fadeUp 0.7s ease-out forwards; }
       `}</style>
 
-      <section className="section-padding" style={{ position: "relative" }}>
-        <div style={{ maxWidth: "1160px", margin: "0 auto", padding: "0 40px" }}>
-
-          {/* =========================================
-              UPDATED STICKY HEADER (03)
-              ========================================= */}
-          <div style={{
-            position: "sticky",
-            top: "64px", // Matches Header 01 and 02 exactly
-            zIndex: 38,  // Lower z-index so it slides under previous ones if scrolling back up
-            backgroundColor: "rgba(255, 255, 255, 0.9)", 
-            backdropFilter: "blur(12px)",
-            padding: "20px 0",
-            borderBottom: "1px solid #e5e7eb",
-            marginBottom: "60px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between"
+      {/* =========================================
+          MATCHING STICKY HEADER (03)
+          No extra padding - Line stretches full width!
+          ========================================= */}
+      <div style={{
+        position: "sticky",
+        top: "64px", 
+        zIndex: 38,
+        backgroundColor: "rgba(255, 255, 255, 0.9)", 
+        backdropFilter: "blur(12px)",
+        padding: "16px 0",
+        borderBottom: "1px solid #e5e7eb",
+        marginBottom: "60px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: "6px" 
+      }}>
+        {/* Number block (Left) pushed all the way to the edge */}
+        <div className="sticky-spacer" style={{ minWidth: "40px", transition: "min-width 0.2s ease" }}>
+          <span className="sticky-number" style={{ 
+            fontFamily: "'DM Sans', monospace", 
+            fontSize: "clamp(0.9rem, 3vw, 1.2rem)", 
+            fontWeight: "700", 
+            color: "#6b7280",
+            whiteSpace: "nowrap"
           }}>
-            {/* Number block (Left) */}
-            <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
-              <span style={{ 
-                fontFamily: "'DM Sans', monospace", 
-                fontSize: "1.2rem", 
-                fontWeight: "700", 
-                color: "#6b7280" 
-              }}>
-                ( 03 )
-              </span>
-            </div>
-            
-            {/* Title block (Center) */}
-            <h2 style={{ 
-              margin: 0, 
-              fontFamily: "'Sora', sans-serif", 
-              fontSize: "1.5rem", 
-              fontWeight: "700", 
-              color: "#111827",
-              position: "absolute",
-              left: "50%",
-              transform: "translateX(-50%)"
-            }}>
-              Credentials & Awards
-            </h2>
-
-            {/* Empty block (Right) to maintain centering balance */}
-            <div style={{ width: "40px" }}></div>
-          </div>
-          {/* ========================================= */}
-
-          <div className="cert-grid">
-            {certs.map((cert, i) => (
-              <a
-                key={i}
-                href={cert.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="cert-card animate-up"
-                style={{ animationDelay: `${i * 120 + 200}ms` }}
-              >
-                <div style={{ width: "100px", height: "100px", marginBottom: "20px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <img src={cert.image} alt={cert.title} style={{ width: "100%", height: "auto", objectFit: "contain" }} />
-                </div>
-                <h3 style={{ fontFamily: "'Sora', sans-serif", fontSize: "1rem", fontWeight: "700", color: "#111827", margin: "0 0 6px 0" }}>
-                  {cert.title}
-                </h3>
-                <span style={{ color: "#2563eb", fontSize: "0.875rem", fontWeight: "600" }}>{cert.issuer}</span>
-                <span style={{ color: "#9ca3af", fontSize: "0.8rem", marginTop: "8px" }}>Issued {cert.date}</span>
-
-                <div style={{ marginTop: "16px", padding: "6px 14px", background: "#eff6ff", borderRadius: "99px", display: "inline-flex", alignItems: "center", gap: "5px" }}>
-                  <span style={{ fontSize: "0.75rem", color: "#2563eb", fontWeight: "600" }}>View Credential ↗</span>
-                </div>
-              </a>
-            ))}
-          </div>
+            ( 03 )
+          </span>
         </div>
-      </section>
-    </>
+        
+        {/* Title block (Center) */}
+        <h2 className="sticky-header-title" style={{ 
+          margin: 0, 
+          fontFamily: "'Sora', sans-serif", 
+          fontSize: "clamp(0.85rem, 3.5vw, 1.5rem)", 
+          fontWeight: "700", 
+          color: "#111827",
+          flex: 1, 
+          textAlign: "center",
+          whiteSpace: "nowrap" 
+        }}>
+          Credentials & Awards
+        </h2>
+
+        {/* Empty block (Right) to maintain centering balance */}
+        <div className="sticky-spacer" style={{ minWidth: "40px", transition: "min-width 0.2s ease" }}></div>
+      </div>
+      {/* ========================================= */}
+
+      {/* The Certifications Grid */}
+      <div className="cert-grid">
+        {certs.map((cert, i) => (
+          <a
+            key={i}
+            href={cert.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="cert-card animate-up"
+            style={{ animationDelay: `${i * 120 + 200}ms` }}
+          >
+            <div style={{ width: "100px", height: "100px", marginBottom: "20px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <img src={cert.image} alt={cert.title} style={{ width: "100%", height: "auto", objectFit: "contain" }} />
+            </div>
+            <h3 style={{ fontFamily: "'Sora', sans-serif", fontSize: "1rem", fontWeight: "700", color: "#111827", margin: "0 0 6px 0" }}>
+              {cert.title}
+            </h3>
+            <span style={{ color: "#2563eb", fontSize: "0.875rem", fontWeight: "600" }}>{cert.issuer}</span>
+            <span style={{ color: "#9ca3af", fontSize: "0.8rem", marginTop: "8px" }}>Issued {cert.date}</span>
+
+            <div style={{ marginTop: "16px", padding: "6px 14px", background: "#eff6ff", borderRadius: "99px", display: "inline-flex", alignItems: "center", gap: "5px" }}>
+              <span style={{ fontSize: "0.75rem", color: "#2563eb", fontWeight: "600" }}>View Credential ↗</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
   );
 }

@@ -160,8 +160,8 @@ export default function CodedProjects() {
         gap: "10px" 
       }}>
         {/* Number block (Left) */}
-        <div style={{ minWidth: "60px" }}> 
-          <span style={{ 
+        <div className="sticky-spacer" style={{ minWidth: "60px", transition: "min-width 0.2s ease" }}> 
+          <span className="sticky-number" style={{ 
             fontFamily: "'DM Sans', monospace", 
             fontSize: "1.2rem", 
             fontWeight: "700", 
@@ -173,20 +173,21 @@ export default function CodedProjects() {
         </div>
         
         {/* Title block (Center) */}
-        <h2 style={{ 
+        <h2 className="sticky-header-title" style={{ 
           margin: 0, 
           fontFamily: "'Sora', sans-serif", 
-          fontSize: "clamp(1.2rem, 4vw, 1.5rem)", 
+          fontSize: "clamp(1.1rem, 4vw, 1.5rem)", 
           fontWeight: "700", 
           color: "#111827",
           flex: 1, 
-          textAlign: "center" 
+          textAlign: "center",
+          whiteSpace: "nowrap" 
         }}>
           Full-Stack Development
         </h2>
 
         {/* Empty block (Right) to maintain centering balance */}
-        <div style={{ minWidth: "60px" }}></div>
+        <div className="sticky-spacer" style={{ minWidth: "60px", transition: "min-width 0.2s ease" }}></div>
       </div>
       {/* ========================================= */}
 
@@ -218,7 +219,7 @@ export default function CodedProjects() {
                     <h4 className="feature-title">{item.title} <span className="click-icon">↗</span></h4>
                   </div>
                 )}
-                <div className="media-box" onClick={() => openMediaModal(item.url)}>
+                <div className="media-box hover-lift" onClick={() => openMediaModal(item.url)}>
                   <div className="enlarge-hint">Click to enlarge</div>
                   {isVideo(item.url) ? (
                     <video src={item.url} autoPlay loop muted playsInline className="media-content" />
@@ -242,9 +243,9 @@ export default function CodedProjects() {
       ))}
 
       {modalState.isOpen && (
-        <div className="custom-modal-overlay" onClick={closeModal}>
+        <div className="custom-modal-overlay modal-fade" onClick={closeModal}>
           {modalState.type === "text" && (
-            <div className="custom-modal-text-box" onClick={(e) => e.stopPropagation()}>
+            <div className="custom-modal-text-box modal-content" onClick={(e) => e.stopPropagation()}>
               <button className="modal-close-btn" onClick={closeModal}>&times;</button>
               <span className="modal-role">{modalState.data.role}</span>
               <h3 className="modal-title">{modalState.data.title}</h3>
@@ -253,7 +254,7 @@ export default function CodedProjects() {
             </div>
           )}
           {modalState.type === "media" && (
-            <div className="custom-modal-media-wrapper" onClick={(e) => e.stopPropagation()}>
+            <div className="custom-modal-media-wrapper modal-content" onClick={(e) => e.stopPropagation()}>
               <button className="modal-close-btn media-close-btn" onClick={closeModal}>&times;</button>
               {isVideo(modalState.data.url) ? (
                 <video src={modalState.data.url} controls autoPlay className="enlarged-media" />
@@ -269,6 +270,31 @@ export default function CodedProjects() {
 }
 
 const globalStyles = `
+  /* Mobile Fluid Constraints for Sticky Header */
+  @media (max-width: 480px) {
+    .sticky-spacer {
+      min-width: 40px !important;
+    }
+    .sticky-number {
+      font-size: 0.95rem !important;
+    }
+    .sticky-header-title {
+      font-size: clamp(0.85rem, 4.2vw, 1.1rem) !important;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .sticky-spacer {
+      min-width: 30px !important;
+    }
+    .sticky-number {
+      font-size: 0.85rem !important;
+    }
+    .sticky-header-title {
+      font-size: clamp(0.72rem, 4.5vw, 0.95rem) !important;
+    }
+  }
+
   /* Link Button Style */
   .title-link-btn {
     display: inline-flex;

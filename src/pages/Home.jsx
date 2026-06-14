@@ -44,7 +44,7 @@ export default function Home() {
           position: absolute;
           inset: 0;
           border-radius: 28px;
-          background: linear-gradient(135deg, #2563eb 0%, #10b981 100%);
+          background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
           z-index: 0;
         }
         .profile-img-inner {
@@ -52,26 +52,22 @@ export default function Home() {
           z-index: 1;
           border-radius: 24px;
           overflow: hidden;
-          background: #f3f4f6;
-          border: 3px solid #fff;
+          background: var(--bg-soft);
+          border: 3px solid var(--bg);
         }
         .skill-tag {
           display: inline-block;
-          background: #f3f4f6;
-          color: #374151;
-          border: 1px solid #e5e7eb;
+          background: var(--bg-soft);
+          color: var(--text);
+          border: 1px solid var(--border);
           border-radius: 8px;
           padding: 5px 12px;
           font-size: 0.8rem;
           font-weight: 600;
           white-space: nowrap; 
         }
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-up { opacity: 0; animation: fadeUp 0.7s ease-out forwards; }
-        
+        /* Using shared .animate-up and keyframes from App.css */
+
         .marquee-container {
           overflow: hidden;
           white-space: nowrap;
@@ -91,11 +87,11 @@ export default function Home() {
         }
         .marquee-container::before {
           left: 0;
-          background: linear-gradient(to right, white, transparent);
+          background: linear-gradient(to right, var(--bg), transparent);
         }
         .marquee-container::after {
           right: 0;
-          background: linear-gradient(to left, white, transparent);
+          background: linear-gradient(to left, var(--bg), transparent);
         }
         .marquee-content {
           display: inline-flex;
@@ -114,8 +110,8 @@ export default function Home() {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          background-color: #2563eb;
-          color: #ffffff;
+          background-color: var(--primary);
+          color: var(--bg);
           font-weight: 700;
           font-size: 0.95rem;
           padding: 0.75rem 1.5rem;
@@ -125,7 +121,7 @@ export default function Home() {
           box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
         }
         .btn-primary:hover {
-          background-color: #1d4ed8;
+          background-color: var(--primary-dark);
           transform: translateY(-2px);
           box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
         }
@@ -134,20 +130,20 @@ export default function Home() {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          background-color: #ffffff;
-          color: #374151;
+          background-color: var(--bg-card);
+          color: var(--text);
           font-weight: 700;
           font-size: 0.95rem;
           padding: 0.75rem 1.5rem;
           border-radius: 12px;
           text-decoration: none;
-          border: 1px solid #d1d5db;
+          border: 1px solid var(--border-strong);
           transition: all 0.2s ease;
         }
         .btn-secondary:hover {
-          background-color: #f9fafb;
-          color: #111827;
-          border-color: #9ca3af;
+          background-color: var(--bg-soft);
+          color: var(--text);
+          border-color: var(--text-subtle);
           transform: translateY(-2px);
         }
       `}</style>
@@ -180,19 +176,19 @@ export default function Home() {
                 display: "inline-flex",
                 alignItems: "center",
                 gap: "8px",
-                background: "#f0fdf4",
-                border: "1px solid #bbf7d0",
+                background: "var(--success-bg)",
+                border: "1px solid var(--success-ring)",
                 padding: "6px 14px",
                 borderRadius: "99px",
               }}
             >
               <span style={{
                 width: "8px", height: "8px",
-                background: "#22c55e", borderRadius: "50%",
+                background: "var(--success)", borderRadius: "50%",
                 boxShadow: "0 0 0 3px rgba(34,197,94,0.2)",
                 display: "inline-block",
               }}></span>
-              <span style={{ color: "#16a34a", fontSize: "0.8rem", fontWeight: "700", letterSpacing: "0.06em" }}>
+              <span style={{ color: "var(--success)", fontSize: "0.8rem", fontWeight: "700", letterSpacing: "0.06em" }}>
                 AVAILABLE FOR WORK
               </span>
             </div>
@@ -205,21 +201,21 @@ export default function Home() {
                 fontWeight: "800",
                 letterSpacing: "-0.04em",
                 lineHeight: "1.1",
-                color: "#111827",
+                color: "var(--text)",
                 marginBottom: "16px",
                 animationDelay: "200ms",
                 width: "100%", /* FIX: Forces it to stay inside the screen */
               }}
             >
               Khen Joshua<br />
-              <span style={{ color: "#2563eb" }}>Verson</span>
+              <span style={{ color: "var(--primary)" }}>Verson</span>
             </h1>
 
             <p
               className="animate-up"
               style={{
                 fontSize: "1rem",
-                color: "#2563eb",
+                color: "var(--primary)",
                 fontWeight: "700",
                 marginBottom: "22px",
                 letterSpacing: "0.08em",
@@ -236,7 +232,7 @@ export default function Home() {
               style={{
                 fontSize: "1.05rem",
                 lineHeight: "1.8",
-                color: "#6b7280",
+                color: "var(--text-muted)",
                 maxWidth: "540px",
                 width: "100%", /* FIX: Shrinks to fit mobile screen */
                 margin: "0 auto 36px auto", /* FIX: Centers the paragraph box itself */
@@ -244,7 +240,7 @@ export default function Home() {
               }}
             >
               BS Information Technology graduate from{" "}
-              <strong style={{ color: "#374151", fontWeight: "600" }}>USTP</strong>.
+              <strong style={{ color: "var(--text)", fontWeight: "600" }}>USTP</strong>.
               University of Science and Technology of Southern Philippines focused on front-end development and UI/UX design, building responsive web applications with clean code and user-friendly experiences.
             </p>
 
@@ -265,7 +261,7 @@ export default function Home() {
               className="button-row animate-up"
               style={{ display: "flex", gap: "14px", animationDelay: "500ms" }}
             >
-              <a href="#projects" className="btn-primary">
+              <a href="#coded-projects" className="btn-primary">
                 View My Work →
               </a>
               <a href="#contact" className="btn-secondary">

@@ -125,19 +125,7 @@ export default function ChatBot() {
   return (
     <>
       <style>{`
-        @keyframes chat-slide-up {
-          from { opacity: 0; transform: translateY(20px) scale(0.96); }
-          to   { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        @keyframes bounce-in {
-          0%   { transform: scale(0); }
-          60%  { transform: scale(1.15); }
-          100% { transform: scale(1); }
-        }
-        @keyframes typing-dot {
-          0%, 80%, 100% { transform: scale(0.7); opacity: 0.4; }
-          40%           { transform: scale(1);   opacity: 1; }
-        }
+        /* Using shared animations from App.css (chat-slide-up, bounce-in, typing-dot) */
         .chat-msg-user {
           background: #2563eb;
           color: #fff;
@@ -217,7 +205,6 @@ export default function ChatBot() {
           cursor: pointer;
           box-shadow: 0 4px 20px rgba(37,99,235,0.45);
           transition: transform 0.2s, background 0.2s;
-          animation: bounce-in 0.4s ease-out;
           position: relative;
         }
         .fab-btn:hover { transform: scale(1.08); background: #1d4ed8; }
@@ -237,7 +224,7 @@ export default function ChatBot() {
 
         {/* CHAT WINDOW */}
         {isOpen && (
-          <div style={{
+          <div className="chat-slide-up" style={{
             width: "360px",
             height: "520px",
             background: "#fff",
@@ -246,7 +233,6 @@ export default function ChatBot() {
             display: "flex",
             flexDirection: "column",
             overflow: "hidden",
-            animation: "chat-slide-up 0.25s ease-out",
             fontFamily: "'DM Sans', sans-serif",
           }}>
 
@@ -308,11 +294,11 @@ export default function ChatBot() {
               {isLoading && (
                 <div className="chat-msg-bot" style={{ display: "flex", gap: "4px", alignItems: "center", padding: "12px 16px" }}>
                   {[0, 150, 300].map((delay, i) => (
-                    <span key={i} style={{
+                    <span key={i} className="typing-dot" style={{
                       width: "6px", height: "6px",
                       background: "#6b7280", borderRadius: "50%",
                       display: "inline-block",
-                      animation: `typing-dot 1.2s ${delay}ms ease-in-out infinite`,
+                      animationDelay: `${delay}ms`,
                     }}></span>
                   ))}
                 </div>
@@ -368,7 +354,7 @@ export default function ChatBot() {
         )}
 
         {/* FAB TOGGLE BUTTON */}
-        <button className="fab-btn" onClick={isOpen ? () => setIsOpen(false) : handleOpen}>
+        <button className="fab-btn bounce-in" onClick={isOpen ? () => setIsOpen(false) : handleOpen}>
           {/* Badge */}
           {hasNewMessage && !isOpen && (
             <div style={{

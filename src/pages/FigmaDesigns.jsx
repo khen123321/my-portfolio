@@ -37,13 +37,12 @@ export default function FigmaDesigns() {
       <style>{globalStyles}</style>
       
       {/* =========================================
-          UPDATED STICKY HEADER (02)
-          Matches the 01 header to create a smooth "push" transition
+          MOBILE-RESPONSIVE STICKY HEADER (02)
           ========================================= */}
       <div style={{
         position: "sticky",
-        top: "64px", // Matches Header 01 exactly
-        zIndex: 40,  // Matches Header 01 exactly
+        top: "64px", 
+        zIndex: 40,  
         backgroundColor: "rgba(255, 255, 255, 0.9)", 
         backdropFilter: "blur(12px)",
         padding: "20px 0",
@@ -51,36 +50,38 @@ export default function FigmaDesigns() {
         marginBottom: "60px",
         display: "flex",
         alignItems: "center",
-        justifyContent: "space-between"
+        justifyContent: "space-between",
+        gap: "10px" 
       }}>
         {/* Number block (Left) */}
-        <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
-          <span style={{ 
+        <div className="sticky-spacer" style={{ minWidth: "60px", transition: "min-width 0.2s ease" }}>
+          <span className="sticky-number" style={{ 
             fontFamily: "'DM Sans', monospace", 
             fontSize: "1.2rem", 
             fontWeight: "700", 
-            color: "#6b7280" 
+            color: "#6b7280",
+            whiteSpace: "nowrap"
           }}>
             ( 02 )
           </span>
         </div>
         
         {/* Title block (Center) */}
-        <h2 style={{ 
+        <h2 className="sticky-header-title" style={{ 
           margin: 0, 
           fontFamily: "'Sora', sans-serif", 
-          fontSize: "1.5rem", 
+          fontSize: "clamp(1.1rem, 4vw, 1.5rem)", 
           fontWeight: "700", 
           color: "#111827",
-          position: "absolute",
-          left: "50%",
-          transform: "translateX(-50%)"
+          flex: 1, 
+          textAlign: "center",
+          whiteSpace: "nowrap" 
         }}>
           UI/UX Design
         </h2>
 
         {/* Empty block (Right) to maintain centering balance */}
-        <div style={{ width: "40px" }}></div>
+        <div className="sticky-spacer" style={{ minWidth: "60px", transition: "min-width 0.2s ease" }}></div>
       </div>
       {/* ========================================= */}
 
@@ -115,6 +116,31 @@ export default function FigmaDesigns() {
 
 // Layout Styles
 const globalStyles = `
+  /* Mobile Fluid Constraints for Sticky Header */
+  @media (max-width: 480px) {
+    .sticky-spacer {
+      min-width: 40px !important;
+    }
+    .sticky-number {
+      font-size: 0.95rem !important;
+    }
+    .sticky-header-title {
+      font-size: clamp(0.85rem, 4.2vw, 1.1rem) !important;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .sticky-spacer {
+      min-width: 30px !important;
+    }
+    .sticky-number {
+      font-size: 0.85rem !important;
+    }
+    .sticky-header-title {
+      font-size: clamp(0.72rem, 4.5vw, 0.95rem) !important;
+    }
+  }
+
   .project-grid { display: grid; grid-template-columns: 1fr; gap: 2.5rem; align-items: start; margin-bottom: 4rem; }
   @media (min-width: 900px) { .project-grid { grid-template-columns: 1fr 1.2fr; gap: 4rem; } }
 `;
