@@ -100,3 +100,9 @@ export function startAnalytics() {
   trackPageView()
   watchNavigationChanges()
 }
+
+export function trackEvent(eventName, eventParams = {}) {
+  if (!canUseAnalytics() || typeof window.gtag !== 'function') return
+
+  window.gtag('event', eventName, eventParams)
+}

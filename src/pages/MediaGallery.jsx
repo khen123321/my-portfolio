@@ -50,10 +50,10 @@ export default function MediaGallery({ mediaItems }) {
           <video src={url} className={animationClass} style={isModal ? modalVideoStyle : galleryVideoStyle} autoPlay loop muted playsInline controls={isModal} />
         );
       }
-      return <iframe src={url} title="Interactive Preview" className={animationClass} style={isModal ? modalVideoStyle : galleryVideoStyle} allow="autoplay; encrypted-media" allowFullScreen></iframe>;
+      return <iframe src={url} title="Interactive Preview" className={animationClass} style={isModal ? modalVideoStyle : galleryVideoStyle} loading="lazy" allow="autoplay; encrypted-media" allowFullScreen></iframe>;
     }
     
-    return <img src={url} alt="Project Preview" className={animationClass} style={isModal ? modalImage : galleryImage} />;
+    return <img src={url} alt="Project Preview" className={animationClass} style={isModal ? modalImage : galleryImage} loading="lazy" decoding="async" />;
   };
 
   const modalContent = (
@@ -90,7 +90,7 @@ export default function MediaGallery({ mediaItems }) {
       <div style={carouselContainer}>
         <div style={wrapperStyle} onClick={!itemIsVideo ? openModal : undefined}>
           {renderContent(currentUrl)}
-          {!itemIsVideo && <div className="overlay-hint" style={overlayHint}>Click to expand ↗</div>}
+          {!itemIsVideo && <div className="overlay-hint" style={overlayHint}>Click to expand</div>}
           {itemIsVideo && (
             <div style={itemIsFigma ? figmaLabel : videoLabel}>
               {itemIsFigma ? "Interactive Prototype" : "Video Preview"}

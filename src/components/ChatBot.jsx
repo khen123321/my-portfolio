@@ -1,30 +1,5 @@
-import React, { useState, useRef, useEffect } from "react";
-// ==========================================
-//  PORTFOLIO CONTEXT — Customize this info
-// ==========================================
-const PORTFOLIO_CONTEXT = `
-You are a helpful AI assistant embedded in Khen Joshua Verson's portfolio website.
-Your job is to answer visitor questions about Khen and his work.
-Be friendly, concise, and helpful. Keep responses short (2-4 sentences max).
-
-About Khen:
-- Full name: Khen Joshua G. Verson
-- Location: Barra, Opol Misamis Oriental
-- Education: BS Information Technology, University of Science and Technology of Southern Philippines (USTP), 2022-2026
-- Phone: 0968 651 5705
-- Email: versonkhenjoshua@gmail.com
-- Technical Skills: React, React Native, TypeScript, Laravel PHP, MySQL, WordPress (WooCommerce), UI/UX Design, Full-Stack Web Development, IT Troubleshooting, 
-- Soft Skills: Communication, Active Listening, Problem Solving, Critical Thinking
-- Work Experience 1: IT Intern/Programmer at CLIMBS Life and General Insurance Cooperative (Feb-May 2026). Spearheaded an end-to-end Intern Monitoring System.
-- Work Experience 2: Freelance Web Developer. Built a Wedding RSVP & Guest Management Platform featuring an AI chatbot, live QR digital tickets, and Google Sheets backend API.
-- Other Notable Projects: Storage Management System, P-Lament IoT recycling system (Thesis)
-- Achievements & Certifications: Civil Service Exam Passer (March 2026), Dean's Lister (4th Year), Cisco IT Support Badge
-- GitHub: https://github.com/khen123321
-- Facebook: https://www.facebook.com/khenjosh740/
-
-If asked something you don't know about Khen, suggest the visitor reach out via email or phone.
-If asked something completely unrelated to Khen or his work, politely redirect to portfolio-related topics.
-`;
+import React, { useEffect, useRef, useState } from "react";
+import { trackEvent } from "../analytics.js";
 
 const QUICK_REPLIES = [
   "What technologies do you use?",
@@ -33,15 +8,12 @@ const QUICK_REPLIES = [
   "How can I contact you?",
 ];
 
-// ==========================================
-//  CHATBOT COMPONENT
-// ==========================================
 export default function ChatBot() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
     {
       role: "assistant",
-      content: "👋 Hi! I'm Khen's AI assistant. Ask me anything about his work, skills, or availability!",
+      content: "Hi! I'm Khen's AI assistant. Ask me anything about his work, skills, or availability.",
     },
   ]);
   const [inputValue, setInputValue] = useState("");
@@ -50,14 +22,10 @@ export default function ChatBot() {
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
-  // Auto-scroll to bottom
   useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Focus input when opened
   useEffect(() => {
     if (isOpen && inputRef.current) {
       setTimeout(() => inputRef.current?.focus(), 100);
@@ -65,6 +33,7 @@ export default function ChatBot() {
   }, [isOpen]);
 
   const handleOpen = () => {
+    trackEvent("chat_open", { location: "floating_button" });
     setIsOpen(true);
     setHasNewMessage(false);
   };
@@ -73,23 +42,22 @@ export default function ChatBot() {
     const userText = (text || inputValue).trim();
     if (!userText || isLoading) return;
 
+    trackEvent("chat_message", { source: text ? "quick_reply" : "manual_input" });
+
     setInputValue("");
     const newMessages = [...messages, { role: "user", content: userText }];
     setMessages(newMessages);
     setIsLoading(true);
 
     try {
-      // Build API message history (exclude the greeting which has no role pairing)
       const apiMessages = newMessages
-        .filter((_, i) => i > 0) // Skip initial greeting
-        .map((m) => ({ role: m.role, content: m.content }));
+        .filter((_, index) => index > 0)
+        .map((message) => ({ role: message.role, content: message.content }));
 
-      // ✨ FIX: Calling your secure backend instead of Anthropic directly!
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          system: PORTFOLIO_CONTEXT,
           messages: apiMessages,
         }),
       });
@@ -97,7 +65,7 @@ export default function ChatBot() {
       const data = await response.json();
       const reply =
         data?.content?.[0]?.text ||
-        "Sorry, I had trouble responding. Please try again or reach out via email!";
+        "Sorry, I had trouble responding. Please try again or reach out via email.";
 
       setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
       if (!isOpen) setHasNewMessage(true);
@@ -106,8 +74,7 @@ export default function ChatBot() {
         ...prev,
         {
           role: "assistant",
-          content:
-            "Oops! Something went wrong. Please email Khen directly at versonkhenjoshua@gmail.com",
+          content: "Something went wrong. Please email Khen directly at versonkhenjoshua@gmail.com.",
         },
       ]);
     } finally {
@@ -115,9 +82,9 @@ export default function ChatBot() {
     }
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
       sendMessage();
     }
   };
@@ -125,7 +92,6 @@ export default function ChatBot() {
   return (
     <>
       <style>{`
-        /* Using shared animations from App.css (chat-slide-up, bounce-in, typing-dot) */
         .chat-msg-user {
           background: #2563eb;
           color: #fff;
@@ -161,9 +127,7 @@ export default function ChatBot() {
           white-space: nowrap;
           font-family: 'DM Sans', sans-serif;
         }
-        .quick-reply-btn:hover {
-          background: #dbeafe;
-        }
+        .quick-reply-btn:hover { background: #dbeafe; }
         .chat-input {
           flex: 1;
           border: none;
@@ -208,9 +172,11 @@ export default function ChatBot() {
           position: relative;
         }
         .fab-btn:hover { transform: scale(1.08); background: #1d4ed8; }
+        @media (max-width: 520px) {
+          .chat-window { width: calc(100vw - 32px) !important; height: min(520px, calc(100vh - 112px)) !important; }
+        }
       `}</style>
 
-      {/* FLOATING ACTION BUTTON */}
       <div style={{
         position: "fixed",
         bottom: "28px",
@@ -221,10 +187,8 @@ export default function ChatBot() {
         alignItems: "flex-end",
         gap: "12px",
       }}>
-
-        {/* CHAT WINDOW */}
         {isOpen && (
-          <div className="chat-slide-up" style={{
+          <div className="chat-window chat-slide-up" style={{
             width: "360px",
             height: "520px",
             background: "#fff",
@@ -235,8 +199,6 @@ export default function ChatBot() {
             overflow: "hidden",
             fontFamily: "'DM Sans', sans-serif",
           }}>
-
-            {/* HEADER */}
             <div style={{
               background: "#2563eb",
               padding: "16px 20px",
@@ -245,61 +207,79 @@ export default function ChatBot() {
               gap: "12px",
             }}>
               <div style={{
-                width: "36px", height: "36px",
+                width: "36px",
+                height: "36px",
                 background: "rgba(255,255,255,0.2)",
                 borderRadius: "50%",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: "18px",
-              }}>🤖</div>
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "0.78rem",
+                fontWeight: "800",
+                color: "#fff",
+              }}>AI</div>
               <div style={{ flex: 1 }}>
                 <div style={{ color: "#fff", fontWeight: "700", fontSize: "0.95rem" }}>
                   Khen's Assistant
                 </div>
                 <div style={{ color: "rgba(255,255,255,0.7)", fontSize: "0.75rem" }}>
                   <span style={{
-                    display: "inline-block", width: "7px", height: "7px",
-                    background: "#4ade80", borderRadius: "50%", marginRight: "5px",
+                    display: "inline-block",
+                    width: "7px",
+                    height: "7px",
+                    background: "#4ade80",
+                    borderRadius: "50%",
+                    marginRight: "5px",
                     verticalAlign: "middle",
-                  }}></span>
-                  Online · Replies instantly
+                  }} />
+                  Online - Replies instantly
                 </div>
               </div>
               <button
+                type="button"
                 onClick={() => setIsOpen(false)}
+                aria-label="Close chat"
                 style={{
                   background: "rgba(255,255,255,0.15)",
-                  border: "none", borderRadius: "8px",
-                  color: "#fff", width: "30px", height: "30px",
-                  cursor: "pointer", fontSize: "1.1rem",
-                  display: "flex", alignItems: "center", justifyContent: "center",
+                  border: "none",
+                  borderRadius: "8px",
+                  color: "#fff",
+                  width: "30px",
+                  height: "30px",
+                  cursor: "pointer",
+                  fontSize: "1rem",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
-              >×</button>
+              >x</button>
             </div>
 
-            {/* MESSAGES */}
             <div style={{
-              flex: 1, overflowY: "auto", padding: "16px",
-              display: "flex", flexDirection: "column", gap: "10px",
+              flex: 1,
+              overflowY: "auto",
+              padding: "16px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "10px",
             }}>
-              {messages.map((msg, i) => (
-                <div
-                  key={i}
-                  className={msg.role === "user" ? "chat-msg-user" : "chat-msg-bot"}
-                >
-                  {msg.content}
+              {messages.map((message, index) => (
+                <div key={`${message.role}-${index}`} className={message.role === "user" ? "chat-msg-user" : "chat-msg-bot"}>
+                  {message.content}
                 </div>
               ))}
 
-              {/* TYPING INDICATOR */}
               {isLoading && (
                 <div className="chat-msg-bot" style={{ display: "flex", gap: "4px", alignItems: "center", padding: "12px 16px" }}>
-                  {[0, 150, 300].map((delay, i) => (
-                    <span key={i} className="typing-dot" style={{
-                      width: "6px", height: "6px",
-                      background: "#6b7280", borderRadius: "50%",
+                  {[0, 150, 300].map((delay) => (
+                    <span key={delay} className="typing-dot" style={{
+                      width: "6px",
+                      height: "6px",
+                      background: "#6b7280",
+                      borderRadius: "50%",
                       display: "inline-block",
                       animationDelay: `${delay}ms`,
-                    }}></span>
+                    }} />
                   ))}
                 </div>
               )}
@@ -307,25 +287,27 @@ export default function ChatBot() {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* QUICK REPLIES — show only at start */}
             {messages.length <= 2 && !isLoading && (
               <div style={{
                 padding: "0 16px 12px",
-                display: "flex", flexWrap: "wrap", gap: "8px",
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "8px",
               }}>
-                {QUICK_REPLIES.map((q) => (
-                  <button key={q} className="quick-reply-btn" onClick={() => sendMessage(q)}>
-                    {q}
+                {QUICK_REPLIES.map((reply) => (
+                  <button key={reply} type="button" className="quick-reply-btn" onClick={() => sendMessage(reply)}>
+                    {reply}
                   </button>
                 ))}
               </div>
             )}
 
-            {/* INPUT AREA */}
             <div style={{
               borderTop: "1px solid #e5e7eb",
               padding: "12px 16px",
-              display: "flex", alignItems: "center", gap: "10px",
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
               background: "#fff",
             }}>
               <input
@@ -334,14 +316,17 @@ export default function ChatBot() {
                 type="text"
                 placeholder="Ask me anything..."
                 value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
+                onChange={(event) => setInputValue(event.target.value)}
                 onKeyDown={handleKeyDown}
                 disabled={isLoading}
+                maxLength={1000}
               />
               <button
+                type="button"
                 className="send-btn"
                 onClick={() => sendMessage()}
                 disabled={!inputValue.trim() || isLoading}
+                aria-label="Send message"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="22" y1="2" x2="11" y2="13"></line>
@@ -349,20 +334,21 @@ export default function ChatBot() {
                 </svg>
               </button>
             </div>
-
           </div>
         )}
 
-        {/* FAB TOGGLE BUTTON */}
-        <button className="fab-btn bounce-in" onClick={isOpen ? () => setIsOpen(false) : handleOpen}>
-          {/* Badge */}
+        <button className="fab-btn bounce-in" type="button" onClick={isOpen ? () => setIsOpen(false) : handleOpen} aria-label={isOpen ? "Close chat" : "Open chat"}>
           {hasNewMessage && !isOpen && (
             <div style={{
-              position: "absolute", top: "-2px", right: "-2px",
-              width: "14px", height: "14px",
-              background: "#ef4444", borderRadius: "50%",
+              position: "absolute",
+              top: "-2px",
+              right: "-2px",
+              width: "14px",
+              height: "14px",
+              background: "#ef4444",
+              borderRadius: "50%",
               border: "2px solid #fff",
-            }}></div>
+            }} />
           )}
           {isOpen ? (
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">

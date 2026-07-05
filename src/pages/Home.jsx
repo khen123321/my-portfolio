@@ -1,6 +1,25 @@
 import React from "react";
+import { trackEvent } from "../analytics.js";
+
+const skills = [
+  "UI/UX Design",
+  "Figma",
+  "Wireframing",
+  "Prototyping",
+  "React",
+  "TypeScript",
+  "Laravel",
+  "MySQL",
+];
 
 export default function Home() {
+  const trackCta = (label) => {
+    trackEvent("select_content", {
+      content_type: "home_cta",
+      item_id: label,
+    });
+  };
+
   return (
     <>
       <style>{`
@@ -9,10 +28,8 @@ export default function Home() {
           grid-template-columns: 1fr;
           gap: 3rem;
           align-items: center;
-          padding-top: 2rem;
-          padding-bottom: 2rem;
           min-height: 100vh;
-          padding-top: 80px;
+          padding: 80px 0 2rem;
         }
         @media (min-width: 900px) {
           .home-grid {
@@ -23,13 +40,13 @@ export default function Home() {
           .button-row { justify-content: flex-start; }
         }
         @media (max-width: 899px) {
-          .home-text { 
-            text-align: center; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            width: 100%; /* Ensures the container doesn't overflow */
-            overflow: hidden; /* Prevents horizontal scroll */
+          .home-text {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            overflow: hidden;
           }
           .button-row { justify-content: center; flex-wrap: wrap; }
         }
@@ -64,17 +81,15 @@ export default function Home() {
           padding: 5px 12px;
           font-size: 0.8rem;
           font-weight: 600;
-          white-space: nowrap; 
+          white-space: nowrap;
         }
-        /* Using shared .animate-up and keyframes from App.css */
-
         .marquee-container {
           overflow: hidden;
           white-space: nowrap;
           width: 100%;
-          max-width: 540px; 
+          max-width: 560px;
           position: relative;
-          margin-bottom: 36px;
+          margin-bottom: 30px;
         }
         .marquee-container::before,
         .marquee-container::after {
@@ -96,78 +111,34 @@ export default function Home() {
         .marquee-content {
           display: inline-flex;
           gap: 12px;
-          animation: marquee 15s linear infinite;
+          animation: marquee 18s linear infinite;
         }
         .marquee-container:hover .marquee-content {
           animation-play-state: paused;
         }
         @keyframes marquee {
           0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); } 
-        }
-
-        .btn-primary {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          background-color: var(--primary);
-          color: var(--bg);
-          font-weight: 700;
-          font-size: 0.95rem;
-          padding: 0.75rem 1.5rem;
-          border-radius: 12px;
-          text-decoration: none;
-          transition: all 0.2s ease;
-          box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
-        }
-        .btn-primary:hover {
-          background-color: var(--primary-dark);
-          transform: translateY(-2px);
-          box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
-        }
-
-        .btn-secondary {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          background-color: var(--bg-card);
-          color: var(--text);
-          font-weight: 700;
-          font-size: 0.95rem;
-          padding: 0.75rem 1.5rem;
-          border-radius: 12px;
-          text-decoration: none;
-          border: 1px solid var(--border-strong);
-          transition: all 0.2s ease;
-        }
-        .btn-secondary:hover {
-          background-color: var(--bg-soft);
-          color: var(--text);
-          border-color: var(--text-subtle);
-          transform: translateY(-2px);
+          100% { transform: translateX(-50%); }
         }
       `}</style>
 
       <section style={{ position: "relative" }}>
         <div className="home-grid">
-
-          {/* LEFT: PROFILE IMAGE */}
           <div className="animate-up" style={{ animationDelay: "0ms" }}>
             <div className="profile-img-ring">
               <div className="profile-img-inner">
                 <img
                   src="/profile.png"
                   alt="Khen Joshua Verson"
+                  loading="eager"
+                  decoding="async"
                   style={{ display: "block", width: "100%", maxWidth: "380px", height: "auto" }}
                 />
               </div>
             </div>
           </div>
 
-          {/* RIGHT: TEXT */}
           <div className="home-text">
-
-            {/* AVAILABLE BADGE */}
             <div
               className="animate-up"
               style={{
@@ -183,13 +154,15 @@ export default function Home() {
               }}
             >
               <span style={{
-                width: "8px", height: "8px",
-                background: "var(--success)", borderRadius: "50%",
+                width: "8px",
+                height: "8px",
+                background: "var(--success)",
+                borderRadius: "50%",
                 boxShadow: "0 0 0 3px rgba(34,197,94,0.2)",
                 display: "inline-block",
-              }}></span>
+              }} />
               <span style={{ color: "var(--success)", fontSize: "0.8rem", fontWeight: "700", letterSpacing: "0.06em" }}>
-                AVAILABLE FOR WORK
+                AVAILABLE FOR UI/UX AND WEB ROLES
               </span>
             </div>
 
@@ -199,16 +172,15 @@ export default function Home() {
                 fontSize: "clamp(2.4rem, 5vw, 4.2rem)",
                 fontFamily: "'Sora', sans-serif",
                 fontWeight: "800",
-                letterSpacing: "-0.04em",
-                lineHeight: "1.1",
+                letterSpacing: "0",
+                lineHeight: "1.08",
                 color: "var(--text)",
-                marginBottom: "16px",
+                marginBottom: "18px",
                 animationDelay: "200ms",
-                width: "100%", /* FIX: Forces it to stay inside the screen */
+                width: "100%",
               }}
             >
-              Khen Joshua<br />
-              <span style={{ color: "var(--primary)" }}>Verson</span>
+              Khen Joshua Verson
             </h1>
 
             <p
@@ -216,15 +188,15 @@ export default function Home() {
               style={{
                 fontSize: "1rem",
                 color: "var(--primary)",
-                fontWeight: "700",
-                marginBottom: "22px",
+                fontWeight: "800",
+                marginBottom: "20px",
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
                 animationDelay: "300ms",
-                width: "100%", /* FIX: Forces it to stay inside the screen */
+                width: "100%",
               }}
             >
-              Web Developer &bull; UI/UX &bull;
+              Web Developer | UI/UX Designer
             </p>
 
             <p
@@ -233,38 +205,31 @@ export default function Home() {
                 fontSize: "1.05rem",
                 lineHeight: "1.8",
                 color: "var(--text-muted)",
-                maxWidth: "540px",
-                width: "100%", /* FIX: Shrinks to fit mobile screen */
-                margin: "0 auto 36px auto", /* FIX: Centers the paragraph box itself */
+                maxWidth: "590px",
+                width: "100%",
+                margin: "0 auto 26px auto",
                 animationDelay: "400ms",
               }}
             >
-              BS Information Technology graduate from{" "}
-              <strong style={{ color: "var(--text)", fontWeight: "600" }}>USTP</strong>.
-              University of Science and Technology of Southern Philippines focused on front-end development and UI/UX design, building responsive web applications with clean code and user-friendly experiences.
+              BS Information Technology graduate from <strong style={{ color: "var(--text)", fontWeight: "700" }}>USTP</strong>. I work across wireframes, prototypes, responsive interfaces, and web app logic so designs feel polished and work reliably.
             </p>
 
-            {/* SKILL TAGS (Marquee) */}
             <div className="animate-up marquee-container" style={{ animationDelay: "450ms" }}>
               <div className="marquee-content">
-                {["UI/UX Design", "Wordpress", "JavaScript", "TypeScript", "Redux", "Laravel PHP", "MySQL"].map((s, idx) => (
-                  <span key={`set1-${idx}`} className="skill-tag">{s}</span>
-                ))}
-                {["UI/UX Design", "Wordpress", "JavaScript", "TypeScript", "Redux", "Laravel PHP", "MySQL"].map((s, idx) => (
-                  <span key={`set2-${idx}`} className="skill-tag">{s}</span>
+                {[...skills, ...skills].map((skill, idx) => (
+                  <span key={`${skill}-${idx}`} className="skill-tag">{skill}</span>
                 ))}
               </div>
             </div>
 
-            {/* BUTTONS */}
             <div
               className="button-row animate-up"
               style={{ display: "flex", gap: "14px", animationDelay: "500ms" }}
             >
-              <a href="#coded-projects" className="btn-primary">
-                View My Work →
+              <a href="#projects" className="btn-primary" onClick={() => trackCta("view_work")}>
+                View My Work
               </a>
-              <a href="#contact" className="btn-secondary">
+              <a href="#contact" className="btn-secondary" onClick={() => trackCta("contact_me")}>
                 Contact Me
               </a>
             </div>

@@ -3,34 +3,35 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import Home from "./pages/Home";
-import CodedProjects from "./pages/CodedProjects"; 
+import CodedProjects from "./pages/CodedProjects";
 import FigmaDesigns from "./pages/FigmaDesigns";
 import Certifications from "./pages/Certifications";
 import Contact from "./pages/Contact";
 import ChatBot from "./components/ChatBot";
-import { NeuralNoise } from "./components/NeuralNoise"; 
+import { NeuralNoise } from "./components/NeuralNoise";
+import { trackEvent } from "./analytics.js";
 import "./App.css";
 
 export default function App() {
   const [scrollY, setScrollY] = useState(0);
-  const [windowHeight, setWindowHeight] = useState(() => 
+  const [windowHeight, setWindowHeight] = useState(() =>
     typeof window !== "undefined" ? window.innerHeight : 0
   );
-  
+
   const [mainHeight, setMainHeight] = useState(0);
   const mainRef = useRef(null);
 
   // --- FLIPPING TEXT STATE ---
   const [titleNumber, setTitleNumber] = useState(0);
   const titles = useMemo(
-    () => ["Web Developer", "UI/UX Designer", "Full-Stack Dev"],
+    () => ["UI/UX Designer", "Web Developer", "Design-Minded Builder"],
     []
   );
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       setTitleNumber((prev) => (prev === titles.length - 1 ? 0 : prev + 1));
-    }, 2500); 
+    }, 2500);
     return () => clearTimeout(timeoutId);
   }, [titleNumber, titles]);
   // --------------------------------
@@ -58,12 +59,12 @@ export default function App() {
   }, []);
 
   const isCoverVisible = scrollY <= windowHeight;
-  
+
   // =========================================
   // TEXT TRANSITION MATH
   // =========================================
   const scrollProgress = windowHeight > 0 ? scrollY / windowHeight : 0;
-  const textTranslateY = scrollY * 1.5; 
+  const textTranslateY = scrollY * 1.5;
   const textScale = Math.max(0.6, 1 - scrollProgress * 0.5);
   const textOpacity = Math.max(0, 1 - scrollProgress * 1.2);
   const arrowOpacity = Math.max(0, 1 - scrollProgress * 4);
@@ -76,9 +77,16 @@ export default function App() {
   // Opacity starts low (15%) and smoothly hits 100% when fully scrolled up
   const mainOpacity = Math.min(1, 0.15 + scrollProgress * 0.85);
 
+  const trackCoverCta = (label) => {
+    trackEvent("select_content", {
+      content_type: "cover_cta",
+      item_id: label,
+    });
+  };
+
   return (
     <div style={{ position: "relative", width: "100%", height: `calc(100vh + ${mainHeight}px)`, fontFamily: "'DM Sans', sans-serif" }}>
-      
+
       {/* =========================================
           PART 1: THE COVER PAGE
           ========================================= */}
@@ -89,55 +97,55 @@ export default function App() {
           left: 0,
           width: "100%",
           height: "100vh",
-          zIndex: 10, 
-          backgroundColor: "#030712", 
+          zIndex: 10,
+          backgroundColor: "#030712",
           color: "#ffffff",
           overflow: "hidden",
-          transform: `translateY(-${scrollY}px)` 
+          transform: `translateY(-${scrollY}px)`
         }}>
-          
+
           {/* NEURAL NOISE BACKGROUND */}
           <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", zIndex: 0 }}>
             <NeuralNoise color={[0.14, 0.39, 0.92]} opacity={0.6} speed={0.0015} />
           </div>
 
-          <div style={{ 
-            height: "100%", 
-            display: "flex", 
-            flexDirection: "column", 
+          <div style={{
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            padding: "0 24px", 
+            padding: "0 24px",
             transform: `translateY(${textTranslateY}px) scale(${textScale})`,
-            opacity: textOpacity, 
+            opacity: textOpacity,
             transformOrigin: "center center",
-            position: "relative", 
-            zIndex: 1 
+            position: "relative",
+            zIndex: 1
           }}>
             <div className="cover-fade" style={{ textAlign: "center", width: "100%", maxWidth: "800px" }}>
-              
-              <h1 style={{ 
-                fontSize: "clamp(2.5rem, 8vw, 4.5rem)", 
-                fontWeight: "800", 
-                margin: "0 0 10px 0", 
-                fontFamily: "'Sora', sans-serif", 
-                letterSpacing: "-0.02em", 
+
+              <h1 style={{
+                fontSize: "clamp(2.5rem, 8vw, 4.5rem)",
+                fontWeight: "800",
+                margin: "0 0 10px 0",
+                fontFamily: "'Sora', sans-serif",
+                letterSpacing: "0",
                 color: "#fff",
-                lineHeight: "1.1" 
+                lineHeight: "1.1"
               }}>
                 Khen Joshua Verson
               </h1>
-              
+
               {/* --- THE FLIPPING TEXT --- */}
-              <h2 style={{ 
-                fontSize: "clamp(1.2rem, 5vw, 2rem)", 
-                fontWeight: "600", 
-                margin: "0 auto 20px auto", 
-                color: "#3b82f6",
+              <h2 style={{
+                fontSize: "clamp(1.2rem, 5vw, 2rem)",
+                fontWeight: "600",
+                margin: "0 auto 20px auto",
+                color: "#93c5fd",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                minHeight: "3rem", 
+                minHeight: "3rem",
               }}>
                 <AnimatePresence mode="wait">
                   <motion.span
@@ -154,9 +162,27 @@ export default function App() {
               </h2>
               {/* ------------------------------------------ */}
 
-              <p style={{ fontSize: "clamp(1rem, 4vw, 1.1rem)", color: "#9ca3af" }}>
-                Building digital experiences that matter.
+              <p style={{ fontSize: "clamp(1rem, 4vw, 1.1rem)", color: "#d1d5db", marginBottom: "26px" }}>
+                Designing clean interfaces and building responsive web experiences.
               </p>
+
+              <div style={{ display: "flex", justifyContent: "center", gap: "12px", flexWrap: "wrap" }}>
+                <a
+                  href="#projects"
+                  onClick={() => trackCoverCta("view_work")}
+                  style={{
+                    color: "#030712",
+                    background: "#ffffff",
+                    textDecoration: "none",
+                    fontWeight: "800",
+                    padding: "12px 18px",
+                    borderRadius: "8px",
+                  }}
+                >
+                  View Work
+                </a>
+
+              </div>
             </div>
           </div>
 
@@ -164,7 +190,7 @@ export default function App() {
             position: "absolute", bottom: "40px", left: 0, width: "100%", display: "flex",
             flexDirection: "column", alignItems: "center", gap: "10px", color: "#6b7280",
             opacity: arrowOpacity,
-            zIndex: 1 
+            zIndex: 1
           }}>
             <span style={{ fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.25em", fontWeight: "700" }}>Scroll to uncover</span>
             <svg className="bounce-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -181,10 +207,10 @@ export default function App() {
       <main ref={mainRef} style={{
         position: "absolute",
         top: "100vh", // Changed from conditionally fixed so it naturally slides up!
-        left: 0, 
-        width: "100%", 
-        zIndex: 1, 
-        backgroundColor: "#ffffff", 
+        left: 0,
+        width: "100%",
+        zIndex: 1,
+        backgroundColor: "#ffffff",
         minHeight: "100vh",
         /* Apply the dynamic Blur & Opacity transition */
         filter: scrollProgress < 1 ? `blur(${mainBlur}px)` : "none",
@@ -197,7 +223,7 @@ export default function App() {
           backgroundColor: "rgba(255,255,255,0.88)", backdropFilter: "blur(12px)", borderBottom: "1px solid #e5e7eb",
         }}>
           <div style={{ maxWidth: "1160px", margin: "0 auto", padding: "0 24px", height: "64px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <a href="#home" style={{ fontFamily: "'Sora', sans-serif", fontWeight: "800", fontSize: "1.25rem", color: "#111827", textDecoration: "none", letterSpacing: "-0.03em" }}>
+            <a href="#home" style={{ fontFamily: "'Sora', sans-serif", fontWeight: "800", fontSize: "1.25rem", color: "#111827", textDecoration: "none", letterSpacing: "0" }}>
               KV<span style={{ color: "#2563eb" }}>.</span>
             </a>
             <div style={{ display: "flex", gap: "4px" }}>
@@ -227,7 +253,7 @@ export default function App() {
         </div>
 
         <footer style={{ textAlign: "center", padding: "40px 24px", color: "#9ca3af", borderTop: "1px solid #e5e7eb", background: "#f9fafb", fontSize: "0.875rem" }}>
-          © {new Date().getFullYear()} Khen Joshua Verson — Built with React
+          Copyright {new Date().getFullYear()} Khen Joshua Verson - Built with React
         </footer>
       </main>
 
