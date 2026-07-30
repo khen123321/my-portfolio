@@ -72,7 +72,7 @@ const projects = [
       "Connected event data to a simple backend workflow that was easy for the client to maintain.",
     ],
     tech: ["React", "JSX", "Tailwind CSS", "Google Sheets"],
-    link: "https://angelolanie.vercel.app/",
+    link: "",
     linkText: "View Live Project",
     media: [
       {
