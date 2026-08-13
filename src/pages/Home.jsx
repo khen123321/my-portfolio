@@ -28,11 +28,11 @@ export default function Home() {
           <p className="hero-role">web developer /<br />ui & product designer</p>
 
           <h1 className="hero-title">
-            I design and build useful digital products<span className="cursor-mark">_</span>
+            I build useful digital products<span className="cursor-mark">_</span>
           </h1>
 
           <p className="hero-copy">
-            Web applications, internal systems and interfaces built with usability and reliability in mind.
+            Web apps, internal systems, and interfaces.
           </p>
 
           <div className="hero-actions" aria-label="Primary actions">

@@ -75,8 +75,106 @@ img, video, iframe { max-width: 100%; }
   color: var(--foreground);
 }
 
+.app-shell-ready .hero-role,
+.app-shell-ready .hero-title,
+.app-shell-ready .hero-copy,
+.app-shell-ready .hero-actions,
+.app-shell-ready .portrait-wrap {
+  animation: heroReveal 520ms var(--ease) both;
+}
+
+.app-shell-ready .hero-title { animation-delay: 60ms; }
+.app-shell-ready .hero-copy { animation-delay: 120ms; }
+.app-shell-ready .hero-actions { animation-delay: 180ms; }
+.app-shell-ready .portrait-wrap { animation-delay: 240ms; }
+
 .site-main {
   min-height: 100vh;
+}
+
+.intro-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  min-height: 100dvh;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  overflow: hidden;
+  background: var(--background);
+  color: var(--foreground);
+  animation: fadeIn 180ms var(--ease) both;
+}
+
+.intro-loader.is-exiting {
+  animation: loaderExit 460ms var(--ease) forwards;
+}
+
+.intro-loader-top {
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  padding-inline: clamp(20px, 4vw, 48px);
+  border-bottom: 1px solid var(--gray-200);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.intro-loader-center {
+  position: relative;
+  z-index: 1;
+  width: min(600px, calc(100vw - 40px));
+  place-self: center;
+  display: grid;
+  justify-items: center;
+  gap: 18px;
+}
+
+.intro-loader-label {
+  color: var(--gray-500);
+  font-family: var(--font-mono);
+  font-size: clamp(13px, 3vw, 18px);
+}
+
+.intro-loader-percent {
+  font-size: clamp(76px, 18vw, 160px);
+  font-weight: 700;
+  line-height: .9;
+  letter-spacing: -0.06em;
+}
+
+.intro-progress {
+  width: 100%;
+  height: 2px;
+  overflow: hidden;
+  background: var(--gray-200);
+}
+
+.intro-progress span {
+  display: block;
+  height: 100%;
+  background: var(--foreground);
+  transition: width 80ms linear;
+}
+
+.intro-progress-labels {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  color: var(--gray-500);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+}
+
+.intro-loader-halftone {
+  width: min(320px, 62vw);
+  height: min(260px, 48vw);
+  right: -80px;
+  top: 18%;
+  opacity: .12;
+  mask-image: radial-gradient(circle, #000 0 34%, transparent 72%);
 }
 
 .site-container {
@@ -521,6 +619,8 @@ html.theme-revealing::view-transition-new(root) { animation: themeReveal 530ms v
 @keyframes chatOverlayClose { from { opacity: 1; transform: scale(1); clip-path: circle(150vmax at var(--chat-origin-x, 100%) var(--chat-origin-y, 100%)); } to { opacity: 0; transform: scale(.98); clip-path: circle(0 at var(--chat-origin-x, 100%) var(--chat-origin-y, 100%)); } }
 @keyframes chatContentIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes chatMessageIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes heroReveal { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes loaderExit { to { opacity: 0; transform: translateY(-8px); visibility: hidden; } }
 @keyframes themeReveal { to { clip-path: circle(var(--reveal-radius, 140vmax) at var(--reveal-x, 50vw) var(--reveal-y, 50vh)); } }
 @keyframes fallbackThemeReveal { to { transform: translate(-50%, -50%) scale(var(--fallback-scale, 3000)); } }
 
@@ -536,15 +636,50 @@ html.theme-revealing::view-transition-new(root) { animation: themeReveal 530ms v
 @media (max-width: 1023px) {
   .hero-grid, .project-header, .design-entry, .profile-grid, .experience-grid, .stack-layout, .contact-grid { grid-template-columns: 1fr; }
   .hero { min-height: auto; }
-  .portrait-wrap { max-width: 320px; }
   .design-media-wrap { justify-self: start; }
 }
 
 @media (max-width: 760px) {
-  .site-container { width: min(100% - 32px, var(--content-max)); }
+  .site-container { width: min(100% - 40px, var(--content-max)); }
   .section, .section-large { padding-block: 64px; }
-  .hero { padding-block: 56px 72px; }
-  .hero-kicker-row { align-items: flex-start; flex-direction: column; margin-bottom: 24px; }
+  .mobile-nav-inner { min-height: 72px; }
+  .wordmark { font-size: 12px; }
+  .hero { padding-block: 38px 72px; overflow: hidden; }
+  .hero-grid { gap: 56px; align-items: start; }
+  .hero-kicker-row { display: none; }
+  .hero-halftone { width: 220px; height: 180px; right: -110px; top: 72px; opacity: .14; }
+  .hero-role {
+    margin: 0 0 32px;
+    font-size: clamp(19px, 5.5vw, 24px);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    font-weight: 450;
+  }
+  .hero-title {
+    max-width: 11ch;
+    font-size: clamp(42px, 11vw, 58px);
+    line-height: .95;
+    letter-spacing: -0.055em;
+    font-weight: 700;
+  }
+  .hero-copy {
+    max-width: 30ch;
+    margin-top: 24px;
+    font-size: 17px;
+    line-height: 1.6;
+  }
+  .hero-actions {
+    align-items: center;
+    gap: 14px 18px;
+    margin-top: 30px;
+  }
+  .hero-actions .text-link { font-size: 10px; letter-spacing: 0.06em; white-space: nowrap; }
+  .portrait-wrap { width: 100%; max-width: none; }
+  .portrait-frame { border-radius: 12px; }
+  .portrait-frame img { aspect-ratio: 4 / 3; object-fit: cover; object-position: center 38%; }
+  .portrait-halftone { opacity: .18; }
+  .portrait-meta { display: grid; justify-content: start; gap: 2px; margin-top: 14px; font-size: 10px; letter-spacing: 0.08em; }
+  .portrait-meta span:last-child { color: var(--gray-500); }
   .media-grid { grid-template-columns: 1fr; }
   .fact-row, .timeline-top, .credential-row, .contact-link { grid-template-columns: 1fr; flex-direction: column; align-items: flex-start; }
   .timeline-item p { margin-left: 0; }
@@ -561,8 +696,15 @@ html.theme-revealing::view-transition-new(root) { animation: themeReveal 530ms v
   .chat-entry, .chat-entry-user, .chat-entry-assistant, .chat-entry-system { justify-self: stretch; }
 }
 
+@media (max-width: 380px) {
+  .site-container { width: min(100% - 36px, var(--content-max)); }
+  .hero-actions { gap: 12px 14px; }
+  .hero-actions .text-link { font-size: 9px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 1ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; }
+  .cursor-mark, .wordmark-cursor { animation: none !important; }
 }
 
 .section-header {

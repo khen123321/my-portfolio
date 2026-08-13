@@ -90,6 +90,96 @@ function setDocumentTheme(mode) {
   window.localStorage.setItem("theme-mode", mode);
 }
 
+function shouldShowIntroLoader() {
+  if (typeof window === "undefined") return false;
+  return window.sessionStorage.getItem("portfolio-intro-seen") !== "true";
+}
+
+function PortfolioLoader({ onComplete }) {
+  const [progress, setProgress] = useState(0);
+  const [isExiting, setIsExiting] = useState(false);
+
+  useEffect(() => {
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const previousOverflow = document.body.style.overflow;
+    let animationFrame = 0;
+    let holdTimer = 0;
+    let exitTimer = 0;
+
+    document.body.style.overflow = "hidden";
+
+    const complete = () => {
+      window.sessionStorage.setItem("portfolio-intro-seen", "true");
+      onComplete();
+    };
+
+    if (prefersReducedMotion) {
+      holdTimer = window.setTimeout(() => {
+        setProgress(100);
+        exitTimer = window.setTimeout(() => {
+          setIsExiting(true);
+          exitTimer = window.setTimeout(complete, 120);
+        }, 120);
+      }, 0);
+    } else {
+      const duration = 1350;
+      const start = performance.now();
+
+      const tick = (time) => {
+        const elapsed = Math.min(time - start, duration);
+        const t = elapsed / duration;
+        const eased = t < 0.55
+          ? (t / 0.55) * 0.6
+          : t < 0.86
+            ? 0.6 + ((t - 0.55) / 0.31) * 0.3
+            : 0.9 + (1 - Math.pow(1 - ((t - 0.86) / 0.14), 2)) * 0.1;
+
+        setProgress(Math.min(100, Math.round(eased * 100)));
+
+        if (elapsed < duration) {
+          animationFrame = requestAnimationFrame(tick);
+          return;
+        }
+
+        setProgress(100);
+        holdTimer = window.setTimeout(() => {
+          setIsExiting(true);
+          exitTimer = window.setTimeout(complete, 460);
+        }, 130);
+      };
+
+      animationFrame = requestAnimationFrame(tick);
+    }
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      cancelAnimationFrame(animationFrame);
+      window.clearTimeout(holdTimer);
+      window.clearTimeout(exitTimer);
+    };
+  }, [onComplete]);
+
+  return (
+    <div className={`intro-loader ${isExiting ? "is-exiting" : ""}`} role="status" aria-live="polite" aria-label={`Loading portfolio ${progress}%`}>
+      <header className="intro-loader-top">
+        <span>KV</span>
+      </header>
+      <span className="halftone-field intro-loader-halftone" aria-hidden="true" />
+      <div className="intro-loader-center">
+        <div className="intro-loader-label">loading portfolio<span className="cursor-mark">_</span></div>
+        <div className="intro-loader-percent">{progress}%</div>
+        <div className="intro-progress" aria-hidden="true">
+          <span style={{ width: `${progress}%` }} />
+        </div>
+        <div className="intro-progress-labels" aria-hidden="true">
+          <span>0%</span>
+          <span>100%</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function LayoutChrome({ themeMode, onThemeChange }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -251,13 +341,13 @@ function Footer() {
     <footer className="site-footer">
       <div className="site-container footer-content">
         <div className="footer-inner">
-          <span>© {new Date().getFullYear()} Khen Joshua Verson</span>
+          <span>{"\u00A9"} {new Date().getFullYear()} Khen Joshua Verson</span>
           <span>Built with React</span>
         </div>
         <div className="footer-credit">
-          <span>Design inspiration — </span>
+          <span>Design inspiration {"\u2014"} </span>
           <a className="footer-link" href="https://800k.dev/" target="_blank" rel="noopener noreferrer">
-            800k.dev ↗
+            800k.dev {"\u2197"}
           </a>
         </div>
       </div>
@@ -267,6 +357,7 @@ function Footer() {
 
 export default function App() {
   const [themeMode, setThemeMode] = useState(getInitialThemeMode);
+  const [showIntroLoader, setShowIntroLoader] = useState(shouldShowIntroLoader);
 
   useEffect(() => {
     setDocumentTheme(themeMode);
@@ -319,7 +410,8 @@ export default function App() {
   };
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell ${showIntroLoader ? "app-shell-loading" : "app-shell-ready"}`}>
+      {showIntroLoader && <PortfolioLoader onComplete={() => setShowIntroLoader(false)} />}
       <LayoutChrome themeMode={themeMode} onThemeChange={changeThemeMode} />
       <main className="site-main">
         <Home />
