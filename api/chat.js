@@ -11,11 +11,12 @@ About Khen:
 - Location: Barra, Opol, Misamis Oriental
 - Education: BS Information Technology, University of Science and Technology of Southern Philippines (USTP), 2022-2026
 - Email: versonkhenjoshua@gmail.com
-- Technical Skills: UI/UX Design, Figma prototyping, React, TypeScript, Redux, Laravel, PHP, MySQL, WordPress, WooCommerce, responsive web development, IT Troubleshooting
+- Technical Skills: UI/UX Design, Figma prototyping, Next.js, React, TypeScript, Redux, Tailwind CSS, Laravel, PHP, Supabase, PostgreSQL, MySQL, WordPress, WooCommerce, responsive web development, IT Troubleshooting
 - Soft Skills: Communication, Active Listening, Problem Solving, Critical Thinking
 - Work Experience 1: IT Intern/Programmer at CLIMBS Life and General Insurance Cooperative (Feb-May 2026). Worked as the developer and UI builder for the CLIMBS Internship Monitoring System (CIMS), using TypeScript, Redux, Laravel, PHP, and MySQL.
 - Work Experience 2: Freelance web and UI developer. Built a Wedding RSVP & Guest Management Platform with a guided RSVP flow, admin response management, and Google Sheets-backed workflows.
-- Other Notable Projects: Storage Management System, P-Lament IoT recycling system thesis, dashboard UI prototypes
+- Featured Project: TapTapTap — NFC Business Platform. Khen worked as the Full-Stack Developer / Project Developer. It is a full-stack NFC storefront and business platform built with Next.js, React, TypeScript, Tailwind CSS, Supabase, PostgreSQL, and Vercel. It includes dynamic product management, a custom NFC product designer, Supabase Auth with application-level roles and Row Level Security, Supabase Storage image handling, first-party product and visitor analytics, and Next.js storefront cache revalidation. It is live at https://www.taptaptap.shop/. Payment/order management features such as PayMongo, GCash checkout, card payments, payment webhooks, automatic payment verification, complete order management, shipping workflow, and refunds are planned/future functionality, not completed portfolio features.
+- Other Notable Projects: CLIMBS Internship Monitoring System, Wedding RSVP & Guest Management Platform, Storage Management System, P-Lament IoT recycling system thesis, dashboard UI prototypes
 - Achievements & Certifications: Civil Service Exam Passer (March 2026), Dean's Lister (4th Year), Cisco IT Support Badge
 - GitHub: https://github.com/khen123321
 - Facebook: https://www.facebook.com/khenjosh740/

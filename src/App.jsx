@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
-// eslint-disable-next-line no-unused-vars
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useEffect, useState } from "react";
+import { flushSync } from "react-dom";
 
 import Home from "./pages/Home";
 import CodedProjects from "./pages/CodedProjects";
@@ -8,257 +7,331 @@ import FigmaDesigns from "./pages/FigmaDesigns";
 import Certifications from "./pages/Certifications";
 import Contact from "./pages/Contact";
 import ChatBot from "./components/ChatBot";
-import { NeuralNoise } from "./components/NeuralNoise";
-import { trackEvent } from "./analytics.js";
+import ThemeToggle from "./components/ThemeToggle";
 import "./App.css";
 
+const navItems = [
+  { href: "#projects", number: "01", label: "work" },
+  { href: "#profile", number: "02", label: "about" },
+  { href: "#stack", number: "03", label: "stack" },
+  { href: "#certifications", number: "04", label: "credentials" },
+  { href: "#contact", number: "05", label: "contact" },
+];
+
+const sidebarLinks = [
+  { label: "github", href: "https://github.com/khen123321" },
+  { label: "email", href: "mailto:versonkhenjoshua@gmail.com" },
+  { label: "resume", href: "/resume.pdf" },
+];
+
+const profileFacts = [
+  { label: "ROLE", value: "Web Developer / UI Designer" },
+  { label: "EDUCATION", value: "BS Information Technology, USTP" },
+  { label: "FOCUS", value: "Interfaces, dashboards and practical web systems" },
+];
+
+const experience = [
+  {
+    title: "IT Intern / Programmer",
+    org: "CLIMBS Life and General Insurance Cooperative",
+    date: "2026",
+    description:
+      "Developed and supported CIMS, including intern workflows, HR/admin screens, DTR processes, reports, and role-based access.",
+  },
+  {
+    title: "Web Developer / UI Designer",
+    org: "Freelance",
+    date: "Project-based",
+    description:
+      "Built client-facing web experiences and practical interfaces, including the Wedding RSVP & Access Control project and dashboard-oriented workflows.",
+  },
+];
+
+const stackGroups = [
+  { title: "Frontend", items: ["Next.js", "React", "TypeScript", "JavaScript", "Tailwind CSS"] },
+  { title: "Backend", items: ["Laravel", "PHP", "Supabase"] },
+  { title: "Data", items: ["MySQL", "PostgreSQL", "Firebase", "Google Sheets"] },
+  { title: "Deployment", items: ["Vercel"] },
+  { title: "Design", items: ["Figma", "Wireframing", "Prototyping", "UI/UX Design"] },
+];
+
+function resolveThemePreference(mode) {
+  if (mode === "light" || mode === "dark") return mode;
+  if (typeof window === "undefined") return "light";
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+
+function getInitialThemeMode() {
+  if (typeof window === "undefined") return "system";
+  const saved = window.localStorage.getItem("theme-mode");
+  if (saved === "system" || saved === "light" || saved === "dark") return saved;
+  return "system";
+}
+
+function getRevealRadius(x, y) {
+  const distances = [
+    Math.hypot(x, y),
+    Math.hypot(window.innerWidth - x, y),
+    Math.hypot(x, window.innerHeight - y),
+    Math.hypot(window.innerWidth - x, window.innerHeight - y),
+  ];
+  return `${Math.ceil(Math.max(...distances))}px`;
+}
+
+function themeBackground(theme) {
+  return theme === "dark" ? "#0c0c0f" : "#ffffff";
+}
+
+function setDocumentTheme(mode) {
+  const resolved = resolveThemePreference(mode);
+  document.documentElement.dataset.themeMode = mode;
+  document.documentElement.dataset.theme = resolved;
+  document.documentElement.style.colorScheme = resolved;
+  window.localStorage.setItem("theme-mode", mode);
+}
+
+function LayoutChrome({ themeMode, onThemeChange }) {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const closeMenu = () => setIsMenuOpen(false);
+
+  return (
+    <>
+      <aside className="desktop-sidebar" aria-label="Primary navigation">
+        <div className="sidebar-top">
+          <a className="wordmark" href="#home" aria-label="Khen Joshua Verson home">KV<span className="wordmark-cursor">_</span></a>
+          <nav className="sidebar-group">
+            {navItems.map((item) => (
+              <a className="sidebar-link" href={item.href} key={item.href}>{item.label}</a>
+            ))}
+            <ChatBot />
+          </nav>
+        </div>
+
+        <div className="sidebar-bottom">
+          <hr className="sidebar-rule" />
+          <div className="sidebar-group">
+            {sidebarLinks.map((link) => (
+              <a
+                className="sidebar-external"
+                href={link.href}
+                target={link.href.startsWith("http") || link.href.endsWith(".pdf") ? "_blank" : undefined}
+                rel={link.href.startsWith("http") || link.href.endsWith(".pdf") ? "noopener noreferrer" : undefined}
+                key={link.label}
+              >
+                {link.label} -&gt;
+              </a>
+            ))}
+          </div>
+          <ThemeToggle themeMode={themeMode} onThemeChange={onThemeChange} />
+        </div>
+      </aside>
+
+      <nav className="mobile-nav" aria-label="Mobile navigation">
+        <div className="site-container mobile-nav-inner">
+          <a className="wordmark" href="#home" onClick={closeMenu}>KV<span className="wordmark-cursor">_</span></a>
+          <button className="menu-button" type="button" onClick={() => setIsMenuOpen(true)} aria-expanded={isMenuOpen} aria-controls="mobile-menu">
+            Menu
+          </button>
+        </div>
+      </nav>
+
+      <div className="mobile-menu" id="mobile-menu" hidden={!isMenuOpen}>
+        <div>
+          <div className="mobile-menu-top">
+            <a className="wordmark" href="#home" onClick={closeMenu}>KV<span className="wordmark-cursor">_</span></a>
+            <button className="menu-button" type="button" onClick={closeMenu}>Close</button>
+          </div>
+          <div className="mobile-menu-links">
+            {navItems.map((item) => (
+              <a className="mobile-menu-link" href={item.href} key={item.href} onClick={closeMenu}>
+                <span>{item.number}</span>{item.label}
+              </a>
+            ))}
+            <ChatBot />
+          </div>
+        </div>
+        <div className="mobile-menu-actions">
+          {sidebarLinks.map((link) => (
+            <a
+              className="sidebar-external"
+              href={link.href}
+              target={link.href.startsWith("http") || link.href.endsWith(".pdf") ? "_blank" : undefined}
+              rel={link.href.startsWith("http") || link.href.endsWith(".pdf") ? "noopener noreferrer" : undefined}
+              key={link.label}
+              onClick={closeMenu}
+            >
+              {link.label} -&gt;
+            </a>
+          ))}
+          <ThemeToggle themeMode={themeMode} onThemeChange={onThemeChange} />
+        </div>
+      </div>
+    </>
+  );
+}
+
+function Profile() {
+  return (
+    <section id="profile" className="section">
+      <div className="site-container profile-grid">
+        <div>
+          <span className="section-label">02 - Profile</span>
+          <h2 className="profile-title">Design-minded developer building useful products.</h2>
+          <p className="profile-copy">
+            I work across UI/UX and web development, turning ideas and prototypes into usable web interfaces and functional systems.
+          </p>
+        </div>
+
+        <div className="profile-facts" aria-label="Profile facts">
+          {profileFacts.map((fact) => (
+            <div className="fact-row" key={fact.label}>
+              <span className="meta-label">{fact.label}</span>
+              <span className="meta-value">{fact.value}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Experience() {
+  return (
+    <section id="experience" className="section">
+      <div className="site-container experience-grid">
+        <div>
+          <span className="section-label">Experience</span>
+          <h2 className="profile-title">Relevant work, plainly stated.</h2>
+        </div>
+        <div className="timeline">
+          {experience.map((item) => (
+            <article className="timeline-item" key={`${item.title}-${item.org}`}>
+              <div className="timeline-top">
+                <span className="timeline-date">{item.date}</span>
+                <div>
+                  <h3 className="timeline-title">{item.org}</h3>
+                  <div className="timeline-org">{item.title}</div>
+                </div>
+              </div>
+              <p>{item.description}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Stack() {
+  return (
+    <section id="stack" className="section">
+      <div className="site-container stack-layout">
+        <div>
+          <span className="section-label">03 - Stack</span>
+          <h2 className="stack-title-main">Tools I use to design and build.</h2>
+        </div>
+        <div className="stack-grid">
+          {stackGroups.map((group) => (
+            <div className="stack-group" key={group.title}>
+              <h3 className="stack-group-title">{group.title}</h3>
+              <div className="stack-list">
+                {group.items.map((item) => <span key={item}>{item}</span>)}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Footer() {
+  return (
+    <footer className="site-footer">
+      <div className="site-container footer-content">
+        <div className="footer-inner">
+          <span>© {new Date().getFullYear()} Khen Joshua Verson</span>
+          <span>Built with React</span>
+        </div>
+        <div className="footer-credit">
+          <span>Design inspiration — </span>
+          <a className="footer-link" href="https://800k.dev/" target="_blank" rel="noopener noreferrer">
+            800k.dev ↗
+          </a>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
 export default function App() {
-  const [scrollY, setScrollY] = useState(0);
-  const [windowHeight, setWindowHeight] = useState(() =>
-    typeof window !== "undefined" ? window.innerHeight : 0
-  );
-
-  const [mainHeight, setMainHeight] = useState(0);
-  const mainRef = useRef(null);
-
-  // --- FLIPPING TEXT STATE ---
-  const [titleNumber, setTitleNumber] = useState(0);
-  const titles = useMemo(
-    () => ["UI/UX Designer", "Web Developer", "Design-Minded Builder"],
-    []
-  );
+  const [themeMode, setThemeMode] = useState(getInitialThemeMode);
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setTitleNumber((prev) => (prev === titles.length - 1 ? 0 : prev + 1));
-    }, 2500);
-    return () => clearTimeout(timeoutId);
-  }, [titleNumber, titles]);
-  // --------------------------------
+    setDocumentTheme(themeMode);
 
-  useEffect(() => {
-    if (!mainRef.current) return;
-    const resizeObserver = new ResizeObserver((entries) => {
-      setMainHeight(entries[0].contentRect.height);
-    });
-    resizeObserver.observe(mainRef.current);
-    return () => resizeObserver.disconnect();
-  }, []);
+    if (themeMode !== "system") return undefined;
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleSystemThemeChange = () => setDocumentTheme("system");
+    mediaQuery.addEventListener("change", handleSystemThemeChange);
+    return () => mediaQuery.removeEventListener("change", handleSystemThemeChange);
+  }, [themeMode]);
 
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    const handleResize = () => setWindowHeight(window.innerHeight);
+  const changeThemeMode = (nextMode, buttonElement) => {
+    const nextTheme = resolveThemePreference(nextMode);
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const rect = buttonElement?.getBoundingClientRect();
+    const x = rect ? rect.left + rect.width / 2 : window.innerWidth - 40;
+    const y = rect ? rect.top + rect.height / 2 : 40;
+    const radius = getRevealRadius(x, y);
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("resize", handleResize);
+    document.documentElement.style.setProperty("--reveal-x", `${x}px`);
+    document.documentElement.style.setProperty("--reveal-y", `${y}px`);
+    document.documentElement.style.setProperty("--reveal-radius", radius);
 
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", handleResize);
+    const apply = () => {
+      setThemeMode(nextMode);
+      setDocumentTheme(nextMode);
     };
-  }, []);
 
-  const isCoverVisible = scrollY <= windowHeight;
+    if (prefersReducedMotion) {
+      apply();
+      return;
+    }
 
-  // =========================================
-  // TEXT TRANSITION MATH
-  // =========================================
-  const scrollProgress = windowHeight > 0 ? scrollY / windowHeight : 0;
-  const textTranslateY = scrollY * 1.5;
-  const textScale = Math.max(0.6, 1 - scrollProgress * 0.5);
-  const textOpacity = Math.max(0, 1 - scrollProgress * 1.2);
-  const arrowOpacity = Math.max(0, 1 - scrollProgress * 4);
+    if (document.startViewTransition) {
+      document.documentElement.classList.add("theme-revealing");
+      const transition = document.startViewTransition(() => flushSync(apply));
+      transition.finished.finally(() => document.documentElement.classList.remove("theme-revealing"));
+      return;
+    }
 
-  // =========================================
-  // MAIN CONTENT BLUR & FADE MATH
-  // =========================================
-  // Blur starts heavy (20px) and smoothly hits 0px when fully scrolled up
-  const mainBlur = Math.max(0, 20 - scrollProgress * 20);
-  // Opacity starts low (15%) and smoothly hits 100% when fully scrolled up
-  const mainOpacity = Math.min(1, 0.15 + scrollProgress * 0.85);
-
-  const trackCoverCta = (label) => {
-    trackEvent("select_content", {
-      content_type: "cover_cta",
-      item_id: label,
-    });
+    const overlay = document.createElement("span");
+    overlay.className = "theme-transition-overlay";
+    overlay.style.setProperty("--reveal-x", `${x}px`);
+    overlay.style.setProperty("--reveal-y", `${y}px`);
+    overlay.style.setProperty("--reveal-color", themeBackground(nextTheme));
+    overlay.style.setProperty("--fallback-scale", `${Math.ceil(parseInt(radius, 10) * 2)}`);
+    document.body.appendChild(overlay);
+    window.setTimeout(apply, 210);
+    overlay.addEventListener("animationend", () => overlay.remove(), { once: true });
   };
 
   return (
-    <div style={{ position: "relative", width: "100%", height: `calc(100vh + ${mainHeight}px)`, fontFamily: "'DM Sans', sans-serif" }}>
-
-      {/* =========================================
-          PART 1: THE COVER PAGE
-          ========================================= */}
-      {isCoverVisible && (
-        <section style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100vh",
-          zIndex: 10,
-          backgroundColor: "#030712",
-          color: "#ffffff",
-          overflow: "hidden",
-          transform: `translateY(-${scrollY}px)`
-        }}>
-
-          {/* NEURAL NOISE BACKGROUND */}
-          <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", zIndex: 0 }}>
-            <NeuralNoise color={[0.14, 0.39, 0.92]} opacity={0.6} speed={0.0015} />
-          </div>
-
-          <div style={{
-            height: "100%",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            padding: "0 24px",
-            transform: `translateY(${textTranslateY}px) scale(${textScale})`,
-            opacity: textOpacity,
-            transformOrigin: "center center",
-            position: "relative",
-            zIndex: 1
-          }}>
-            <div className="cover-fade" style={{ textAlign: "center", width: "100%", maxWidth: "800px" }}>
-
-              <h1 style={{
-                fontSize: "clamp(2.5rem, 8vw, 4.5rem)",
-                fontWeight: "800",
-                margin: "0 0 10px 0",
-                fontFamily: "'Sora', sans-serif",
-                letterSpacing: "0",
-                color: "#fff",
-                lineHeight: "1.1"
-              }}>
-                Khen Joshua Verson
-              </h1>
-
-              {/* --- THE FLIPPING TEXT --- */}
-              <h2 style={{
-                fontSize: "clamp(1.2rem, 5vw, 2rem)",
-                fontWeight: "600",
-                margin: "0 auto 20px auto",
-                color: "#93c5fd",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                minHeight: "3rem",
-              }}>
-                <AnimatePresence mode="wait">
-                  <motion.span
-                    key={titleNumber}
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -15 }}
-                    transition={{ duration: 0.45 }}
-                    style={{ textAlign: "center" }}
-                  >
-                    {titles[titleNumber]}
-                  </motion.span>
-                </AnimatePresence>
-              </h2>
-              {/* ------------------------------------------ */}
-
-              <p style={{ fontSize: "clamp(1rem, 4vw, 1.1rem)", color: "#d1d5db", marginBottom: "26px" }}>
-                Designing clean interfaces and building responsive web experiences.
-              </p>
-
-              <div style={{ display: "flex", justifyContent: "center", gap: "12px", flexWrap: "wrap" }}>
-                <a
-                  href="#projects"
-                  onClick={() => trackCoverCta("view_work")}
-                  style={{
-                    color: "#030712",
-                    background: "#ffffff",
-                    textDecoration: "none",
-                    fontWeight: "800",
-                    padding: "12px 18px",
-                    borderRadius: "8px",
-                  }}
-                >
-                  View Work
-                </a>
-
-              </div>
-            </div>
-          </div>
-
-          <div className="cover-fade-delay" style={{
-            position: "absolute", bottom: "40px", left: 0, width: "100%", display: "flex",
-            flexDirection: "column", alignItems: "center", gap: "10px", color: "#6b7280",
-            opacity: arrowOpacity,
-            zIndex: 1
-          }}>
-            <span style={{ fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.25em", fontWeight: "700" }}>Scroll to uncover</span>
-            <svg className="bounce-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <line x1="12" y1="5" x2="12" y2="19"></line>
-              <polyline points="19 12 12 19 5 12"></polyline>
-            </svg>
-          </div>
-        </section>
-      )}
-
-      {/* =========================================
-          PART 2: THE MAIN CONTENT
-          ========================================= */}
-      <main ref={mainRef} style={{
-        position: "absolute",
-        top: "100vh", // Changed from conditionally fixed so it naturally slides up!
-        left: 0,
-        width: "100%",
-        zIndex: 1,
-        backgroundColor: "#ffffff",
-        minHeight: "100vh",
-        /* Apply the dynamic Blur & Opacity transition */
-        filter: scrollProgress < 1 ? `blur(${mainBlur}px)` : "none",
-        opacity: scrollProgress < 1 ? mainOpacity : 1,
-        willChange: scrollProgress < 1 ? "filter, opacity" : "auto"
-      }}>
-
-        <nav style={{
-          position: "sticky", top: 0, width: "100%", zIndex: 50,
-          backgroundColor: "rgba(255,255,255,0.88)", backdropFilter: "blur(12px)", borderBottom: "1px solid #e5e7eb",
-        }}>
-          <div style={{ maxWidth: "1160px", margin: "0 auto", padding: "0 24px", height: "64px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <a href="#home" style={{ fontFamily: "'Sora', sans-serif", fontWeight: "800", fontSize: "1.25rem", color: "#111827", textDecoration: "none", letterSpacing: "0" }}>
-              KV<span style={{ color: "#2563eb" }}>.</span>
-            </a>
-            <div style={{ display: "flex", gap: "4px" }}>
-              {[
-                { href: "#home",          label: "Home" },
-                { href: "#projects",      label: "Work" },
-                { href: "#certifications",label: "Certs" },
-                { href: "#contact",       label: "Contact" },
-              ].map(({ href, label }) => (
-                <a key={href} href={href} className="nav-link">{label}</a>
-              ))}
-            </div>
-          </div>
-        </nav>
-
-        <div style={{ maxWidth: "1160px", margin: "0 auto", padding: "0 24px", paddingTop: "80px" }}>
-          <div id="home"><Home /></div>
-          <hr className="section-divider" />
-          <div id="projects">
-            <CodedProjects />
-            <FigmaDesigns />
-          </div>
-          <hr className="section-divider" />
-          <div id="certifications"><Certifications /></div>
-          <hr className="section-divider" />
-          <div id="contact"><Contact /></div>
-        </div>
-
-        <footer style={{ textAlign: "center", padding: "40px 24px", color: "#9ca3af", borderTop: "1px solid #e5e7eb", background: "#f9fafb", fontSize: "0.875rem" }}>
-          Copyright {new Date().getFullYear()} Khen Joshua Verson - Built with React
-        </footer>
+    <div className="app-shell">
+      <LayoutChrome themeMode={themeMode} onThemeChange={changeThemeMode} />
+      <main className="site-main">
+        <Home />
+        <CodedProjects />
+        <FigmaDesigns />
+        <Profile />
+        <Experience />
+        <Stack />
+        <Certifications />
+        <Contact />
       </main>
-
-      <ChatBot />
-
+      <Footer />
     </div>
   );
 }

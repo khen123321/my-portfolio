@@ -1,80 +1,175 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { trackEvent } from "../analytics.js";
 
-const QUICK_REPLIES = [
-  "What technologies do you use?",
-  "Are you available for hire?",
-  "Tell me about your projects",
-  "How can I contact you?",
-];
+const getTimestamp = () =>
+  new Intl.DateTimeFormat("en", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(new Date());
 
-export default function ChatBot() {
+function ChatMessage({ message }) {
+  const label = message.role === "user" ? "YOU" : message.role === "system" ? "SYSTEM" : "KV.AI";
+
+  return (
+    <article className={`chat-entry chat-entry-${message.role}`}>
+      <header className="chat-entry-meta">
+        <span>{label}</span>
+        <span>{message.timestamp}</span>
+      </header>
+      <div className="chat-entry-rule" aria-hidden="true" />
+      <div className="chat-entry-body">{message.content}</div>
+    </article>
+  );
+}
+
+export default function ChatBot({ onOpen }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState([
-    {
-      role: "assistant",
-      content: "Hi! I'm Khen's AI assistant. Ask me anything about his work, skills, or availability.",
-    },
-  ]);
+  const [isClosing, setIsClosing] = useState(false);
+  const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [hasNewMessage, setHasNewMessage] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const launcherRef = useRef(null);
+  const overlayRef = useRef(null);
+  const closeTimerRef = useRef(null);
 
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  const hasConversation = messages.length > 0;
 
-  useEffect(() => {
-    if (isOpen && inputRef.current) {
-      setTimeout(() => inputRef.current?.focus(), 100);
-    }
-  }, [isOpen]);
+  const setOverlayOrigin = useCallback(() => {
+    const rect = launcherRef.current?.getBoundingClientRect();
+    if (!rect) return;
+
+    document.documentElement.style.setProperty("--chat-origin-x", `${rect.left + rect.width / 2}px`);
+    document.documentElement.style.setProperty("--chat-origin-y", `${rect.top + rect.height / 2}px`);
+  }, []);
 
   const handleOpen = () => {
-    trackEvent("chat_open", { location: "floating_button" });
+    setOverlayOrigin();
+    trackEvent("chat_open", { location: "sidebar" });
+    setIsClosing(false);
     setIsOpen(true);
     setHasNewMessage(false);
+    onOpen?.();
   };
 
-  const sendMessage = async (text) => {
-    const userText = (text || inputValue).trim();
+  const closeChat = useCallback(() => {
+    if (!isOpen || isClosing) return;
+
+    setOverlayOrigin();
+    setIsClosing(true);
+
+    closeTimerRef.current = window.setTimeout(() => {
+      setIsOpen(false);
+      setIsClosing(false);
+      launcherRef.current?.focus();
+    }, 360);
+  }, [isClosing, isOpen, setOverlayOrigin]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+  }, [isOpen, messages, isLoading]);
+
+  useEffect(() => {
+    if (!inputRef.current) return;
+    inputRef.current.style.height = "auto";
+    inputRef.current.style.height = `${inputRef.current.scrollHeight}px`;
+  }, [inputValue]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const focusTimer = window.setTimeout(() => inputRef.current?.focus(), 120);
+
+    return () => {
+      window.clearTimeout(focusTimer);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeChat();
+        return;
+      }
+
+      if (event.key !== "Tab" || !overlayRef.current) return;
+
+      const focusable = overlayRef.current.querySelectorAll(
+        'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      );
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (!first || !last) return;
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [closeChat, isOpen]);
+
+  useEffect(
+    () => () => {
+      if (closeTimerRef.current) window.clearTimeout(closeTimerRef.current);
+    },
+    [],
+  );
+
+  const sendMessage = async (text, source = "manual_input") => {
+    const userText = String(text || inputValue).trim();
     if (!userText || isLoading) return;
 
-    trackEvent("chat_message", { source: text ? "quick_reply" : "manual_input" });
+    trackEvent("chat_message", { source });
 
     setInputValue("");
-    const newMessages = [...messages, { role: "user", content: userText }];
+    const userMessage = { role: "user", content: userText, timestamp: getTimestamp() };
+    const newMessages = [...messages, userMessage];
     setMessages(newMessages);
     setIsLoading(true);
 
     try {
-      const apiMessages = newMessages
-        .filter((_, index) => index > 0)
-        .map((message) => ({ role: message.role, content: message.content }));
-
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: apiMessages,
+          messages: newMessages
+            .filter((message) => message.role === "user" || message.role === "assistant")
+            .map((message) => ({ role: message.role, content: message.content })),
         }),
       });
 
       const data = await response.json();
       const reply =
         data?.content?.[0]?.text ||
-        "Sorry, I had trouble responding. Please try again or reach out via email.";
+        "KV.AI could not complete that request. Try again in a moment.";
 
-      setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
+      setMessages((prev) => [...prev, { role: "assistant", content: reply, timestamp: getTimestamp() }]);
       if (!isOpen) setHasNewMessage(true);
     } catch {
       setMessages((prev) => [
         ...prev,
         {
-          role: "assistant",
-          content: "Something went wrong. Please email Khen directly at versonkhenjoshua@gmail.com.",
+          role: "system",
+          content: "KV.AI could not complete that request. Try again in a moment.",
+          timestamp: getTimestamp(),
         },
       ]);
     } finally {
@@ -82,7 +177,12 @@ export default function ChatBot() {
     }
   };
 
-  const handleKeyDown = (event) => {
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    sendMessage();
+  };
+
+  const handleInputKeyDown = (event) => {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
       sendMessage();
@@ -90,278 +190,99 @@ export default function ChatBot() {
   };
 
   return (
-    <>
-      <style>{`
-        .chat-msg-user {
-          background: #2563eb;
-          color: #fff;
-          border-radius: 18px 18px 4px 18px;
-          padding: 10px 14px;
-          font-size: 0.9rem;
-          line-height: 1.5;
-          max-width: 80%;
-          align-self: flex-end;
-          word-break: break-word;
-        }
-        .chat-msg-bot {
-          background: #f3f4f6;
-          color: #111827;
-          border-radius: 18px 18px 18px 4px;
-          padding: 10px 14px;
-          font-size: 0.9rem;
-          line-height: 1.5;
-          max-width: 80%;
-          align-self: flex-start;
-          word-break: break-word;
-        }
-        .quick-reply-btn {
-          background: #eff6ff;
-          color: #2563eb;
-          border: 1px solid #bfdbfe;
-          border-radius: 20px;
-          padding: 6px 14px;
-          font-size: 0.8rem;
-          font-weight: 600;
-          cursor: pointer;
-          transition: background 0.15s;
-          white-space: nowrap;
-          font-family: 'DM Sans', sans-serif;
-        }
-        .quick-reply-btn:hover { background: #dbeafe; }
-        .chat-input {
-          flex: 1;
-          border: none;
-          outline: none;
-          background: transparent;
-          font-family: 'DM Sans', sans-serif;
-          font-size: 0.9rem;
-          color: #111827;
-          padding: 0;
-          resize: none;
-        }
-        .chat-input::placeholder { color: #9ca3af; }
-        .send-btn {
-          background: #2563eb;
-          color: #fff;
-          border: none;
-          border-radius: 10px;
-          width: 36px;
-          height: 36px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          transition: background 0.15s;
-          flex-shrink: 0;
-        }
-        .send-btn:hover { background: #1d4ed8; }
-        .send-btn:disabled { background: #d1d5db; cursor: not-allowed; }
-        .fab-btn {
-          width: 56px;
-          height: 56px;
-          border-radius: 50%;
-          background: #2563eb;
-          border: none;
-          color: white;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          box-shadow: 0 4px 20px rgba(37,99,235,0.45);
-          transition: transform 0.2s, background 0.2s;
-          position: relative;
-        }
-        .fab-btn:hover { transform: scale(1.08); background: #1d4ed8; }
-        @media (max-width: 520px) {
-          .chat-window { width: calc(100vw - 32px) !important; height: min(520px, calc(100vh - 112px)) !important; }
-        }
-      `}</style>
+    <div className="chat-shell">
+      {isOpen && (
+        <section
+          ref={overlayRef}
+          className={`chat-overlay ${isClosing ? "is-closing" : "is-open"} ${hasConversation ? "has-conversation" : "is-intro"}`}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="chat-overlay-title"
+        >
+          <div className="chat-texture" aria-hidden="true" />
 
-      <div style={{
-        position: "fixed",
-        bottom: "28px",
-        right: "28px",
-        zIndex: 9999,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "flex-end",
-        gap: "12px",
-      }}>
-        {isOpen && (
-          <div className="chat-window chat-slide-up" style={{
-            width: "360px",
-            height: "520px",
-            background: "#fff",
-            borderRadius: "20px",
-            boxShadow: "0 20px 60px rgba(0,0,0,0.15), 0 0 0 1px #e5e7eb",
-            display: "flex",
-            flexDirection: "column",
-            overflow: "hidden",
-            fontFamily: "'DM Sans', sans-serif",
-          }}>
-            <div style={{
-              background: "#2563eb",
-              padding: "16px 20px",
-              display: "flex",
-              alignItems: "center",
-              gap: "12px",
-            }}>
-              <div style={{
-                width: "36px",
-                height: "36px",
-                background: "rgba(255,255,255,0.2)",
-                borderRadius: "50%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "0.78rem",
-                fontWeight: "800",
-                color: "#fff",
-              }}>AI</div>
-              <div style={{ flex: 1 }}>
-                <div style={{ color: "#fff", fontWeight: "700", fontSize: "0.95rem" }}>
-                  Khen's Assistant
-                </div>
-                <div style={{ color: "rgba(255,255,255,0.7)", fontSize: "0.75rem" }}>
-                  <span style={{
-                    display: "inline-block",
-                    width: "7px",
-                    height: "7px",
-                    background: "#4ade80",
-                    borderRadius: "50%",
-                    marginRight: "5px",
-                    verticalAlign: "middle",
-                  }} />
-                  Online - Replies instantly
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setIsOpen(false)}
-                aria-label="Close chat"
-                style={{
-                  background: "rgba(255,255,255,0.15)",
-                  border: "none",
-                  borderRadius: "8px",
-                  color: "#fff",
-                  width: "30px",
-                  height: "30px",
-                  cursor: "pointer",
-                  fontSize: "1rem",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >x</button>
-            </div>
+          <header className="chat-topbar">
+            <h2 id="chat-overlay-title" className="chat-title">
+              KV.AI
+            </h2>
+            <button className="chat-close" type="button" onClick={closeChat} aria-label="Close KV.AI">
+              ESC / CLOSE x
+            </button>
+          </header>
 
-            <div style={{
-              flex: 1,
-              overflowY: "auto",
-              padding: "16px",
-              display: "flex",
-              flexDirection: "column",
-              gap: "10px",
-            }}>
-              {messages.map((message, index) => (
-                <div key={`${message.role}-${index}`} className={message.role === "user" ? "chat-msg-user" : "chat-msg-bot"}>
-                  {message.content}
-                </div>
-              ))}
-
-              {isLoading && (
-                <div className="chat-msg-bot" style={{ display: "flex", gap: "4px", alignItems: "center", padding: "12px 16px" }}>
-                  {[0, 150, 300].map((delay) => (
-                    <span key={delay} className="typing-dot" style={{
-                      width: "6px",
-                      height: "6px",
-                      background: "#6b7280",
-                      borderRadius: "50%",
-                      display: "inline-block",
-                      animationDelay: `${delay}ms`,
-                    }} />
-                  ))}
-                </div>
-              )}
-
-              <div ref={messagesEndRef} />
-            </div>
-
-            {messages.length <= 2 && !isLoading && (
-              <div style={{
-                padding: "0 16px 12px",
-                display: "flex",
-                flexWrap: "wrap",
-                gap: "8px",
-              }}>
-                {QUICK_REPLIES.map((reply) => (
-                  <button key={reply} type="button" className="quick-reply-btn" onClick={() => sendMessage(reply)}>
-                    {reply}
-                  </button>
-                ))}
+          <div className="chat-stage">
+            {!hasConversation && (
+              <div className="chat-intro" aria-hidden={hasConversation}>
+                <p className="chat-prompt">
+                  what do you
+                  <br />
+                  want to ask?<span className="chat-cursor">_</span>
+                </p>
               </div>
             )}
 
-            <div style={{
-              borderTop: "1px solid #e5e7eb",
-              padding: "12px 16px",
-              display: "flex",
-              alignItems: "center",
-              gap: "10px",
-              background: "#fff",
-            }}>
-              <input
+            {hasConversation && (
+              <div className="chat-transcript" aria-live="polite">
+                {messages.map((message, index) => (
+                  <ChatMessage key={`${message.role}-${index}-${message.timestamp}`} message={message} />
+                ))}
+
+                {isLoading && (
+                  <article className="chat-entry chat-entry-assistant" aria-live="polite" aria-label="KV.AI is thinking">
+                    <header className="chat-entry-meta">
+                      <span>KV.AI</span>
+                      <span>{getTimestamp()}</span>
+                    </header>
+                    <div className="chat-entry-rule" aria-hidden="true" />
+                    <div className="chat-processing">processing<span className="chat-cursor">_</span></div>
+                  </article>
+                )}
+
+                <div ref={messagesEndRef} />
+              </div>
+            )}
+          </div>
+
+          <footer className="chat-console">
+            <form className="chat-command-form" onSubmit={handleSubmit}>
+              <label className="sr-only" htmlFor="kv-ai-input">
+                Ask KV.AI about Khen's portfolio
+              </label>
+              <span className="chat-command-prefix" aria-hidden="true">
+                &gt;
+              </span>
+              <textarea
                 ref={inputRef}
+                id="kv-ai-input"
                 className="chat-input"
-                type="text"
-                placeholder="Ask me anything..."
                 value={inputValue}
                 onChange={(event) => setInputValue(event.target.value)}
-                onKeyDown={handleKeyDown}
+                onKeyDown={handleInputKeyDown}
                 disabled={isLoading}
                 maxLength={1000}
+                rows={1}
+                placeholder={hasConversation ? "ask another question_" : "ask something_"}
               />
-              <button
-                type="button"
-                className="send-btn"
-                onClick={() => sendMessage()}
-                disabled={!inputValue.trim() || isLoading}
-                aria-label="Send message"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="22" y1="2" x2="11" y2="13"></line>
-                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                </svg>
+              <button className="send-btn" type="submit" disabled={!inputValue.trim() || isLoading}>
+                SEND &crarr;
               </button>
-            </div>
-          </div>
-        )}
+            </form>
 
-        <button className="fab-btn bounce-in" type="button" onClick={isOpen ? () => setIsOpen(false) : handleOpen} aria-label={isOpen ? "Close chat" : "Open chat"}>
-          {hasNewMessage && !isOpen && (
-            <div style={{
-              position: "absolute",
-              top: "-2px",
-              right: "-2px",
-              width: "14px",
-              height: "14px",
-              background: "#ef4444",
-              borderRadius: "50%",
-              border: "2px solid #fff",
-            }} />
-          )}
-          {isOpen ? (
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          ) : (
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-            </svg>
-          )}
-        </button>
-      </div>
-    </>
+          </footer>
+        </section>
+      )}
+
+      <button
+        ref={launcherRef}
+        className="chat-fab sidebar-link"
+        type="button"
+        onClick={isOpen ? closeChat : handleOpen}
+        aria-label={isOpen ? "Close KV.AI" : "Open KV.AI"}
+        aria-expanded={isOpen}
+      >
+        {hasNewMessage && !isOpen && <span className="chat-badge" aria-hidden="true" />}
+        question?
+      </button>
+    </div>
   );
 }

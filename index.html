@@ -8,7 +8,7 @@
       content="Portfolio of Khen Joshua Verson, a UI/UX designer and web developer creating responsive interfaces, prototypes, dashboards, and practical web systems."
     />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#2563eb" />
+    <meta name="theme-color" content="#ffffff" />
 
     <meta property="og:title" content="Khen Joshua Verson | UI/UX Designer & Web Developer" />
     <meta
@@ -27,6 +27,20 @@
     <meta name="twitter:image" content="/profile.png" />
 
     <title>Khen Joshua Verson | UI/UX Designer & Web Developer</title>
+    <script>
+      try {
+        const mode = localStorage.getItem('theme-mode') || 'system';
+        const theme = mode === 'system'
+          ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+          : mode;
+        document.documentElement.dataset.themeMode = mode;
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.style.colorScheme = theme;
+      } catch {
+        document.documentElement.dataset.themeMode = 'system';
+        document.documentElement.dataset.theme = 'light';
+      }
+    </script>
     <link rel="icon" type="image/png" href="/favicon.png" />
   </head>
   <body>
