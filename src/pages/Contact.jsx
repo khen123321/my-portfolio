@@ -1,11 +1,13 @@
 import React from "react";
 import { trackEvent } from "../analytics.js";
 
+const projectMailto = "mailto:versonkhenjoshua@gmail.com?subject=Project%20Inquiry%20from%20Portfolio";
+
 const links = [
   {
     label: "Email",
     value: "versonkhenjoshua@gmail.com",
-    href: "mailto:versonkhenjoshua@gmail.com",
+    href: projectMailto,
     external: false,
   },
   {
@@ -39,7 +41,7 @@ export default function Contact() {
             I am open to Web Developer, UI/UX Designer, and hybrid product roles. Send a direct email if you want to discuss a project, role, or collaboration.
           </p>
           <div className="contact-actions">
-            <a href="mailto:versonkhenjoshua@gmail.com" className="btn-primary" onClick={() => trackContact("email_primary")}>
+            <a href={projectMailto} className="btn-primary">
               &gt; start_a_project
             </a>
           </div>
@@ -53,7 +55,7 @@ export default function Contact() {
               target={link.external ? "_blank" : undefined}
               rel={link.external ? "noopener noreferrer" : undefined}
               className="contact-link"
-              onClick={() => trackContact(link.label)}
+              onClick={link.href.startsWith("mailto:") ? undefined : () => trackContact(link.label)}
             >
               <span className="meta-label">{link.label}</span>
               <span className="contact-value">{link.value} -&gt;</span>

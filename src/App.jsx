@@ -185,6 +185,17 @@ function LayoutChrome({ themeMode, onThemeChange }) {
 
   const closeMenu = () => setIsMenuOpen(false);
 
+  useEffect(() => {
+    if (!isMenuOpen) return undefined;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isMenuOpen]);
+
   return (
     <>
       <aside className="desktop-sidebar" aria-label="Primary navigation">
@@ -238,7 +249,7 @@ function LayoutChrome({ themeMode, onThemeChange }) {
                 <span>{item.number}</span>{item.label}
               </a>
             ))}
-            <ChatBot />
+            <ChatBot launcherPrefix="06" />
           </div>
         </div>
         <div className="mobile-menu-actions">

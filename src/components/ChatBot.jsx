@@ -23,7 +23,7 @@ function ChatMessage({ message }) {
   );
 }
 
-export default function ChatBot({ onOpen }) {
+export default function ChatBot({ launcherPrefix, onOpen }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -281,6 +281,7 @@ export default function ChatBot({ onOpen }) {
         aria-expanded={isOpen}
       >
         {hasNewMessage && !isOpen && <span className="chat-badge" aria-hidden="true" />}
+        {launcherPrefix && <span aria-hidden="true">{launcherPrefix}</span>}
         question?
       </button>
     </div>
