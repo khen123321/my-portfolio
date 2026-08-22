@@ -1,9 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 
 export default function MediaGallery({ mediaItems }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (!isModalOpen) return undefined;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isModalOpen]);
 
   if (!mediaItems || mediaItems.length === 0) return null;
 
@@ -33,12 +44,10 @@ export default function MediaGallery({ mediaItems }) {
 
   const openModal = () => {
     setIsModalOpen(true);
-    document.body.style.overflow = "hidden";
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
-    document.body.style.overflow = "unset";
   };
 
   const renderContent = (url, isModal = false) => {

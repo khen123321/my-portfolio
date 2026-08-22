@@ -232,9 +232,13 @@ export default function CodedProjects() {
   const isMasonryLayout = useIsMasonryLayout();
 
   useEffect(() => {
-    document.body.style.overflow = modalState.isOpen ? "hidden" : "unset";
+    if (!modalState.isOpen) return undefined;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
     return () => {
-      document.body.style.overflow = "unset";
+      document.body.style.overflow = previousOverflow;
     };
   }, [modalState.isOpen]);
 
