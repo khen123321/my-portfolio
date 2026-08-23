@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { BrowserRouter, Link, NavLink, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 
@@ -46,14 +46,14 @@ const experience = [
     org: "CLIMBS Life and General Insurance Cooperative",
     date: "2026",
     description:
-      "Developed and supported CIMS, including intern workflows, HR/admin screens, DTR processes, reports, and role-based access.",
+      "Developed CIMS intern workflows, HR/admin screens, DTR processes, reports, and role-based access.",
   },
   {
     title: "Web Developer / UI Designer",
     org: "Freelance",
     date: "Project-based",
     description:
-      "Built client-facing web experiences and practical interfaces, including the Wedding RSVP & Access Control project and dashboard-oriented workflows.",
+      "Built client web experiences, including RSVP/access workflows and dashboard interfaces.",
   },
 ];
 
@@ -205,6 +205,8 @@ function LayoutChrome({ themeMode, onThemeChange }) {
   const navigate = useNavigate();
   const [isMenuMounted, setIsMenuMounted] = useState(false);
   const [isMenuClosing, setIsMenuClosing] = useState(false);
+  const [mobileChatOpenSignal, setMobileChatOpenSignal] = useState(0);
+  const pendingMenuActionRef = useRef(null);
   const location = useLocation();
 
   const isMenuOpen = isMenuMounted && !isMenuClosing;
@@ -224,8 +226,13 @@ function LayoutChrome({ themeMode, onThemeChange }) {
 
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const closeTimer = window.setTimeout(() => {
+      const pendingAction = pendingMenuActionRef.current;
+      pendingMenuActionRef.current = null;
       setIsMenuMounted(false);
       setIsMenuClosing(false);
+      if (pendingAction) {
+        window.setTimeout(pendingAction, 0);
+      }
     }, prefersReducedMotion ? 40 : 380);
 
     return () => window.clearTimeout(closeTimer);
@@ -279,6 +286,23 @@ function LayoutChrome({ themeMode, onThemeChange }) {
     window.setTimeout(() => navigate(path), 120);
   };
 
+  const closeMenuThen = useCallback((action) => {
+    pendingMenuActionRef.current = action;
+
+    if (!isMenuMounted) {
+      const pendingAction = pendingMenuActionRef.current;
+      pendingMenuActionRef.current = null;
+      pendingAction?.();
+      return;
+    }
+
+    closeMenu();
+  }, [closeMenu, isMenuMounted]);
+
+  const openMobileChatFromMenu = () => {
+    closeMenuThen(() => setMobileChatOpenSignal((signal) => signal + 1));
+  };
+
   return (
     <>
       <aside className="desktop-sidebar" aria-label="Primary navigation">
@@ -330,7 +354,10 @@ function LayoutChrome({ themeMode, onThemeChange }) {
                 <span>{item.number}</span>{item.label}
               </button>
             ))}
-            <ChatBot launcherPrefix="06" />
+            <button className="chat-fab sidebar-link" type="button" onClick={openMobileChatFromMenu} aria-label="Open KV.AI">
+              <span aria-hidden="true">06</span>
+              question?
+            </button>
           </div>
           <div className="mobile-menu-actions">
             {sidebarLinks.map((link) => (
@@ -349,6 +376,7 @@ function LayoutChrome({ themeMode, onThemeChange }) {
           </div>
         </div>
       </div>
+      <ChatBot hideLauncher openSignal={mobileChatOpenSignal} openLocation="mobile-menu" />
     </>
   );
 }
@@ -359,9 +387,9 @@ function Profile() {
       <div className="site-container profile-grid">
         <div>
           <span className="section-label">02 - Profile</span>
-          <h2 className="profile-title">Design-minded developer building useful products.</h2>
+          <h2 className="profile-title">I work between interface design and web development.</h2>
           <p className="profile-copy">
-            I work across UI/UX and web development, turning ideas and prototypes into usable web interfaces and functional systems.
+            I turn prototypes and requirements into usable interfaces, dashboards, and web systems.
           </p>
         </div>
 
@@ -384,7 +412,7 @@ function Experience() {
       <div className="site-container experience-grid">
         <div>
           <span className="section-label">Experience</span>
-          <h2 className="profile-title">Relevant work, plainly stated.</h2>
+          <h2 className="profile-title">Relevant work.</h2>
         </div>
         <div className="timeline">
           {experience.map((item) => (
@@ -411,7 +439,7 @@ function Stack() {
       <div className="site-container stack-layout">
         <div>
           <span className="section-label">03 - Stack</span>
-          <h2 className="stack-title-main">Tools I use to design and build.</h2>
+          <h2 className="stack-title-main">Tools I use.</h2>
         </div>
         <div className="stack-grid">
           {stackGroups.map((group) => (

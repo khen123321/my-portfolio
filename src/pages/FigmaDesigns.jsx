@@ -7,7 +7,7 @@ const designs = [
     title: "P-Lament Mobile App (Thesis)",
     category: "Mobile Design System",
     description:
-      "A mobile interface for an IoT recycling concept, covering reward points, recycling stats, smart-bin discovery, and a cleaner app flow for student users.",
+      "A mobile interface for IoT recycling, rewards, stats, and smart-bin discovery.",
     tech: ["Figma", "Prototyping", "UI/UX Design"],
     link: "https://embed.figma.com/design/p7cT9YchEoq97VaiCfDmwZ/OJT-Practice-File?node-id=0-1&embed-host=share",
     linkText: "View Interactive Prototype",
@@ -17,7 +17,7 @@ const designs = [
     title: "Intern Tracker Interface",
     category: "Dashboard UI",
     description:
-      "Dashboard and portal design work for CIMS, focused on intern progress visibility, HR review flows, and clear attendance-management states.",
+      "Dashboard and portal UI for intern progress, HR review, and attendance states.",
     tech: ["Figma", "Wireframing", "Dashboard Design"],
     link: "https://embed.figma.com/design/oCEs4vr6eAyLEnjUIdJRUs/Intern-Tracker?node-id=0-1&embed-host=share",
     linkText: "View Design Prototype",
@@ -27,7 +27,7 @@ const designs = [
     title: "Customizable Food App Concept",
     category: "Mobile Prototype",
     description:
-      "A high-fidelity ordering concept with a granular customization flow, showing how users can adjust ingredients before checkout.",
+      "A high-fidelity ordering flow for ingredient customization before checkout.",
     tech: ["Figma", "Component Architecture"],
     link: "https://embed.figma.com/design/Mh8QHB04L0qPeM2Ti6Ajwq/Untitled?node-id=0-1&embed-host=share",
     linkText: "View Prototype",
@@ -49,9 +49,9 @@ export default function FigmaDesigns() {
         <header className="section-header reveal-on-load">
           <span className="section-kicker">02 / Design Work</span>
           <div>
-            <h2 className="section-title">Interfaces before implementation.</h2>
+            <h2 className="section-title">Interface studies.</h2>
             <p className="section-copy">
-              UI/UX projects focused on product flow, dashboard clarity, and mobile interaction design.
+              Product flows, dashboard clarity, and mobile interaction design.
             </p>
           </div>
         </header>

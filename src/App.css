@@ -307,7 +307,7 @@ img, video, iframe { max-width: 100%; }
 .mobile-menu-link.is-active { color: var(--gray-500); }
 .mobile-menu-actions { display: grid; gap: 12px; border-top: 1px solid var(--gray-200); padding-top: 20px; }
 .mobile-menu-link,
-.mobile-menu-links .chat-shell,
+.mobile-menu-links .chat-fab,
 .mobile-menu-actions {
   opacity: 0;
   transform: translate3d(12px, 0, 0);
@@ -315,7 +315,7 @@ img, video, iframe { max-width: 100%; }
 }
 
 .mobile-menu.is-open .mobile-menu-link,
-.mobile-menu.is-open .mobile-menu-links .chat-shell,
+.mobile-menu.is-open .mobile-menu-links .chat-fab,
 .mobile-menu.is-open .mobile-menu-actions {
   opacity: 1;
   transform: translate3d(0, 0, 0);
@@ -326,7 +326,7 @@ img, video, iframe { max-width: 100%; }
 .mobile-menu.is-open .mobile-menu-link:nth-child(3) { transition-delay: 130ms; }
 .mobile-menu.is-open .mobile-menu-link:nth-child(4) { transition-delay: 160ms; }
 .mobile-menu.is-open .mobile-menu-link:nth-child(5) { transition-delay: 190ms; }
-.mobile-menu.is-open .mobile-menu-links .chat-shell { transition-delay: 220ms; }
+.mobile-menu.is-open .mobile-menu-links .chat-fab { transition-delay: 220ms; }
 .mobile-menu.is-open .mobile-menu-actions { transition-delay: 250ms; }
 
 .mobile-menu-links .chat-fab {
@@ -822,6 +822,9 @@ html.theme-revealing::view-transition-new(root) { animation: themeReveal 530ms v
 }
 
 @media (max-width: 900px) {
+  html.chat-active .mobile-nav {
+    pointer-events: none;
+  }
   .site-main,
   .site-footer {
     transition: transform 390ms cubic-bezier(0.22, 1, 0.36, 1), opacity 390ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -1151,7 +1154,7 @@ html.theme-revealing::view-transition-new(root) { animation: themeReveal 530ms v
   .mobile-menu.is-open,
   .mobile-menu.is-closing,
   .mobile-menu-link,
-  .mobile-menu-links .chat-shell,
+  .mobile-menu-links .chat-fab,
   .mobile-menu-actions,
   html.mobile-menu-active .site-main,
   html.mobile-menu-active .site-footer {

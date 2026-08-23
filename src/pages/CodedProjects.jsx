@@ -15,7 +15,7 @@ const projects = [
     role: "Full-Stack Developer / Project Developer",
     availability: "Public production website",
     description:
-      "A full-stack NFC storefront for businesses, combining customizable NFC products, secure product management, analytics, and dynamic publishing.",
+      "An NFC storefront for businesses with customizable products, secure admin tools, analytics, and dynamic publishing.",
     impact: [
       "Dynamic Supabase-powered product management and publishing.",
       "Custom NFC artwork upload and product preview.",
@@ -38,7 +38,7 @@ const projects = [
     role: "Developer / UI Builder",
     availability: "Private internal system",
     description:
-      "A web-based internship monitoring platform designed to replace paper DTR cards, repetitive guardhouse logging, and manual HR encoding with a centralized intern and HR/admin workflow.",
+      "An internship monitoring platform for intern attendance, DTR records, HR review, and admin workflows.",
     impact: [
       "Designed and built mobile-responsive intern workflows and desktop-first HR/admin management screens.",
       "Planned attendance rules for geofenced clock-ins, selfie verification, DTR logs, forms, and hour computation.",
@@ -53,28 +53,28 @@ const projects = [
         role: "HR Panel",
         title: "Time Tracker & Intern Profiles",
         details:
-          "HR can review intern profiles, rendered hours, Daily Time Records, submitted documents, and progress details from one management view.",
+          "HR can review intern profiles, rendered hours, reports, documents, and progress in one view.",
       },
       {
         url: v2,
         role: "Admin Panel",
         title: "Role Management & Permissions",
         details:
-          "Admin users can add HR personnel, assign permissions, and control access levels across the internship monitoring workflow.",
+          "Admins can add HR users, assign permissions, and manage access across the workflow.",
       },
       {
         url: v3,
         role: "Intern Portal",
         title: "Dashboard & Smart Attendance",
         details:
-          "Interns can see their status and complete attendance steps designed around location checks, verification, and accurate time logging.",
+          "Interns can complete geofenced clock-ins with selfie verification, forms, and accurate time logging.",
       },
       {
         url: v4,
         role: "Intern Portal",
         title: "DTR Logs & Progress Profile",
         details:
-          "Interns can review attendance logs, track required hours, and manage profile/document information without repeatedly asking HR for updates.",
+          "Interns can review DTR logs, track hour computation, and manage profile or document updates.",
       },
     ],
   },
@@ -85,7 +85,7 @@ const projects = [
     role: "Web Developer",
     availability: "Client event system",
     description:
-      "A custom event platform with RSVP, guest management, and event-access workflows. Media uses placeholder names and images for privacy.",
+      "An event platform for RSVP, guest management, and access workflows. Placeholder media protects client privacy.",
     tech: ["React", "JSX", "Tailwind CSS", "Google Sheets"],
     link: "https://angelolanie.vercel.app/",
     linkText: "View Live",
@@ -100,7 +100,7 @@ const projects = [
     role: "Front-End Developer",
     availability: "Public demo available",
     description:
-      "A practical inventory tracker that uses Firebase authentication and Google Sheets as a manageable data source for stock monitoring, forms, and visual summaries.",
+      "An inventory tracker with Firebase auth, Google Sheets data, stock forms, and visual summaries.",
     tech: ["React", "Firebase", "Google Sheets", "Chart.js"],
     link: "https://storage-management-gilt.vercel.app/",
     linkText: "View Live",
@@ -273,9 +273,9 @@ export default function CodedProjects() {
         <header className="section-header reveal-on-load">
           <span className="section-kicker">01 / Selected Work</span>
           <div>
-            <h2 className="section-title">Web projects with real workflows.</h2>
+            <h2 className="section-title">Selected web work.</h2>
             <p className="section-copy">
-              Large project showcases for internal systems, client event tools, and practical dashboard work.
+              Internal systems, client tools, and dashboard work.
             </p>
           </div>
         </header>
@@ -307,13 +307,6 @@ export default function CodedProjects() {
                   ))}
                 </div>
 
-                {project.impact && !project.screenshot && (
-                  <ul className="feature-list">
-                    {project.impact.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                )}
               </div>
 
               {project.screenshot ? (

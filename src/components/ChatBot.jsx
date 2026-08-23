@@ -23,7 +23,7 @@ function ChatMessage({ message }) {
   );
 }
 
-export default function ChatBot({ launcherPrefix, onOpen }) {
+export default function ChatBot({ launcherPrefix, onOpen, openSignal = 0, openLocation = "sidebar", hideLauncher = false }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -36,6 +36,7 @@ export default function ChatBot({ launcherPrefix, onOpen }) {
   const launcherRef = useRef(null);
   const overlayRef = useRef(null);
   const closeTimerRef = useRef(null);
+  const lastOpenSignalRef = useRef(openSignal);
 
   const hasConversation = messages.length > 0;
 
@@ -51,20 +52,24 @@ export default function ChatBot({ launcherPrefix, onOpen }) {
 
   const setOverlayOrigin = useCallback(() => {
     const rect = launcherRef.current?.getBoundingClientRect();
-    if (!rect) return;
+    if (!rect) {
+      document.documentElement.style.setProperty("--chat-origin-x", "50vw");
+      document.documentElement.style.setProperty("--chat-origin-y", "50vh");
+      return;
+    }
 
     document.documentElement.style.setProperty("--chat-origin-x", `${rect.left + rect.width / 2}px`);
     document.documentElement.style.setProperty("--chat-origin-y", `${rect.top + rect.height / 2}px`);
   }, []);
 
-  const handleOpen = () => {
+  const handleOpen = useCallback(() => {
     setOverlayOrigin();
-    trackEvent("chat_open", { location: "sidebar" });
+    trackEvent("chat_open", { location: openLocation });
     setIsClosing(false);
     setIsOpen(true);
     setHasNewMessage(false);
     onOpen?.();
-  };
+  }, [onOpen, openLocation, setOverlayOrigin]);
 
   const closeChat = useCallback(() => {
     if (!isOpen || isClosing) return;
@@ -94,12 +99,14 @@ export default function ChatBot({ launcherPrefix, onOpen }) {
     if (!isOpen) return;
 
     const previousOverflow = document.body.style.overflow;
+    document.documentElement.classList.add("chat-active");
     document.body.style.overflow = "hidden";
 
     const focusTimer = window.setTimeout(() => inputRef.current?.focus(), 120);
 
     return () => {
       window.clearTimeout(focusTimer);
+      document.documentElement.classList.remove("chat-active");
       document.body.style.overflow = previousOverflow;
     };
   }, [isOpen]);
@@ -143,6 +150,12 @@ export default function ChatBot({ launcherPrefix, onOpen }) {
     },
     [],
   );
+
+  useEffect(() => {
+    if (!openSignal || openSignal === lastOpenSignalRef.current) return;
+    lastOpenSignalRef.current = openSignal;
+    handleOpen();
+  }, [handleOpen, openSignal]);
 
   const sendMessage = async (text, source = "manual_input") => {
     const userText = String(text || inputValue).trim();
@@ -257,7 +270,7 @@ export default function ChatBot({ launcherPrefix, onOpen }) {
           <footer className="chat-console">
             <form className="chat-command-form" onSubmit={handleSubmit}>
               <label className="sr-only" htmlFor="kv-ai-input">
-                Ask KV.AI about Khen's portfolio
+                Ask KV.AI.
               </label>
               <span className="chat-command-prefix" aria-hidden="true">
                 &gt;
@@ -283,18 +296,20 @@ export default function ChatBot({ launcherPrefix, onOpen }) {
         </section>
       )}
 
-      <button
-        ref={launcherRef}
-        className="chat-fab sidebar-link"
-        type="button"
-        onClick={isOpen ? closeChat : handleOpen}
-        aria-label={isOpen ? "Close KV.AI" : "Open KV.AI"}
-        aria-expanded={isOpen}
-      >
-        {hasNewMessage && !isOpen && <span className="chat-badge" aria-hidden="true" />}
-        {launcherPrefix && <span aria-hidden="true">{launcherPrefix}</span>}
-        question?
-      </button>
+      {!hideLauncher && (
+        <button
+          ref={launcherRef}
+          className="chat-fab sidebar-link"
+          type="button"
+          onClick={isOpen ? closeChat : handleOpen}
+          aria-label={isOpen ? "Close KV.AI" : "Open KV.AI"}
+          aria-expanded={isOpen}
+        >
+          {hasNewMessage && !isOpen && <span className="chat-badge" aria-hidden="true" />}
+          {launcherPrefix && <span aria-hidden="true">{launcherPrefix}</span>}
+          question?
+        </button>
+      )}
     </div>
   );
 }

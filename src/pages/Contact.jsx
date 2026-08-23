@@ -38,7 +38,7 @@ export default function Contact() {
           <span className="contact-command">05 / Contact</span>
           <h2 className="contact-headline">Let's build something useful<span className="cursor-mark">_</span></h2>
           <p className="contact-copy">
-            I am open to Web Developer, UI/UX Designer, and hybrid product roles. Send a direct email if you want to discuss a project, role, or collaboration.
+            Open to projects, opportunities, and collaborations.
           </p>
           <div className="contact-actions">
             <a href={projectMailto} className="btn-primary">

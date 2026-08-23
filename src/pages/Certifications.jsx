@@ -26,7 +26,7 @@ export default function Certifications() {
           <span className="section-kicker">04 / Credentials</span>
           <div>
             <h2 className="section-title">Proof of fundamentals.</h2>
-            <p className="section-copy">Current credential and award content preserved from the existing portfolio.</p>
+            <p className="section-copy">Credential and verification.</p>
           </div>
         </header>
 
