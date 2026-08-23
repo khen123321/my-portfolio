@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { flushSync } from "react-dom";
-import { BrowserRouter, Link, NavLink, Route, Routes, useLocation } from "react-router-dom";
+import { BrowserRouter, Link, NavLink, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 
 import Home from "./pages/Home";
 import CodedProjects from "./pages/CodedProjects";
@@ -202,20 +202,82 @@ function ScrollAndTitleManager() {
 }
 
 function LayoutChrome({ themeMode, onThemeChange }) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const [isMenuMounted, setIsMenuMounted] = useState(false);
+  const [isMenuClosing, setIsMenuClosing] = useState(false);
+  const location = useLocation();
 
-  const closeMenu = () => setIsMenuOpen(false);
+  const isMenuOpen = isMenuMounted && !isMenuClosing;
+
+  const openMenu = useCallback(() => {
+    setIsMenuMounted(true);
+    setIsMenuClosing(false);
+  }, []);
+
+  const closeMenu = useCallback(() => {
+    if (!isMenuMounted || isMenuClosing) return;
+    setIsMenuClosing(true);
+  }, [isMenuClosing, isMenuMounted]);
 
   useEffect(() => {
-    if (!isMenuOpen) return undefined;
+    if (!isMenuClosing) return undefined;
+
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const closeTimer = window.setTimeout(() => {
+      setIsMenuMounted(false);
+      setIsMenuClosing(false);
+    }, prefersReducedMotion ? 40 : 380);
+
+    return () => window.clearTimeout(closeTimer);
+  }, [isMenuClosing]);
+
+  useEffect(() => {
+    if (!isMenuMounted) return undefined;
 
     const previousOverflow = document.body.style.overflow;
+    const previousPaddingRight = document.body.style.paddingRight;
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
     document.body.style.overflow = "hidden";
 
     return () => {
       document.body.style.overflow = previousOverflow;
+      document.body.style.paddingRight = previousPaddingRight;
+    };
+  }, [isMenuMounted]);
+
+  useEffect(() => {
+    if (!isMenuOpen) return undefined;
+
+    document.documentElement.classList.add("mobile-menu-active");
+
+    return () => {
+      document.documentElement.classList.remove("mobile-menu-active");
     };
   }, [isMenuOpen]);
+
+  useEffect(() => {
+    if (!isMenuMounted) return undefined;
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeMenu();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [closeMenu, isMenuMounted]);
+
+  const handleMobileRouteClick = (event, path) => {
+    event.preventDefault();
+    closeMenu();
+    window.setTimeout(() => navigate(path), 120);
+  };
 
   return (
     <>
@@ -254,41 +316,37 @@ function LayoutChrome({ themeMode, onThemeChange }) {
       <nav className="mobile-nav" aria-label="Mobile navigation">
         <div className="site-container mobile-nav-inner">
           <Link className="wordmark" to="/" onClick={closeMenu}>KV<span className="wordmark-cursor">_</span></Link>
-          <button className="menu-button" type="button" onClick={() => setIsMenuOpen(true)} aria-expanded={isMenuOpen} aria-controls="mobile-menu">
-            Menu
+          <button className="menu-button" type="button" onClick={isMenuMounted ? closeMenu : openMenu} aria-expanded={isMenuOpen} aria-controls="mobile-menu">
+            {isMenuMounted ? "Close" : "Menu"}
           </button>
         </div>
       </nav>
 
-      <div className="mobile-menu" id="mobile-menu" hidden={!isMenuOpen}>
-        <div>
-          <div className="mobile-menu-top">
-            <Link className="wordmark" to="/" onClick={closeMenu}>KV<span className="wordmark-cursor">_</span></Link>
-            <button className="menu-button" type="button" onClick={closeMenu}>Close</button>
-          </div>
+      <div className={`mobile-menu ${isMenuOpen ? "is-open" : ""} ${isMenuClosing ? "is-closing" : ""}`} id="mobile-menu" hidden={!isMenuMounted}>
+        <div className="mobile-menu-content">
           <div className="mobile-menu-links">
             {navItems.map((item) => (
-              <NavLink className={({ isActive }) => `mobile-menu-link${isActive ? " is-active" : ""}`} to={item.path} key={item.path} onClick={closeMenu}>
+              <button className={`mobile-menu-link${location.pathname === item.path ? " is-active" : ""}`} type="button" key={item.path} onClick={(event) => handleMobileRouteClick(event, item.path)}>
                 <span>{item.number}</span>{item.label}
-              </NavLink>
+              </button>
             ))}
             <ChatBot launcherPrefix="06" />
           </div>
-        </div>
-        <div className="mobile-menu-actions">
-          {sidebarLinks.map((link) => (
-            <a
-              className="sidebar-external"
-              href={link.href}
-              target={link.href.startsWith("http") || link.href.endsWith(".pdf") ? "_blank" : undefined}
-              rel={link.href.startsWith("http") || link.href.endsWith(".pdf") ? "noopener noreferrer" : undefined}
-              key={link.label}
-              onClick={closeMenu}
-            >
-              {link.label} -&gt;
-            </a>
-          ))}
-          <ThemeToggle themeMode={themeMode} onThemeChange={onThemeChange} />
+          <div className="mobile-menu-actions">
+            {sidebarLinks.map((link) => (
+              <a
+                className="sidebar-external"
+                href={link.href}
+                target={link.href.startsWith("http") || link.href.endsWith(".pdf") ? "_blank" : undefined}
+                rel={link.href.startsWith("http") || link.href.endsWith(".pdf") ? "noopener noreferrer" : undefined}
+                key={link.label}
+                onClick={closeMenu}
+              >
+                {link.label} -&gt;
+              </a>
+            ))}
+            <ThemeToggle themeMode={themeMode} onThemeChange={onThemeChange} />
+          </div>
         </div>
       </div>
     </>
