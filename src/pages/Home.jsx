@@ -1,9 +1,10 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { trackEvent } from "../analytics.js";
 
 const actions = [
-  { label: "View projects", href: "#projects", id: "view_work" },
-  { label: "Contact", href: "#contact", id: "contact" },
+  { label: "View work", to: "/work", id: "view_work" },
+  { label: "Contact", to: "/contact", id: "contact" },
   { label: "Resume", href: "/resume.pdf", id: "resume", external: true },
 ];
 
@@ -37,16 +38,27 @@ export default function Home() {
 
           <div className="hero-actions" aria-label="Primary actions">
             {actions.map((action) => (
-              <a
-                key={action.id}
-                href={action.href}
-                className="text-link"
-                target={action.external ? "_blank" : undefined}
-                rel={action.external ? "noopener noreferrer" : undefined}
-                onClick={() => trackCta(action.id)}
-              >
-                {action.label} -&gt;
-              </a>
+              action.to ? (
+                <Link
+                  key={action.id}
+                  to={action.to}
+                  className="text-link"
+                  onClick={() => trackCta(action.id)}
+                >
+                  {action.label} -&gt;
+                </Link>
+              ) : (
+                <a
+                  key={action.id}
+                  href={action.href}
+                  className="text-link"
+                  target={action.external ? "_blank" : undefined}
+                  rel={action.external ? "noopener noreferrer" : undefined}
+                  onClick={() => trackCta(action.id)}
+                >
+                  {action.label} -&gt;
+                </a>
+              )
             ))}
           </div>
         </div>

@@ -92,6 +92,10 @@ img, video, iframe { max-width: 100%; }
   min-height: 100vh;
 }
 
+.route-content {
+  animation: routeContentIn 300ms var(--ease) both;
+}
+
 .intro-loader {
   position: fixed;
   inset: 0;
@@ -266,6 +270,7 @@ img, video, iframe { max-width: 100%; }
 .mobile-menu-links { display: grid; gap: 16px; margin-block: 48px; }
 .mobile-menu-link { color: var(--foreground); text-decoration: none; font-size: 28px; line-height: 1; letter-spacing: -0.04em; }
 .mobile-menu-link span { color: var(--gray-500); font-size: 12px; margin-right: 8px; }
+.mobile-menu-link.is-active { color: var(--gray-500); }
 .mobile-menu-actions { display: grid; gap: 12px; border-top: 1px solid var(--gray-200); padding-top: 20px; }
 .mobile-menu-links .chat-fab {
   color: var(--foreground);
@@ -278,9 +283,9 @@ img, video, iframe { max-width: 100%; }
 .sidebar-group { display: grid; gap: 10px; }
 .sidebar-rule, .hairline { border: 0; border-top: 1px solid var(--gray-200); width: 100%; margin: 0; }
 .sidebar-link, .sidebar-external { color: var(--gray-500); text-decoration: none; font-size: 11px; line-height: 1.3; letter-spacing: 0.04em; }
-.sidebar-link:hover, .sidebar-external:hover, .footer-link:hover, .text-link:hover { color: var(--foreground); }
+.sidebar-link:hover, .sidebar-link.is-active, .sidebar-external:hover, .footer-link:hover, .text-link:hover { color: var(--foreground); }
 .sidebar-link::before { content: '  '; white-space: pre; }
-.sidebar-link:hover::before { content: '->'; }
+.sidebar-link:hover::before, .sidebar-link.is-active::before { content: '->'; }
 
 .section {
   border-bottom: 1px solid var(--gray-200);
@@ -669,6 +674,7 @@ img, video, iframe { max-width: 100%; }
 .chat-shell { position: relative; z-index: 1; }
 .chat-fab { position: relative; display: inline; width: fit-content; padding: 0; border: 0; background: transparent; cursor: pointer; text-align: left; }
 .chat-fab[aria-expanded="true"] { color: var(--foreground); }
+.desktop-sidebar .chat-fab[aria-expanded="true"]::before { content: '->'; }
 .chat-status-dot, .chat-badge { width: 6px; height: 6px; border-radius: 999px; background: var(--foreground); }
 .chat-badge { position: absolute; right: -3px; top: -3px; border: 1px solid var(--background); }
 
@@ -725,6 +731,7 @@ html.theme-revealing::view-transition-new(root) { animation: themeReveal 530ms v
 @keyframes chatContentIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes chatMessageIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes heroReveal { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes routeContentIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes loaderExit { to { opacity: 0; transform: translateY(-8px); visibility: hidden; } }
 @keyframes themeReveal { to { clip-path: circle(var(--reveal-radius, 140vmax) at var(--reveal-x, 50vw) var(--reveal-y, 50vh)); } }
 @keyframes fallbackThemeReveal { to { transform: translate(-50%, -50%) scale(var(--fallback-scale, 3000)); } }
@@ -736,6 +743,25 @@ html.theme-revealing::view-transition-new(root) { animation: themeReveal 530ms v
   .sidebar-top, .sidebar-bottom { display: grid; gap: 28px; }
   .site-main, .site-footer { margin-left: var(--sidebar-width); }
   .site-container { width: min(var(--content-max), calc(100% - 96px)); }
+  .chat-overlay {
+    inset: 0 0 0 var(--sidebar-width);
+    z-index: 900;
+  }
+  .chat-topbar {
+    padding-inline: max(48px, calc((100% - var(--content-max)) / 2));
+  }
+  .chat-stage {
+    padding-inline: max(48px, calc((100% - var(--content-max)) / 2));
+  }
+  .chat-console {
+    width: min(820px, calc(100% - 96px));
+  }
+  .chat-overlay.is-intro .chat-console {
+    padding-bottom: clamp(56px, 10vh, 112px);
+  }
+  .chat-texture {
+    right: max(48px, calc((100% - var(--content-max)) / 2));
+  }
 }
 
 @media (max-width: 900px) {
@@ -1060,7 +1086,7 @@ html.theme-revealing::view-transition-new(root) { animation: themeReveal 530ms v
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 1ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; }
-  .cursor-mark, .wordmark-cursor { animation: none !important; }
+  .cursor-mark, .wordmark-cursor, .route-content { animation: none !important; }
 }
 
 .section-header {

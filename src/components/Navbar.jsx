@@ -1,6 +1,7 @@
 'use client'; 
 
 import { useState } from "react";
+import { Link } from "react-router-dom";
 // Ensure you have installed: npm install react-icons
 import { FaHome, FaProjectDiagram, FaEnvelope } from "react-icons/fa";
 
@@ -21,21 +22,21 @@ export default function Navbar() {
 
       <div style={{ display: "flex", gap: "25px" }}>
         {/* Pass the icon component and the text label */}
-        <NavIcon href="#home" icon={<FaHome size={22} />} label="Home" />
-        <NavIcon href="#projects" icon={<FaProjectDiagram size={22} />} label="Projects" />
-        <NavIcon href="#contact" icon={<FaEnvelope size={22} />} label="Contact" />
+        <NavIcon to="/" icon={<FaHome size={22} />} label="Home" />
+        <NavIcon to="/work" icon={<FaProjectDiagram size={22} />} label="Projects" />
+        <NavIcon to="/contact" icon={<FaEnvelope size={22} />} label="Contact" />
       </div>
     </nav>
   );
 }
 
 // --- Helper Component: Icon with Floating Tooltip ---
-function NavIcon({ href, icon, label }) {
+function NavIcon({ to, icon, label }) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <a 
-      href={href}
+    <Link
+      to={to}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       style={{
@@ -70,6 +71,6 @@ function NavIcon({ href, icon, label }) {
           {label}
         </span>
       )}
-    </a>
+    </Link>
   );
 }

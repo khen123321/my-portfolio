@@ -30,6 +30,7 @@ export default function ChatBot({ launcherPrefix, onOpen }) {
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [hasNewMessage, setHasNewMessage] = useState(false);
+  const [isDesktopPanel, setIsDesktopPanel] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const launcherRef = useRef(null);
@@ -37,6 +38,16 @@ export default function ChatBot({ launcherPrefix, onOpen }) {
   const closeTimerRef = useRef(null);
 
   const hasConversation = messages.length > 0;
+
+  useEffect(() => {
+    const desktopQuery = window.matchMedia("(min-width: 901px)");
+    const updateDesktopPanel = () => setIsDesktopPanel(desktopQuery.matches);
+
+    updateDesktopPanel();
+    desktopQuery.addEventListener("change", updateDesktopPanel);
+
+    return () => desktopQuery.removeEventListener("change", updateDesktopPanel);
+  }, []);
 
   const setOverlayOrigin = useCallback(() => {
     const rect = launcherRef.current?.getBoundingClientRect();
@@ -103,7 +114,7 @@ export default function ChatBot({ launcherPrefix, onOpen }) {
         return;
       }
 
-      if (event.key !== "Tab" || !overlayRef.current) return;
+      if (isDesktopPanel || event.key !== "Tab" || !overlayRef.current) return;
 
       const focusable = overlayRef.current.querySelectorAll(
         'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])',
@@ -124,7 +135,7 @@ export default function ChatBot({ launcherPrefix, onOpen }) {
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [closeChat, isOpen]);
+  }, [closeChat, isDesktopPanel, isOpen]);
 
   useEffect(
     () => () => {
@@ -196,7 +207,7 @@ export default function ChatBot({ launcherPrefix, onOpen }) {
           ref={overlayRef}
           className={`chat-overlay ${isClosing ? "is-closing" : "is-open"} ${hasConversation ? "has-conversation" : "is-intro"}`}
           role="dialog"
-          aria-modal="true"
+          aria-modal={!isDesktopPanel}
           aria-labelledby="chat-overlay-title"
         >
           <div className="chat-texture" aria-hidden="true" />
@@ -206,7 +217,7 @@ export default function ChatBot({ launcherPrefix, onOpen }) {
               KV.AI
             </h2>
             <button className="chat-close" type="button" onClick={closeChat} aria-label="Close KV.AI">
-              ESC / CLOSE x
+              ESC / CLOSE X
             </button>
           </header>
 

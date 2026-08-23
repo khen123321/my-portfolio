@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { flushSync } from "react-dom";
+import { BrowserRouter, Link, NavLink, Route, Routes, useLocation } from "react-router-dom";
 
 import Home from "./pages/Home";
 import CodedProjects from "./pages/CodedProjects";
@@ -11,12 +12,21 @@ import ThemeToggle from "./components/ThemeToggle";
 import "./App.css";
 
 const navItems = [
-  { href: "#projects", number: "01", label: "work" },
-  { href: "#profile", number: "02", label: "about" },
-  { href: "#stack", number: "03", label: "stack" },
-  { href: "#certifications", number: "04", label: "credentials" },
-  { href: "#contact", number: "05", label: "contact" },
+  { path: "/work", number: "01", label: "work" },
+  { path: "/about", number: "02", label: "about" },
+  { path: "/stack", number: "03", label: "stack" },
+  { path: "/credentials", number: "04", label: "credentials" },
+  { path: "/contact", number: "05", label: "contact" },
 ];
+
+const routeTitles = {
+  "/": "Khen Joshua Verson — Portfolio",
+  "/work": "Work — Khen Joshua Verson",
+  "/about": "About — Khen Joshua Verson",
+  "/stack": "Stack — Khen Joshua Verson",
+  "/credentials": "Credentials — Khen Joshua Verson",
+  "/contact": "Contact — Khen Joshua Verson",
+};
 
 const sidebarLinks = [
   { label: "github", href: "https://github.com/khen123321" },
@@ -180,6 +190,17 @@ function PortfolioLoader({ onComplete }) {
   );
 }
 
+function ScrollAndTitleManager() {
+  const location = useLocation();
+
+  useEffect(() => {
+    document.title = routeTitles[location.pathname] || routeTitles["/"];
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [location.pathname]);
+
+  return null;
+}
+
 function LayoutChrome({ themeMode, onThemeChange }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -200,10 +221,12 @@ function LayoutChrome({ themeMode, onThemeChange }) {
     <>
       <aside className="desktop-sidebar" aria-label="Primary navigation">
         <div className="sidebar-top">
-          <a className="wordmark" href="#home" aria-label="Khen Joshua Verson home">KV<span className="wordmark-cursor">_</span></a>
+          <Link className="wordmark" to="/" aria-label="Khen Joshua Verson home">KV<span className="wordmark-cursor">_</span></Link>
           <nav className="sidebar-group">
             {navItems.map((item) => (
-              <a className="sidebar-link" href={item.href} key={item.href}>{item.label}</a>
+              <NavLink className={({ isActive }) => `sidebar-link${isActive ? " is-active" : ""}`} to={item.path} key={item.path}>
+                {item.label}
+              </NavLink>
             ))}
             <ChatBot />
           </nav>
@@ -230,7 +253,7 @@ function LayoutChrome({ themeMode, onThemeChange }) {
 
       <nav className="mobile-nav" aria-label="Mobile navigation">
         <div className="site-container mobile-nav-inner">
-          <a className="wordmark" href="#home" onClick={closeMenu}>KV<span className="wordmark-cursor">_</span></a>
+          <Link className="wordmark" to="/" onClick={closeMenu}>KV<span className="wordmark-cursor">_</span></Link>
           <button className="menu-button" type="button" onClick={() => setIsMenuOpen(true)} aria-expanded={isMenuOpen} aria-controls="mobile-menu">
             Menu
           </button>
@@ -240,14 +263,14 @@ function LayoutChrome({ themeMode, onThemeChange }) {
       <div className="mobile-menu" id="mobile-menu" hidden={!isMenuOpen}>
         <div>
           <div className="mobile-menu-top">
-            <a className="wordmark" href="#home" onClick={closeMenu}>KV<span className="wordmark-cursor">_</span></a>
+            <Link className="wordmark" to="/" onClick={closeMenu}>KV<span className="wordmark-cursor">_</span></Link>
             <button className="menu-button" type="button" onClick={closeMenu}>Close</button>
           </div>
           <div className="mobile-menu-links">
             {navItems.map((item) => (
-              <a className="mobile-menu-link" href={item.href} key={item.href} onClick={closeMenu}>
+              <NavLink className={({ isActive }) => `mobile-menu-link${isActive ? " is-active" : ""}`} to={item.path} key={item.path} onClick={closeMenu}>
                 <span>{item.number}</span>{item.label}
-              </a>
+              </NavLink>
             ))}
             <ChatBot launcherPrefix="06" />
           </div>
@@ -366,7 +389,45 @@ function Footer() {
   );
 }
 
-export default function App() {
+function WorkPage() {
+  return (
+    <>
+      <CodedProjects />
+      <FigmaDesigns />
+    </>
+  );
+}
+
+function AboutPage() {
+  return (
+    <>
+      <Profile />
+      <Experience />
+    </>
+  );
+}
+
+function RoutedPages() {
+  const location = useLocation();
+
+  return (
+    <main className="site-main">
+      <div className="route-content" key={location.pathname}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/work" element={<WorkPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/stack" element={<Stack />} />
+          <Route path="/credentials" element={<Certifications />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="*" element={<Home />} />
+        </Routes>
+      </div>
+    </main>
+  );
+}
+
+function PortfolioApp() {
   const [themeMode, setThemeMode] = useState(getInitialThemeMode);
   const [showIntroLoader, setShowIntroLoader] = useState(shouldShowIntroLoader);
 
@@ -423,18 +484,18 @@ export default function App() {
   return (
     <div className={`app-shell ${showIntroLoader ? "app-shell-loading" : "app-shell-ready"}`}>
       {showIntroLoader && <PortfolioLoader onComplete={() => setShowIntroLoader(false)} />}
+      <ScrollAndTitleManager />
       <LayoutChrome themeMode={themeMode} onThemeChange={changeThemeMode} />
-      <main className="site-main">
-        <Home />
-        <CodedProjects />
-        <FigmaDesigns />
-        <Profile />
-        <Experience />
-        <Stack />
-        <Certifications />
-        <Contact />
-      </main>
+      <RoutedPages />
       <Footer />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <PortfolioApp />
+    </BrowserRouter>
   );
 }
