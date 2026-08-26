@@ -763,6 +763,7 @@ img, video, iframe { max-width: 100%; }
 .chat-command-prefix { color: var(--foreground); font-family: var(--font-mono); font-size: 17px; line-height: 1.4; }
 .chat-input { min-width: 0; width: 100%; max-height: 132px; resize: none; border: 0; outline: 0; overflow-y: auto; background: transparent; color: var(--foreground); font-family: var(--font-mono); font-size: 15px; line-height: 1.45; }
 .chat-input::placeholder { color: var(--gray-400); opacity: 1; }
+.chat-usage { margin-top: 8px; color: var(--gray-500); font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-align: right; text-transform: uppercase; }
 .send-btn { min-width: 68px; padding: 0 0 2px; border: 0; background: transparent; color: var(--gray-500); cursor: pointer; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-align: right; text-transform: uppercase; transition: color 180ms var(--ease); }
 .send-btn:hover:not(:disabled) { color: var(--foreground); }
 .send-btn:disabled { opacity: .32; cursor: not-allowed; }
