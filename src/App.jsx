@@ -58,9 +58,16 @@ const profileFacts = [
 
 const experience = [
   {
+    title: "Front-End Developer",
+    org: "CLIMBS Life and General Insurance Cooperative",
+    date: "Present",
+    description:
+      "Building and maintaining front-end interfaces and web-based solutions.",
+  },
+  {
     title: "IT Intern / Programmer",
     org: "CLIMBS Life and General Insurance Cooperative",
-    date: "2026",
+    date: "Feb-May 2026",
     description:
       "Developed CIMS intern workflows, HR/admin screens, DTR processes, reports, and role-based access.",
   },

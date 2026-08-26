@@ -15,7 +15,9 @@ EDUCATION
 - 2022-2026
 
 EXPERIENCE
-- IT Intern / Programmer at CLIMBS Life and General Insurance Cooperative, February 2026-May 2026.
+- Present: Front-End Developer at CLIMBS Life and General Insurance Cooperative.
+- Current role description: Building and maintaining front-end interfaces and web-based solutions.
+- February 2026-May 2026: IT Intern / Programmer at CLIMBS Life and General Insurance Cooperative.
 - During his CLIMBS internship, Khen worked as a developer and UI builder for the CLIMBS Internship Monitoring System.
 - Khen also works on freelance web and UI development projects.
 - Do not invent other employers, clients, dates, or job titles.
