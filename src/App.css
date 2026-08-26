@@ -648,6 +648,7 @@ img, video, iframe { max-width: 100%; }
 .credential-row { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-width: 0; padding: 18px 0; color: var(--foreground); text-decoration: none; }
 .credential-main { min-width: 0; display: flex; align-items: center; gap: 14px; }
 .credential-badge { width: 40px; height: 40px; object-fit: contain; filter: grayscale(1); }
+.credential-fallback { flex: 0 0 40px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--gray-200); color: var(--gray-500); font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.08em; }
 .credential-date { color: var(--gray-500); font-size: 11px; font-weight: 600; white-space: nowrap; }
 .credential-title,
 .credential-issuer { overflow-wrap: anywhere; }

@@ -9,7 +9,55 @@ const certs = [
     image: "/cisco-badge.png",
     link: "https://www.credly.com/badges/d3f73794-d8db-4548-ab4f-cf0e58a31e67",
   },
+  {
+    title: "CIVIL SERVICE PASSER",
+    subtitle: "Civil Service Eligibility",
+    issuer: "Civil Service Commission",
+    image: "/images/credentials/csc-logo.svg",
+    metadata: "Result March 8, 2026",
+    link: "",
+  },
 ];
+
+function CredentialRow({ cert, onTrack }) {
+  const content = (
+    <>
+      <div className="credential-main">
+        {cert.image ? (
+          <img className="credential-badge" src={cert.image} alt={cert.title} loading="lazy" decoding="async" />
+        ) : (
+          <span className="credential-badge credential-fallback" aria-hidden="true">
+            {cert.thumbnailText}
+          </span>
+        )}
+        <div>
+          <h3 className="credential-title">{cert.title}</h3>
+          {cert.subtitle && <div className="credential-issuer">{cert.subtitle}</div>}
+          <div className="credential-issuer">{cert.issuer}</div>
+        </div>
+      </div>
+      <span className="credential-date">
+        {cert.link ? `Issued ${cert.date} / View ->` : cert.metadata}
+      </span>
+    </>
+  );
+
+  if (!cert.link) {
+    return <div className="credential-row reveal-on-load">{content}</div>;
+  }
+
+  return (
+    <a
+      href={cert.link}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="credential-row credential-link reveal-on-load"
+      onClick={() => onTrack(cert)}
+    >
+      {content}
+    </a>
+  );
+}
 
 export default function Certifications() {
   const trackCredential = (cert) => {
@@ -32,23 +80,7 @@ export default function Certifications() {
 
         <div className="credentials-list">
           {certs.map((cert) => (
-            <a
-              key={cert.title}
-              href={cert.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="credential-row credential-link reveal-on-load"
-              onClick={() => trackCredential(cert)}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                <img className="credential-badge" src={cert.image} alt={cert.title} loading="lazy" decoding="async" />
-                <div>
-                  <h3 className="credential-title">{cert.title}</h3>
-                  <div className="credential-issuer">{cert.issuer}</div>
-                </div>
-              </div>
-              <span className="credential-date">Issued {cert.date} / View -&gt;</span>
-            </a>
+            <CredentialRow key={cert.title} cert={cert} onTrack={trackCredential} />
           ))}
         </div>
       </div>

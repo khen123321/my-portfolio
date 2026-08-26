@@ -55,6 +55,11 @@ UI/UX PROJECTS
 - Customizable Food App Concept: UI/UX and Figma project. Tools: Figma, component architecture, UI/UX Design.
 - Do not invent screens or features that are not listed in the portfolio.
 
+CREDENTIALS
+- IT Support Specialist issued by Cisco in 2025.
+- Khen is a Civil Service passer and holds Civil Service eligibility issued by the Civil Service Commission.
+- The portfolio does not currently specify the Civil Service eligibility level, rating, exam date, certificate number, or year passed.
+
 TECHNOLOGY STACK
 - Frontend: Next.js, React, TypeScript, JavaScript, Tailwind CSS.
 - Backend: Laravel, PHP, Supabase.
