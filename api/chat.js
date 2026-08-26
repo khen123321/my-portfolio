@@ -1,4 +1,4 @@
-/* global process */
+/* global Buffer, process */
 import https from "https";
 
 const PORTFOLIO_CONTEXT = `
@@ -31,6 +31,7 @@ const RATE_LIMIT_MAX_REQUESTS = 12;
 const REQUEST_TIMEOUT_MS = 10_000;
 const MAX_MESSAGES = 10;
 const MAX_MESSAGE_LENGTH = 1000;
+const GROQ_MODEL = "openai/gpt-oss-20b";
 
 const requestCounts = new Map();
 
@@ -83,6 +84,34 @@ function sendUnavailable(res) {
   }
 }
 
+function getGroqErrorDetails(data) {
+  if (!data) return {};
+
+  try {
+    const parsed = JSON.parse(data);
+    const error = parsed?.error;
+
+    if (!error || typeof error !== "object") {
+      return { message: typeof parsed?.message === "string" ? parsed.message : undefined };
+    }
+
+    return {
+      message: typeof error.message === "string" ? error.message : undefined,
+      type: typeof error.type === "string" ? error.type : undefined,
+      code: typeof error.code === "string" ? error.code : undefined,
+    };
+  } catch {
+    return { message: data.slice(0, 500) };
+  }
+}
+
+function logGroqFailure(message, details = {}) {
+  console.error(`[chat] ${message}`, {
+    model: GROQ_MODEL,
+    ...details,
+  });
+}
+
 export default async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
 
@@ -91,6 +120,7 @@ export default async function handler(req, res) {
   }
 
   if (!process.env.GROQ_API_KEY) {
+    console.error("[chat] GROQ_API_KEY is missing");
     return res.status(500).json({ error: "Chat is not configured" });
   }
 
@@ -105,18 +135,26 @@ export default async function handler(req, res) {
   }
 
   const body = JSON.stringify({
-    model: "llama-3.1-8b-instant",
+    model: GROQ_MODEL,
     max_tokens: 450,
     messages: [{ role: "system", content: PORTFOLIO_CONTEXT }, ...messages],
   });
 
   return new Promise((resolve) => {
+    let settled = false;
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      resolve();
+    };
+
     const options = {
       hostname: "api.groq.com",
       path: "/openai/v1/chat/completions",
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Content-Length": Buffer.byteLength(body),
         "Authorization": `Bearer ${process.env.GROQ_API_KEY}`,
       },
     };
@@ -132,8 +170,14 @@ export default async function handler(req, res) {
         const statusCode = response.statusCode || 500;
 
         if (statusCode < 200 || statusCode >= 300) {
+          const errorDetails = getGroqErrorDetails(data);
+          logGroqFailure("Groq request failed", {
+            status: statusCode,
+            statusText: response.statusMessage,
+            error: errorDetails,
+          });
           sendUnavailable(res);
-          resolve();
+          finish();
           return;
         }
 
@@ -142,17 +186,24 @@ export default async function handler(req, res) {
           const message = parsed.choices?.[0]?.message?.content;
 
           if (!message) {
+            logGroqFailure("Groq response did not contain a completion message", {
+              status: statusCode,
+            });
             sendUnavailable(res);
-            resolve();
+            finish();
             return;
           }
 
           res.status(200).json({ content: [{ text: message }] });
-        } catch {
+        } catch (error) {
+          logGroqFailure("Groq response JSON parsing failed", {
+            status: statusCode,
+            error: error instanceof Error ? error.message : String(error),
+          });
           sendUnavailable(res);
         }
 
-        resolve();
+        finish();
       });
     });
 
@@ -160,9 +211,12 @@ export default async function handler(req, res) {
       request.destroy(new Error("Request timed out"));
     });
 
-    request.on("error", () => {
+    request.on("error", (error) => {
+      logGroqFailure("Groq network request failed", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       sendUnavailable(res);
-      resolve();
+      finish();
     });
 
     request.write(body);
