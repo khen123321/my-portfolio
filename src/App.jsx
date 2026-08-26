@@ -1,6 +1,22 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { BrowserRouter, Link, NavLink, Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { FiLayout, FiMousePointer, FiPenTool } from "react-icons/fi";
+import {
+  SiFigma,
+  SiFirebase,
+  SiGooglesheets,
+  SiJavascript,
+  SiLaravel,
+  SiMysql,
+  SiNextdotjs,
+  SiPhp,
+  SiPostgresql,
+  SiReact,
+  SiSupabase,
+  SiTailwindcss,
+  SiTypescript,
+} from "react-icons/si";
 
 import Home from "./pages/Home";
 import CodedProjects from "./pages/CodedProjects";
@@ -58,11 +74,42 @@ const experience = [
 ];
 
 const stackGroups = [
-  { title: "Frontend", items: ["Next.js", "React", "TypeScript", "JavaScript", "Tailwind CSS"] },
-  { title: "Backend", items: ["Laravel", "PHP", "Supabase"] },
-  { title: "Data", items: ["MySQL", "PostgreSQL", "Firebase", "Google Sheets"] },
-  { title: "Deployment", items: ["Vercel"] },
-  { title: "Design", items: ["Figma", "Wireframing", "Prototyping", "UI/UX Design"] },
+  {
+    title: "Frontend",
+    items: [
+      { label: "Next.js", Icon: SiNextdotjs },
+      { label: "React", Icon: SiReact },
+      { label: "TypeScript", Icon: SiTypescript },
+      { label: "JavaScript", Icon: SiJavascript },
+      { label: "Tailwind CSS", Icon: SiTailwindcss },
+    ],
+  },
+  {
+    title: "Backend",
+    items: [
+      { label: "Laravel", Icon: SiLaravel },
+      { label: "PHP", Icon: SiPhp },
+      { label: "Supabase", Icon: SiSupabase },
+    ],
+  },
+  {
+    title: "Data",
+    items: [
+      { label: "PostgreSQL", Icon: SiPostgresql },
+      { label: "MySQL", Icon: SiMysql },
+      { label: "Firebase", Icon: SiFirebase },
+      { label: "Google Sheets", Icon: SiGooglesheets },
+    ],
+  },
+  {
+    title: "Design",
+    items: [
+      { label: "Figma", Icon: SiFigma },
+      { label: "Wireframing", Icon: FiLayout },
+      { label: "Prototyping", Icon: FiMousePointer },
+      { label: "UI/UX Design", Icon: FiPenTool },
+    ],
+  },
 ];
 
 function resolveThemePreference(mode) {
@@ -446,7 +493,16 @@ function Stack() {
             <div className="stack-group" key={group.title}>
               <h3 className="stack-group-title">{group.title}</h3>
               <div className="stack-list">
-                {group.items.map((item) => <span key={item}>{item}</span>)}
+                {group.items.map((item) => (
+                  <span className="stack-item" key={item.label}>
+                    {React.createElement(item.Icon, {
+                      className: "stack-item-icon",
+                      "aria-hidden": "true",
+                      focusable: "false",
+                    })}
+                    <span>{item.label}</span>
+                  </span>
+                ))}
               </div>
             </div>
           ))}

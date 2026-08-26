@@ -8,6 +8,13 @@ const actions = [
   { label: "Resume", href: "/resume.pdf", id: "resume", external: true },
 ];
 
+const portfolioStats = [
+  { value: "06+", label: "Projects Built" },
+  { value: "₱25K+", label: "Commission Earned" },
+  { value: "03", label: "UI/UX Projects" },
+  { value: "01", label: "Industry Experience" },
+];
+
 export default function Home() {
   const trackCta = (label) => {
     trackEvent("select_content", {
@@ -73,6 +80,14 @@ export default function Home() {
             <span>Web / Product</span>
           </div>
         </aside>
+      </div>
+      <div className="site-container hero-stats reveal-on-load" aria-label="Portfolio statistics">
+        {portfolioStats.map((stat) => (
+          <article className="hero-stat" key={stat.label}>
+            <strong className="hero-stat-value">{stat.value}</strong>
+            <span className="hero-stat-label">{stat.label}</span>
+          </article>
+        ))}
       </div>
     </section>
   );

@@ -1,4 +1,6 @@
 import React from "react";
+import { FiMail } from "react-icons/fi";
+import { SiFacebook, SiGithub } from "react-icons/si";
 import { trackEvent } from "../analytics.js";
 
 const projectMailto = "mailto:versonkhenjoshua@gmail.com?subject=Project%20Inquiry%20from%20Portfolio";
@@ -9,18 +11,21 @@ const links = [
     value: "versonkhenjoshua@gmail.com",
     href: projectMailto,
     external: false,
+    Icon: FiMail,
   },
   {
     label: "GitHub",
     value: "@khen123321",
     href: "https://github.com/khen123321",
     external: true,
+    Icon: SiGithub,
   },
   {
     label: "Facebook",
     value: "Social Profile",
     href: "https://www.facebook.com/khenjosh740/",
     external: true,
+    Icon: SiFacebook,
   },
 ];
 
@@ -58,7 +63,15 @@ export default function Contact() {
               onClick={link.href.startsWith("mailto:") ? undefined : () => trackContact(link.label)}
             >
               <span className="meta-label">{link.label}</span>
-              <span className="contact-value">{link.value} -&gt;</span>
+              <span className="contact-value">
+                {React.createElement(link.Icon, {
+                  className: "contact-icon",
+                  "aria-hidden": "true",
+                  focusable: "false",
+                })}
+                <span className="contact-value-text">{link.value}</span>
+                <span className="contact-arrow" aria-hidden="true">-&gt;</span>
+              </span>
             </a>
           ))}
         </div>
