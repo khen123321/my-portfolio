@@ -10,7 +10,7 @@ const actions = [
 
 const portfolioStats = [
   { value: "06+", label: "Projects Built" },
-  { value: "₱25K+", label: "Commission Earned" },
+  { value: "₱50K+", label: "Commission Earned" },
   { value: "03", label: "UI/UX Projects" },
   { value: "01", label: "Industry Experience" },
 ];
