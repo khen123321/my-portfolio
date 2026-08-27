@@ -50,6 +50,11 @@ const sidebarLinks = [
   { label: "resume", href: "/resume.pdf" },
 ];
 
+const brandLogos = {
+  light: "/images/brand/kjv-light.png",
+  dark: "/images/brand/kjv-dark.png",
+};
+
 const profileFacts = [
   { label: "ROLE", value: "Web Developer / UI Designer" },
   { label: "EDUCATION", value: "BS Information Technology, USTP" },
@@ -151,7 +156,9 @@ function setDocumentTheme(mode) {
   document.documentElement.dataset.themeMode = mode;
   document.documentElement.dataset.theme = resolved;
   document.documentElement.style.colorScheme = resolved;
+  document.querySelector('link[rel="icon"]')?.setAttribute("href", brandLogos[resolved]);
   window.localStorage.setItem("theme-mode", mode);
+  return resolved;
 }
 
 function shouldShowIntroLoader() {
@@ -523,6 +530,10 @@ function Footer() {
   return (
     <footer className="site-footer">
       <div className="site-container footer-content">
+        <span className="footer-brand-logo" aria-hidden="true">
+          <img className="footer-brand-logo-mark footer-brand-logo-light" src={brandLogos.light} alt="" loading="lazy" decoding="async" />
+          <img className="footer-brand-logo-mark footer-brand-logo-dark" src={brandLogos.dark} alt="" loading="lazy" decoding="async" />
+        </span>
         <div className="footer-inner">
           <span>{"\u00A9"} {new Date().getFullYear()} Khen Joshua Verson</span>
           <span>Built with React</span>

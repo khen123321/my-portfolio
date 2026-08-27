@@ -27,6 +27,7 @@
     <meta name="twitter:image" content="/profile.png" />
 
     <title>Khen Joshua Verson | UI/UX Designer & Web Developer</title>
+    <link rel="icon" type="image/png" href="/images/brand/kjv-light.png" />
     <script>
       try {
         const mode = localStorage.getItem('theme-mode') || 'system';
@@ -36,12 +37,15 @@
         document.documentElement.dataset.themeMode = mode;
         document.documentElement.dataset.theme = theme;
         document.documentElement.style.colorScheme = theme;
+        document.querySelector('link[rel="icon"]').href =
+          theme === 'dark'
+            ? '/images/brand/kjv-dark.png'
+            : '/images/brand/kjv-light.png';
       } catch {
         document.documentElement.dataset.themeMode = 'system';
         document.documentElement.dataset.theme = 'light';
       }
     </script>
-    <link rel="icon" type="image/png" href="/favicon.png" />
   </head>
   <body>
     <div id="root"></div>
