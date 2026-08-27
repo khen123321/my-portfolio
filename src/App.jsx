@@ -46,6 +46,7 @@ const routeTitles = {
 
 const sidebarLinks = [
   { label: "github", href: "https://github.com/khen123321" },
+  { label: "linkedin", href: "https://www.linkedin.com/in/khen-joshua-verson-271a57323/" },
   { label: "email", href: "mailto:versonkhenjoshua@gmail.com" },
   { label: "resume", href: "/resume.pdf" },
 ];

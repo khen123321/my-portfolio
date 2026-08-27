@@ -70,6 +70,7 @@ TECHNOLOGY STACK
 CONTACT
 - Email: versonkhenjoshua@gmail.com
 - GitHub: https://github.com/khen123321
+- LinkedIn: https://www.linkedin.com/in/khen-joshua-verson-271a57323/
 - If asked how to contact Khen, give the email and mention the Contact page.
 - Khen is open to projects, opportunities, and collaborations.
 

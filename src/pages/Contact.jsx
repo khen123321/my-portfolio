@@ -1,6 +1,6 @@
 import React from "react";
 import { FiMail } from "react-icons/fi";
-import { SiFacebook, SiGithub } from "react-icons/si";
+import { SiFacebook, SiGithub, SiLinkedin } from "react-icons/si";
 import { trackEvent } from "../analytics.js";
 
 const projectMailto = "mailto:versonkhenjoshua@gmail.com?subject=Project%20Inquiry%20from%20Portfolio";
@@ -19,6 +19,14 @@ const links = [
     href: "https://github.com/khen123321",
     external: true,
     Icon: SiGithub,
+  },
+  {
+    label: "LinkedIn",
+    value: "Khen Joshua Verson",
+    href: "https://www.linkedin.com/in/khen-joshua-verson-271a57323/",
+    external: true,
+    Icon: SiLinkedin,
+    ariaLabel: "LinkedIn profile of Khen Joshua Verson",
   },
   {
     label: "Facebook",
@@ -60,6 +68,7 @@ export default function Contact() {
               target={link.external ? "_blank" : undefined}
               rel={link.external ? "noopener noreferrer" : undefined}
               className="contact-link"
+              aria-label={link.ariaLabel}
               onClick={link.href.startsWith("mailto:") ? undefined : () => trackContact(link.label)}
             >
               <span className="meta-label">{link.label}</span>
