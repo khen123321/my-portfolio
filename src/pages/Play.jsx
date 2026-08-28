@@ -427,11 +427,20 @@ export default function Play() {
               <DirectionButton label="down" direction="down" onDirection={queueDirection} />
               <DirectionButton label="right" direction="right" onDirection={queueDirection} />
             </div>
+
+            <button
+              className="btn-secondary snake-pause snake-pause-mobile"
+              type="button"
+              onClick={togglePause}
+              disabled={gameState !== "playing" && gameState !== "paused"}
+            >
+              {gameState === "paused" ? "Resume" : "Pause"}
+            </button>
           </div>
 
           <aside className="snake-side">
             <button
-              className="btn-secondary snake-pause"
+              className="btn-secondary snake-pause snake-pause-desktop"
               type="button"
               onClick={togglePause}
               disabled={gameState !== "playing" && gameState !== "paused"}
