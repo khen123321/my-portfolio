@@ -23,6 +23,7 @@ import CodedProjects from "./pages/CodedProjects";
 import FigmaDesigns from "./pages/FigmaDesigns";
 import Certifications from "./pages/Certifications";
 import Contact from "./pages/Contact";
+import Play from "./pages/Play";
 import ChatBot from "./components/ChatBot";
 import ThemeToggle from "./components/ThemeToggle";
 import "./App.css";
@@ -33,6 +34,7 @@ const navItems = [
   { path: "/stack", number: "03", label: "stack" },
   { path: "/credentials", number: "04", label: "credentials" },
   { path: "/contact", number: "05", label: "contact" },
+  { path: "/play", number: "06", label: "play" },
 ];
 
 const routeTitles = {
@@ -42,6 +44,7 @@ const routeTitles = {
   "/stack": "Stack — Khen Joshua Verson",
   "/credentials": "Credentials — Khen Joshua Verson",
   "/contact": "Contact — Khen Joshua Verson",
+  "/play": "Play — Khen Joshua Verson",
 };
 
 const sidebarLinks = [
@@ -416,8 +419,8 @@ function LayoutChrome({ themeMode, onThemeChange }) {
                 <span>{item.number}</span>{item.label}
               </button>
             ))}
-            <button className="chat-fab sidebar-link" type="button" onClick={openMobileChatFromMenu} aria-label="Open KV.AI">
-              <span aria-hidden="true">06</span>
+            <button className="chat-fab mobile-question-link" type="button" onClick={openMobileChatFromMenu} aria-label="Open KV.AI">
+              <span aria-hidden="true">07</span>
               question?
             </button>
           </div>
@@ -581,6 +584,7 @@ function RoutedPages() {
           <Route path="/stack" element={<Stack />} />
           <Route path="/credentials" element={<Certifications />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/play" element={<Play />} />
           <Route path="*" element={<Home />} />
         </Routes>
       </div>
