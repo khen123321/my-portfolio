@@ -271,11 +271,11 @@ export default function CodedProjects() {
     <section id="projects" className="section">
       <div className="site-container">
         <header className="section-header reveal-on-load">
-          <span className="section-kicker">01 / Selected Work</span>
+          <span className="section-kicker">01 / WORK</span>
           <div>
-            <h2 className="section-title">Selected web work.</h2>
+            <h2 className="section-title">developed projects_</h2>
             <p className="section-copy">
-              Internal systems, client tools, and dashboard work.
+              Selected web applications, internal systems, and client work.
             </p>
           </div>
         </header>

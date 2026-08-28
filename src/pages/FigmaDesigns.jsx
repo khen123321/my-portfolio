@@ -47,11 +47,11 @@ export default function FigmaDesigns() {
     <section id="design" className="section">
       <div className="site-container">
         <header className="section-header reveal-on-load">
-          <span className="section-kicker">02 / Design Work</span>
+          <span className="section-kicker">01 / WORK</span>
           <div>
-            <h2 className="section-title">Interface studies.</h2>
+            <h2 className="section-title">figma designs_</h2>
             <p className="section-copy">
-              Product flows, dashboard clarity, and mobile interaction design.
+              Selected interface and product design work.
             </p>
           </div>
         </header>

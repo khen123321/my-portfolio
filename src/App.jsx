@@ -29,7 +29,6 @@ import ThemeToggle from "./components/ThemeToggle";
 import "./App.css";
 
 const navItems = [
-  { path: "/work", number: "01", label: "work" },
   { path: "/about", number: "02", label: "about" },
   { path: "/stack", number: "03", label: "stack" },
   { path: "/credentials", number: "04", label: "credentials" },
@@ -37,9 +36,18 @@ const navItems = [
   { path: "/play", number: "06", label: "play" },
 ];
 
+const workNavItem = { path: "/work", number: "01", label: "work" };
+
+const workSubnavItems = [
+  { path: "/work/developed", label: "developed projects" },
+  { path: "/work/figma", label: "figma designs" },
+];
+
 const routeTitles = {
   "/": "Khen Joshua Verson — Portfolio",
   "/work": "Work — Khen Joshua Verson",
+  "/work/developed": "Developed Projects — Khen Joshua Verson",
+  "/work/figma": "Figma Designs — Khen Joshua Verson",
   "/about": "About — Khen Joshua Verson",
   "/stack": "Stack — Khen Joshua Verson",
   "/credentials": "Credentials — Khen Joshua Verson",
@@ -275,6 +283,13 @@ function LayoutChrome({ themeMode, onThemeChange }) {
   const location = useLocation();
 
   const isMenuOpen = isMenuMounted && !isMenuClosing;
+  const isWorkRoute = location.pathname === "/work" || location.pathname.startsWith("/work/");
+  const [isDesktopWorkExpanded, setIsDesktopWorkExpanded] = useState(false);
+  const [isMobileWorkExpanded, setIsMobileWorkExpanded] = useState(false);
+  const [desktopWorkCollapsedPath, setDesktopWorkCollapsedPath] = useState(null);
+  const [mobileWorkCollapsedPath, setMobileWorkCollapsedPath] = useState(null);
+  const isDesktopWorkOpen = isWorkRoute ? desktopWorkCollapsedPath !== location.pathname : isDesktopWorkExpanded;
+  const isMobileWorkOpen = isWorkRoute ? mobileWorkCollapsedPath !== location.pathname : isMobileWorkExpanded;
 
   const openMenu = useCallback(() => {
     setIsMenuMounted(true);
@@ -351,6 +366,24 @@ function LayoutChrome({ themeMode, onThemeChange }) {
     window.setTimeout(() => navigate(path), 120);
   };
 
+  const toggleDesktopWork = () => {
+    if (isWorkRoute) {
+      setDesktopWorkCollapsedPath((path) => (path === location.pathname ? null : location.pathname));
+      return;
+    }
+
+    setIsDesktopWorkExpanded((isExpanded) => !isExpanded);
+  };
+
+  const toggleMobileWork = () => {
+    if (isWorkRoute) {
+      setMobileWorkCollapsedPath((path) => (path === location.pathname ? null : location.pathname));
+      return;
+    }
+
+    setIsMobileWorkExpanded((isExpanded) => !isExpanded);
+  };
+
   const closeMenuThen = useCallback((action) => {
     pendingMenuActionRef.current = action;
 
@@ -374,12 +407,30 @@ function LayoutChrome({ themeMode, onThemeChange }) {
         <div className="sidebar-top">
           <Link className="wordmark" to="/" aria-label="Khen Joshua Verson home">KV<span className="wordmark-cursor">_</span></Link>
           <nav className="sidebar-group">
+            <button
+              className={`sidebar-link sidebar-work-toggle${isWorkRoute ? " is-active" : ""}`}
+              type="button"
+              onClick={toggleDesktopWork}
+              aria-expanded={isDesktopWorkOpen}
+              aria-controls="desktop-work-submenu"
+            >
+              <span className="sidebar-nav-number">{workNavItem.number}</span>
+              <span>{workNavItem.label}</span>
+            </button>
+            <div className={`sidebar-work-submenu${isDesktopWorkOpen ? " is-open" : ""}`} id="desktop-work-submenu" hidden={!isDesktopWorkOpen}>
+              {workSubnavItems.map((item) => (
+                <NavLink className={({ isActive }) => `sidebar-submenu-link${isActive ? " is-active" : ""}`} to={item.path} key={item.path}>
+                  {item.label}
+                </NavLink>
+              ))}
+            </div>
             {navItems.map((item) => (
               <NavLink className={({ isActive }) => `sidebar-link${isActive ? " is-active" : ""}`} to={item.path} key={item.path}>
-                {item.label}
+                <span className="sidebar-nav-number">{item.number}</span>
+                <span>{item.label}</span>
               </NavLink>
             ))}
-            <ChatBot />
+            <ChatBot launcherPrefix="07" />
           </nav>
         </div>
 
@@ -405,8 +456,19 @@ function LayoutChrome({ themeMode, onThemeChange }) {
       <nav className="mobile-nav" aria-label="Mobile navigation">
         <div className="site-container mobile-nav-inner">
           <Link className="wordmark" to="/" onClick={closeMenu}>KV<span className="wordmark-cursor">_</span></Link>
-          <button className="menu-button" type="button" onClick={isMenuMounted ? closeMenu : openMenu} aria-expanded={isMenuOpen} aria-controls="mobile-menu">
-            {isMenuMounted ? "Close" : "Menu"}
+          <button
+            className="menu-button"
+            type="button"
+            onClick={isMenuMounted ? closeMenu : openMenu}
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={isMenuOpen}
+            aria-controls="mobile-menu"
+          >
+            <span className="menu-icon" aria-hidden="true">
+              <span className="menu-icon-line" />
+              <span className="menu-icon-line" />
+              <span className="menu-icon-line" />
+            </span>
           </button>
         </div>
       </nav>
@@ -414,6 +476,29 @@ function LayoutChrome({ themeMode, onThemeChange }) {
       <div className={`mobile-menu ${isMenuOpen ? "is-open" : ""} ${isMenuClosing ? "is-closing" : ""}`} id="mobile-menu" hidden={!isMenuMounted}>
         <div className="mobile-menu-content">
           <div className="mobile-menu-links">
+            <div className="mobile-work-group">
+              <button
+                className={`mobile-menu-link mobile-work-toggle${isWorkRoute ? " is-active" : ""}`}
+                type="button"
+                onClick={toggleMobileWork}
+                aria-expanded={isMobileWorkOpen}
+                aria-controls="mobile-work-submenu"
+              >
+                <span>{workNavItem.number}</span>{workNavItem.label}
+              </button>
+              <div className={`mobile-work-submenu${isMobileWorkOpen ? " is-open" : ""}`} id="mobile-work-submenu" hidden={!isMobileWorkOpen}>
+                {workSubnavItems.map((item) => (
+                  <button
+                    className={`mobile-submenu-link${location.pathname === item.path ? " is-active" : ""}`}
+                    type="button"
+                    key={item.path}
+                    onClick={(event) => handleMobileRouteClick(event, item.path)}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
             {navItems.map((item) => (
               <button className={`mobile-menu-link${location.pathname === item.path ? " is-active" : ""}`} type="button" key={item.path} onClick={(event) => handleMobileRouteClick(event, item.path)}>
                 <span>{item.number}</span>{item.label}
@@ -555,11 +640,35 @@ function Footer() {
 
 function WorkPage() {
   return (
-    <>
-      <CodedProjects />
-      <FigmaDesigns />
-    </>
+    <section className="section section-large">
+      <div className="site-container">
+        <header className="section-header reveal-on-load">
+          <span className="section-kicker">01 / Work</span>
+          <div>
+            <h2 className="section-title">choose a direction_</h2>
+            <p className="section-copy">
+              Developed projects and interface design work are separated for easier review.
+            </p>
+          </div>
+        </header>
+        <div className="work-choice-list reveal-on-load">
+          {workSubnavItems.map((item) => (
+            <Link className="work-choice-link" to={item.path} key={item.path}>
+              {item.label} -&gt;
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
   );
+}
+
+function DevelopedWorkPage() {
+  return <CodedProjects />;
+}
+
+function FigmaWorkPage() {
+  return <FigmaDesigns />;
 }
 
 function AboutPage() {
@@ -580,6 +689,8 @@ function RoutedPages() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/work" element={<WorkPage />} />
+          <Route path="/work/developed" element={<DevelopedWorkPage />} />
+          <Route path="/work/figma" element={<FigmaWorkPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/stack" element={<Stack />} />
           <Route path="/credentials" element={<Certifications />} />
