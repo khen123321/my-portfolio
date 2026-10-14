@@ -40,7 +40,7 @@ export default function Home() {
           </h1>
 
           <p className="hero-copy">
-            Web apps, internal systems, and interfaces.
+            Web apps, internal systems, and interface.
           </p>
 
           <div className="hero-actions" aria-label="Primary actions">
