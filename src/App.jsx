@@ -21,6 +21,7 @@ import {
 import Home from "./pages/Home";
 import CodedProjects from "./pages/CodedProjects";
 import FigmaDesigns from "./pages/FigmaDesigns";
+import TapTapTapProjects from "./pages/TapTapTapProjects";
 import Certifications from "./pages/Certifications";
 import Contact from "./pages/Contact";
 import Play from "./pages/Play";
@@ -41,6 +42,7 @@ const workNavItem = { path: "/work", number: "01", label: "work" };
 const workSubnavItems = [
   { path: "/work/developed", label: "developed projects" },
   { path: "/work/figma", label: "figma designs" },
+  { path: "/work/taptaptap", label: "taptaptap projects" },
 ];
 
 const routeTitles = {
@@ -48,6 +50,7 @@ const routeTitles = {
   "/work": "Work — Khen Joshua Verson",
   "/work/developed": "Developed Projects — Khen Joshua Verson",
   "/work/figma": "Figma Designs — Khen Joshua Verson",
+  "/work/taptaptap": "TapTapTap Projects — Khen Joshua Verson",
   "/about": "About — Khen Joshua Verson",
   "/stack": "Stack — Khen Joshua Verson",
   "/credentials": "Credentials — Khen Joshua Verson",
@@ -75,6 +78,13 @@ const profileFacts = [
 
 const experience = [
   {
+    title: "Main Developer",
+    org: "TapTapTap",
+    date: "Present",
+    description:
+      "Leading development of TapTapTap digital platforms, custom client websites, and NFC-integrated solutions, while implementing responsive interfaces and maintaining deployed applications.",
+  },
+  {
     title: "Front-End Developer",
     org: "CLIMBS Life and General Insurance Cooperative",
     date: "Present",
@@ -84,7 +94,7 @@ const experience = [
   {
     title: "IT Intern / Programmer",
     org: "CLIMBS Life and General Insurance Cooperative",
-    date: "Feb-May 2026",
+    date: "February 2026 – May 2026",
     description:
       "Developed CIMS intern workflows, HR/admin screens, DTR processes, reports, and role-based access.",
   },
@@ -647,7 +657,7 @@ function WorkPage() {
           <div>
             <h2 className="section-title">choose a direction_</h2>
             <p className="section-copy">
-              Developed projects and interface design work are separated for easier review.
+              Developed projects, interface design work, and TapTapTap client solutions are separated for easier review.
             </p>
           </div>
         </header>
@@ -671,6 +681,10 @@ function FigmaWorkPage() {
   return <FigmaDesigns />;
 }
 
+function TapTapTapWorkPage() {
+  return <TapTapTapProjects />;
+}
+
 function AboutPage() {
   return (
     <>
@@ -691,6 +705,7 @@ function RoutedPages() {
           <Route path="/work" element={<WorkPage />} />
           <Route path="/work/developed" element={<DevelopedWorkPage />} />
           <Route path="/work/figma" element={<FigmaWorkPage />} />
+          <Route path="/work/taptaptap" element={<TapTapTapWorkPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/stack" element={<Stack />} />
           <Route path="/credentials" element={<Certifications />} />

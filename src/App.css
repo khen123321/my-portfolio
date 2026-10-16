@@ -698,6 +698,8 @@ img, video, iframe { max-width: 100%; }
 .project-screenshot-link:hover { border-color: var(--gray-300); transform: translateY(-2px); }
 .project-screenshot { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; object-position: top center; transition: transform 320ms var(--ease), opacity 220ms var(--ease); }
 .project-screenshot-link:hover .project-screenshot { opacity: .96; transform: scale(1.015); }
+.project-screenshot-link-mobile { width: min(100%, 390px); }
+.project-screenshot-mobile { height: auto; aspect-ratio: auto; object-fit: contain; }
 .media-item-header { width: 100%; min-height: 44px; display: flex; justify-content: space-between; gap: 16px; padding: 0 0 10px; background: transparent; color: var(--foreground); text-align: left; cursor: pointer; }
 .media-title { display: block; font-weight: 560; line-height: 1.25; }
 .role-label, .click-icon { color: var(--gray-500); font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }

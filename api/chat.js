@@ -15,6 +15,8 @@ EDUCATION
 - 2022-2026
 
 EXPERIENCE
+- Present: Main Developer at TapTapTap.
+- At TapTapTap, Khen develops websites, digital platforms, NFC-integrated solutions, and client systems.
 - Present: Front-End Developer at CLIMBS Life and General Insurance Cooperative.
 - Current role description: Building and maintaining front-end interfaces and web-based solutions.
 - February 2026-May 2026: IT Intern / Programmer at CLIMBS Life and General Insurance Cooperative.
@@ -29,6 +31,14 @@ PROJECT: TAPTAPTAP
 - Implemented features: dynamic products from Supabase, custom NFC product designer, artwork upload, fit/fill controls, zoom and positioning, protected admin routes, server-side admin role checks, Row Level Security, product CRUD, publish/unpublish/archive, first-party analytics, traffic dashboard, conversion funnel, responsive light/dark interface.
 - Live: https://www.taptaptap.shop
 - Important: Do not claim PayMongo or order management is currently implemented. Those were planned features.
+
+TAPTAPTAP CLIENT PROJECT: PRIME BURGER
+- Developer: TapTapTap.
+- Category: Client Website / NFC Digital Experience.
+- Description: A responsive, mobile-friendly digital experience that connects customers to Prime Burger.
+- Verified public quick actions include menu browsing, Google review, directions, and Facebook links.
+- Live: https://prime-burger-umber.vercel.app/prime-burger
+- Do not claim payment processing, online ordering, POS integrations, customer analytics, loyalty systems, or other unlisted functionality.
 
 PROJECT: CLIMBS INTERNSHIP MONITORING SYSTEM (CIMS)
 - Role: Developer / UI Builder
